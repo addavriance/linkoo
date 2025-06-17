@@ -1,8 +1,4 @@
-// Система сжатия данных для URL в Linkoo
-
-// Сокращённые ключи для максимального сжатия
 const COMPRESSION_MAP = {
-    // Основная информация
     name: 'n',
     title: 't',
     description: 'd',
@@ -11,7 +7,6 @@ const COMPRESSION_MAP = {
     website: 'w',
     avatar: 'a',
 
-    // Социальные сети (используем однобуквенные коды)
     socials: 's',
     telegram: 'tg',
     whatsapp: 'wa',
@@ -26,11 +21,9 @@ const COMPRESSION_MAP = {
     vk: 'vk',
     custom: 'cu',
 
-    // Тема и стиль
     theme: 'th',
     customTheme: 'ct',
 
-    // Дополнительные поля
     company: 'co',
     location: 'lo',
     birthday: 'bd',
@@ -41,48 +34,191 @@ const COMPRESSION_MAP = {
     calendar: 'cl',
     payment: 'py',
 
-    // Настройки приватности
     showEmail: 'se',
     showPhone: 'sp',
     showLocation: 'sl',
 };
 
-// Обратная карта для распаковки
-const DECOMPRESSION_MAP = Object.fromEntries(Object.entries(COMPRESSION_MAP).map(([key, value]) => [value, key]));
+const DECOMPRESSION_MAP = Object.fromEntries(
+    Object.entries(COMPRESSION_MAP).map(([key, value]) => [value, key])
+);
 
-// Сжатие объекта данных
+const sanitizeData = (data) => {
+    const sanitized = {};
+
+    Object.entries(data).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === '') {
+            return;
+        }
+
+        switch (key) {
+            case 'phone':
+                const cleanPhone = String(value).replace(/[^\d+]/g, '');
+                if (cleanPhone.length >= 10 && cleanPhone.length <= 15) {
+                    sanitized[key] = cleanPhone;
+                }
+                break;
+
+            case 'email':
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(String(value))) {
+                    sanitized[key] = String(value).toLowerCase().trim();
+                }
+                break;
+
+            case 'website':
+                let cleanUrl = String(value).trim();
+                if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+                    cleanUrl = 'https://' + cleanUrl;
+                }
+                try {
+                    new URL(cleanUrl);
+                    sanitized[key] = cleanUrl;
+                } catch {
+                }
+                break;
+
+            case 'socials':
+                if (Array.isArray(value)) {
+                    const validSocials = value
+                        .filter(social => social && social.platform && social.link)
+                        .map(social => ({
+                            platform: String(social.platform).trim(),
+                            link: String(social.link).trim()
+                        }))
+                        .filter(social => social.platform && social.link);
+
+                    if (validSocials.length > 0) {
+                        sanitized[key] = validSocials;
+                    }
+                }
+                break;
+
+            case 'name':
+            case 'title':
+            case 'description':
+            case 'company':
+            case 'location':
+                const cleanString = String(value).trim().replace(/\s+/g, ' ');
+                if (cleanString.length > 0) {
+                    sanitized[key] = cleanString;
+                }
+                break;
+
+            default:
+                const cleanValue = String(value).trim();
+                if (cleanValue.length > 0) {
+                    sanitized[key] = cleanValue;
+                }
+        }
+    });
+
+    return sanitized;
+};
+
+const compressString = (str) => {
+    const compressionDict = {
+        'Frontend Developer': 'FE',
+        'Backend Developer': 'BE',
+        'Full Stack Developer': 'FS',
+        'Software Engineer': 'SE',
+        'Product Manager': 'PM',
+        'UI/UX Designer': 'UX',
+        'Data Scientist': 'DS',
+        'DevOps Engineer': 'DO',
+        'Mobile Developer': 'MD',
+        'Web Developer': 'WD',
+        'React Developer': 'RD',
+        'JavaScript Developer': 'JD',
+        'Python Developer': 'PD',
+        'Москва': 'MSK',
+        'Санкт-Петербург': 'SPB',
+        'Екатеринбург': 'EKB',
+        'Новосибирск': 'NSK',
+        'Россия': 'RU',
+        'Украина': 'UA',
+        'Беларусь': 'BY',
+        'Казахстан': 'KZ'
+    };
+
+    let compressed = str;
+    Object.entries(compressionDict).forEach(([full, short]) => {
+        compressed = compressed.replace(new RegExp(full, 'gi'), short);
+    });
+
+    return compressed;
+};
+
+const decompressString = (str) => {
+    const decompressionDict = {
+        'FE': 'Frontend Developer',
+        'BE': 'Backend Developer',
+        'FS': 'Full Stack Developer',
+        'SE': 'Software Engineer',
+        'PM': 'Product Manager',
+        'UX': 'UI/UX Designer',
+        'DS': 'Data Scientist',
+        'DO': 'DevOps Engineer',
+        'MD': 'Mobile Developer',
+        'WD': 'Web Developer',
+        'RD': 'React Developer',
+        'JD': 'JavaScript Developer',
+        'PD': 'Python Developer',
+        'MSK': 'Москва',
+        'SPB': 'Санкт-Петербург',
+        'EKB': 'Екатеринбург',
+        'NSK': 'Новосибирск',
+        'RU': 'Россия',
+        'UA': 'Украина',
+        'BY': 'Беларусь',
+        'KZ': 'Казахстан'
+    };
+
+    let decompressed = str;
+    Object.entries(decompressionDict).forEach(([short, full]) => {
+        decompressed = decompressed.replace(new RegExp('\\b' + short + '\\b', 'g'), full);
+    });
+
+    return decompressed;
+};
+
 export const compressCardData = (data) => {
     try {
+        const sanitized = sanitizeData(data);
+
+        if (Object.keys(sanitized).length === 0) {
+            console.warn('Нет данных для сжатия');
+            return null;
+        }
+
         const compressed = {};
 
-        // Сжимаем основные поля
-        Object.entries(data).forEach(([key, value]) => {
-            if (value !== undefined && value !== null && value !== '') {
-                const compressedKey = COMPRESSION_MAP[key] || key;
+        Object.entries(sanitized).forEach(([key, value]) => {
+            const compressedKey = COMPRESSION_MAP[key] || key;
 
-                // Специальная обработка социальных сетей
-                if (key === 'socials' && Array.isArray(value)) {
-                    const compressedSocials = value
-                        .filter(social => social.platform && social.link)
-                        .map(social => ({
-                            [COMPRESSION_MAP[social.platform] || social.platform]: social.link
-                        }));
+            if (key === 'socials' && Array.isArray(value)) {
+                const compressedSocials = value.map(social => ({
+                    [COMPRESSION_MAP[social.platform] || social.platform]: social.link
+                }));
 
-                    if (compressedSocials.length > 0) {
-                        compressed[compressedKey] = compressedSocials;
-                    }
-                } else {
-                    compressed[compressedKey] = value;
-                }
+                compressed[compressedKey] = compressedSocials;
+            } else if (['title', 'description', 'location'].includes(key)) {
+                compressed[compressedKey] = compressString(String(value));
+            } else {
+                compressed[compressedKey] = value;
             }
         });
 
-        // Преобразуем в JSON и кодируем в base64
         const jsonString = JSON.stringify(compressed);
-        const base64 = btoa(unescape(encodeURIComponent(jsonString)));
 
-        // Дополнительное сжатие - убираем padding
-        return base64.replace(/=/g, '');
+        const base64 = btoa(
+            encodeURIComponent(jsonString)
+                .replace(/%([0-9A-F]{2})/g, (match, p1) =>
+                    String.fromCharCode('0x' + p1)
+                )
+        );
+
+        return base64.replace(/=+$/, '');
 
     } catch (error) {
         console.error('Ошибка сжатия данных:', error);
@@ -90,33 +226,40 @@ export const compressCardData = (data) => {
     }
 };
 
-// Распаковка данных из сжатого формата
-export const decompressCardData = (compressedData) => {
+const decompressCardData = (compressedData) => {
     try {
-        // Восстанавливаем padding для base64
+        if (!compressedData || typeof compressedData !== 'string') {
+            return {};
+        }
+
         let base64 = compressedData;
         while (base64.length % 4) {
             base64 += '=';
         }
 
-        // Декодируем из base64
-        const jsonString = decodeURIComponent(escape(atob(base64)));
-        const compressed = JSON.parse(jsonString);
+        const decoded = atob(base64);
+        const jsonString = decodeURIComponent(
+            decoded.split('').map(c =>
+                '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+            ).join('')
+        );
 
+        const compressed = JSON.parse(jsonString);
         const decompressed = {};
 
-        // Распаковываем поля
         Object.entries(compressed).forEach(([key, value]) => {
             const originalKey = DECOMPRESSION_MAP[key] || key;
 
-            // Специальная обработка социальных сетей
-            if (key === 's' && Array.isArray(value)) { // 's' = socials
+            if (key === 's' && Array.isArray(value)) {
                 decompressed.socials = value.map(socialObj => {
                     const [[platform, link]] = Object.entries(socialObj);
                     return {
-                        platform: DECOMPRESSION_MAP[platform] || platform, link: link
+                        platform: DECOMPRESSION_MAP[platform] || platform,
+                        link: link
                     };
                 });
+            } else if (['title', 'description', 'location'].includes(originalKey)) {
+                decompressed[originalKey] = decompressString(String(value));
             } else {
                 decompressed[originalKey] = value;
             }
@@ -130,8 +273,46 @@ export const decompressCardData = (compressedData) => {
     }
 };
 
-// Генерация полного URL с данными
-export const generateCardUrl = (cardData, baseUrl = window.location.origin) => {
+const getCompressionStats = (cardData) => {
+    try {
+        const sanitized = sanitizeData(cardData);
+        const original = JSON.stringify(sanitized);
+        const compressed = compressCardData(cardData);
+
+        if (!compressed || !original) {
+            return {
+                originalSize: 0,
+                compressedSize: 0,
+                compressionRatio: '0.0',
+                savedBytes: 0
+            };
+        }
+
+        const originalSize = original.length;
+        const compressedSize = compressed.length;
+
+        const ratio = originalSize > 0
+            ? Math.max(0, ((originalSize - compressedSize) / originalSize * 100))
+            : 0;
+
+        return {
+            originalSize,
+            compressedSize,
+            compressionRatio: ratio.toFixed(1),
+            savedBytes: Math.max(0, originalSize - compressedSize),
+        };
+    } catch (error) {
+        console.error('Ошибка подсчета статистики:', error);
+        return {
+            originalSize: 0,
+            compressedSize: 0,
+            compressionRatio: '0.0',
+            savedBytes: 0
+        };
+    }
+};
+
+const generateCardUrl = (cardData, baseUrl = window.location.origin) => {
     const compressed = compressCardData(cardData);
     if (!compressed) return null;
 
@@ -141,11 +322,10 @@ export const generateCardUrl = (cardData, baseUrl = window.location.origin) => {
     return `${baseUrl}${basePath}?card=${compressed}`;
 };
 
-// Извлечение данных из URL
-export const extractCardDataFromUrl = (url = window.location.href) => {
+const extractCardDataFromUrl = (url = window.location.href) => {
     try {
         const urlObj = new URL(url);
-        const cardParam = urlObj.searchParams.get('card');
+        const cardParam = urlObj.searchParams.get('card') || urlObj.searchParams.get('c');
 
         if (!cardParam) {
             return null;
@@ -159,129 +339,89 @@ export const extractCardDataFromUrl = (url = window.location.href) => {
     }
 };
 
-// Проверка размера сжатых данных
-export const getCompressedSize = (cardData) => {
-    const compressed = compressCardData(cardData);
-    return compressed ? compressed.length : 0;
+const validatePhone = (phone) => {
+    if (!phone) return false;
+    const cleaned = phone.replace(/[^\d+]/g, '');
+    return cleaned.length >= 10 && cleaned.length <= 15 && /^\+?[\d]+$/.test(cleaned);
 };
 
-// Сравнение размеров до и после сжатия
-export const getCompressionStats = (cardData) => {
-    const original = JSON.stringify(cardData);
-    const compressed = compressCardData(cardData);
+const formatPhone = (phone) => {
+    if (!phone) return '';
 
-    if (!compressed) return null;
+    const cleaned = phone.replace(/[^\d+]/g, '');
 
-    const originalSize = original.length;
-    const compressedSize = compressed.length;
-    const ratio = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+    if (cleaned.startsWith('8') && cleaned.length === 11) {
+        return '+7' + cleaned.slice(1);
+    }
+
+    if (/^[79]\d{10}$/.test(cleaned)) {
+        return '+7' + cleaned.slice(1);
+    }
+
+    if (cleaned.startsWith('+')) {
+        return cleaned;
+    }
+
+    return cleaned;
+};
+
+const checkUrlLimits = (url) => {
+    const length = url ? url.length : 0;
 
     return {
-        originalSize, compressedSize, compressionRatio: ratio, savedBytes: originalSize - compressedSize,
+        length,
+        withinChrome: length < 2048,
+        withinFirefox: length < 65536,
+        withinSafari: length < 80000,
+        withinIE: length < 2083,
+        recommended: length < 2000,
+        status: length < 2000 ? 'excellent' :
+            length < 2048 ? 'good' :
+                length < 8192 ? 'warning' : 'critical'
     };
 };
 
-// Валидация сжатых данных
-export const validateCompressedData = (compressedData) => {
-    try {
-        const decompressed = decompressCardData(compressedData);
-        return decompressed && typeof decompressed === 'object';
-    } catch {
-        return false;
-    }
-};
-
-// Оптимизация для экстремального сжатия
-export const ultraCompress = (cardData) => {
-    // Убираем все необязательные поля и пустые значения
+const ultraCompress = (cardData) => {
     const essential = {};
 
-    // Только самые важные поля
-    const essentialFields = ['name', 'title', 'email', 'phone', 'socials', 'theme'];
+    if (cardData.name && cardData.name.trim()) {
+        essential.name = cardData.name.trim().slice(0, 50);
+    }
 
-    essentialFields.forEach(field => {
-        if (cardData[field] && cardData[field] !== '') {
-            essential[field] = cardData[field];
-        }
-    });
+    if (cardData.title && cardData.title.trim()) {
+        essential.title = compressString(cardData.title.trim().slice(0, 30));
+    }
 
-    // Сжимаем социальные сети до минимума
-    if (essential.socials) {
-        essential.socials = essential.socials
+    if (cardData.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email)) {
+        essential.email = cardData.email.toLowerCase().trim();
+    }
+
+    if (cardData.phone && validatePhone(cardData.phone)) {
+        essential.phone = formatPhone(cardData.phone);
+    }
+
+    if (cardData.socials && Array.isArray(cardData.socials)) {
+        const validSocials = cardData.socials
             .filter(s => s.platform && s.link)
-            .slice(0, 5) // Максимум 5 соцсетей
-            .map(s => ({
-                platform: s.platform, link: s.link.replace(/^https?:\/\//, '') // Убираем протокол
+            .slice(0, 3).map(s => ({
+                platform: s.platform,
+                link: s.link.replace(/^https?:\/\//, '')
             }));
+
+        if (validSocials.length > 0) {
+            essential.socials = validSocials;
+        }
+    }
+
+    if (cardData.theme) {
+        essential.theme = cardData.theme;
     }
 
     return compressCardData(essential);
 };
 
-// Генерация QR-friendly URL (короткий)
-export const generateQrUrl = (cardData, baseUrl = window.location.origin) => {
-    const ultraCompressed = ultraCompress(cardData);
-    if (!ultraCompressed) return null;
 
-    return `${baseUrl}/?c=${ultraCompressed}`;
-};
-
-// Извлечение из QR URL
-export const extractFromQrUrl = (url) => {
-    try {
-        const urlObj = new URL(url);
-        const cardParam = urlObj.searchParams.get('c') || urlObj.searchParams.get('card');
-
-        if (!cardParam) return null;
-
-        const decompressed = decompressCardData(cardParam);
-
-        // Восстанавливаем протоколы в социальных сетях
-        if (decompressed.socials) {
-            decompressed.socials = decompressed.socials.map(social => ({
-                ...social, link: social.link.startsWith('http') ? social.link : `https://${social.link}`
-            }));
-        }
-
-        return decompressed;
-
-    } catch (error) {
-        console.error('Ошибка извлечения QR данных:', error);
-        return null;
-    }
-};
-
-// Проверка лимитов URL (для разных браузеров)
-export const checkUrlLimits = (url) => {
-    const length = url.length;
-
-    return {
-        length, withinChrome: length < 2048,      // Chrome limit
-        withinFirefox: length < 65536,    // Firefox limit
-        withinSafari: length < 80000,     // Safari limit
-        withinIE: length < 2083,          // IE limit (legacy)
-        recommended: length < 2000,       // Рекомендуемый лимит
-    };
-};
-
-// Сжатие для конкретного сервиса сокращения ссылок
-export const prepareForShortener = (cardData) => {
-    // Некоторые сервисы имеют лимиты на длину исходного URL
-    const stats = getCompressionStats(cardData);
-
-    if (stats && stats.compressedSize > 1800) {
-        // Если слишком длинный, используем ультра-сжатие
-        return ultraCompress(cardData);
-    }
-
-    return compressCardData(cardData);
-};
-
-// 🆕 НОВЫЕ ФУНКЦИИ ДЛЯ СОКРАЩЕНИЯ ССЫЛОК
-
-// Сокращение ссылки с несколькими вариантами (убрана проверка длины)
-export const shortenUrl = async (url) => {
-    // Список сервисов для сокращения (с CORS-прокси)
+const shortenUrl = async (url) => {
     const services = [
         {
             name: 'TinyURL',
@@ -293,7 +433,6 @@ export const shortenUrl = async (url) => {
         }
     ];
 
-    // Пытаемся использовать разные сервисы
     for (const service of services) {
         try {
             const response = await fetch(service.url);
@@ -301,7 +440,6 @@ export const shortenUrl = async (url) => {
                 const data = await response.json();
                 const shortUrl = data.contents.trim();
 
-                // Проверяем, что получили валидную ссылку (убрали проверку длины)
                 if (shortUrl.startsWith('http')) {
                     return {
                         success: true,
@@ -316,20 +454,18 @@ export const shortenUrl = async (url) => {
         }
     }
 
-    // Если все сервисы не работают
     return {
         success: false,
         error: 'Не удалось сократить ссылку через автоматические сервисы',
         fallbackServices: [
-            { name: 'TinyURL', url: 'https://tinyurl.com' },
-            { name: 'Bit.ly', url: 'https://bit.ly' },
-            { name: 'Is.gd', url: 'https://is.gd' }
+            {name: 'TinyURL', url: 'https://tinyurl.com'},
+            {name: 'Bit.ly', url: 'https://bit.ly'},
+            {name: 'Is.gd', url: 'https://is.gd'}
         ]
     };
 };
 
-// Показ диалога с альтернативными способами сокращения
-export const showShortenDialog = (url, onSuccess, onClose) => {
+const showShortenDialog = (url, onSuccess, onClose) => {
     const dialog = document.createElement('div');
     dialog.style.cssText = `
         position: fixed;
@@ -342,6 +478,7 @@ export const showShortenDialog = (url, onSuccess, onClose) => {
         justify-content: center;
         align-items: center;
         z-index: 1000;
+        backdrop-filter: blur(4px);
     `;
 
     dialog.innerHTML = `
@@ -352,42 +489,41 @@ export const showShortenDialog = (url, onSuccess, onClose) => {
             max-width: 500px;
             width: 90%;
             text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         ">
-            <h3 style="margin-bottom: 20px; color: #333;">🔗 Сокращение ссылки</h3>
-            <p style="margin-bottom: 20px; color: #666;">
+            <h3 style="margin-bottom: 20px; color: #333; font-size: 18px; font-weight: 600;">🔗 Сокращение ссылки</h3>
+            <p style="margin-bottom: 20px; color: #666; font-size: 14px;">
                 Автоматическое сокращение недоступно. Выберите один из способов:
             </p>
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <button onclick="window.open('https://tinyurl.com/app', '_blank')" 
-                        style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button onclick="window.open('https://tinyurl.com', '_blank')" 
+                        style="padding: 12px 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
                     📱 TinyURL.com - Открыть в новой вкладке
                 </button>
                 <button onclick="window.open('https://bit.ly', '_blank')" 
-                        style="padding: 12px; background: #ff6b35; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        style="padding: 12px 16px; background: #ff6b35; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
                     🔥 Bit.ly - Открыть в новой вкладке
                 </button>
                 <button onclick="window.open('https://is.gd', '_blank')" 
-                        style="padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        style="padding: 12px 16px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
                     ⚡ Is.gd - Открыть в новой вкладке
                 </button>
                 <button onclick="copyToClipboard('${url}'); document.body.removeChild(this.closest('div').parentElement)" 
-                        style="padding: 12px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        style="padding: 12px 16px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
                     📋 Просто скопировать полную ссылку
                 </button>
             </div>
             <button onclick="document.body.removeChild(this.closest('div').parentElement)" 
-                    style="margin-top: 20px; padding: 8px 20px; background: #e9ecef; border: none; border-radius: 8px; cursor: pointer;">
+                    style="margin-top: 20px; padding: 8px 20px; background: #e9ecef; color: #495057; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
                 ✕ Закрыть
             </button>
         </div>
     `;
 
-    // Функция копирования (если не определена глобально)
-    window.copyToClipboard = window.copyToClipboard || function(text) {
+    window.copyToClipboard = window.copyToClipboard || function (text) {
         navigator.clipboard.writeText(text).then(() => {
             if (onSuccess) onSuccess('Ссылка скопирована!');
         }).catch(() => {
-            // Fallback для старых браузеров
             const textarea = document.createElement('textarea');
             textarea.value = text;
             document.body.appendChild(textarea);
@@ -400,7 +536,6 @@ export const showShortenDialog = (url, onSuccess, onClose) => {
 
     document.body.appendChild(dialog);
 
-    // Закрытие по клику вне диалога
     dialog.addEventListener('click', (e) => {
         if (e.target === dialog) {
             document.body.removeChild(dialog);
@@ -409,4 +544,19 @@ export const showShortenDialog = (url, onSuccess, onClose) => {
     });
 
     return dialog;
+};
+
+export {
+    validatePhone,
+    formatPhone,
+    sanitizeData,
+    compressString,
+    decompressString,
+    getCompressionStats,
+    generateCardUrl,
+    extractCardDataFromUrl,
+    checkUrlLimits,
+    ultraCompress,
+    shortenUrl,
+    showShortenDialog
 };
