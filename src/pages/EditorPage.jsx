@@ -22,8 +22,10 @@ import {
 } from 'lucide-react';
 
 import {cardThemes, getThemeById, applyThemeStyles, getAllThemes} from '@/lib/themes';
-import {generateCardUrl, getCompressionStats, shortenUrl, showShortenDialog} from '@/lib/compression';
+import {generateCardUrl, getCompressionStats, shortenUrl, showShortenDialog, validatePhone} from '@/lib/compression';
 import {useToast} from '@/components/ui/use-toast';
+import {validateSocialInput, getSocialPlaceholder} from "@/lib/socialLinks.js";
+import PhoneInput from "@/components/ui/phone-input.jsx";
 
 const socialPlatforms = {
     telegram: {name: 'Telegram', icon: '📱', prefix: 'https://t.me/'},
@@ -135,12 +137,26 @@ const EditorPage = () => {
 
     // Обновление социальной сети
     const updateSocialLink = (index, field, value) => {
-        setCardData(prev => ({
-            ...prev,
-            socials: prev.socials.map((social, i) =>
-                i === index ? {...social, [field]: value} : social
-            )
-        }));
+        setCardData(prev => {
+            const newSocials = [...prev.socials];
+            newSocials[index] = {...newSocials[index], [field]: value};
+
+            // Валидация при изменении ссылки
+            if (field === 'link') {
+                const platform = newSocials[index].platform;
+                const isValid = validateSocialInput(platform, value);
+
+                // Можно добавить визуальную индикацию ошибки
+                if (!isValid && value.trim()) {
+                    console.warn(`Некорректный формат для ${platform}: ${value}`);
+                }
+            }
+
+            return {
+                ...prev,
+                socials: newSocials
+            };
+        });
     };
 
     // Копирование URL
@@ -335,11 +351,16 @@ const EditorPage = () => {
                                                     <label className="text-sm font-medium text-gray-700 mb-2 block">
                                                         Телефон
                                                     </label>
-                                                    <Input
-                                                        placeholder="+7 999 123-45-67"
+                                                    <PhoneInput
                                                         value={cardData.phone}
-                                                        onChange={(e) => updateCardData('phone', e.target.value)}
+                                                        onChange={(phone) => updateCardData('phone', phone)}
+                                                        placeholder="+7 (999) 123-45-67"
                                                     />
+                                                    {cardData.phone && !validatePhone(cardData.phone) && (
+                                                        <p className="text-xs text-amber-600 mt-6">
+                                                            💡 Некорректный номер не будет включен в визитку
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -410,41 +431,59 @@ const EditorPage = () => {
                                                     <p>Добавьте ссылки на социальные сети</p>
                                                 </div>
                                             ) : (
-                                                <div className="space-y-3">
-                                                    {cardData.socials.map((social, index) => (
-                                                        <div key={index} className="flex gap-2">
-                                                            <Select
-                                                                value={social.platform}
-                                                                onValueChange={(value) => updateSocialLink(index, 'platform', value)}
-                                                            >
-                                                                <SelectTrigger className="w-40">
-                                                                    <SelectValue/>
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    {Object.entries(socialPlatforms).map(([key, platform]) => (
-                                                                        <SelectItem key={key} value={key}>
-                                                                            {platform.icon} {platform.name}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
+                                                <div className="space-y-6">
+                                                    {cardData.socials.map((social, index) => {
+                                                        const isValid = validateSocialInput(social.platform, social.link);
+                                                        const placeholder = getSocialPlaceholder(social.platform);
 
-                                                            <Input
-                                                                placeholder="username или ссылка"
-                                                                value={social.link}
-                                                                onChange={(e) => updateSocialLink(index, 'link', e.target.value)}
-                                                                className="flex-1"
-                                                            />
+                                                        return (
+                                                            <div key={index} className="flex gap-2">
+                                                                <Select
+                                                                    value={social.platform}
+                                                                    onValueChange={(value) => updateSocialLink(index, 'platform', value)}
+                                                                >
+                                                                    <SelectTrigger className="w-40">
+                                                                        <SelectValue/>
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        {Object.entries(socialPlatforms).map(([key, platform]) => (
+                                                                            <SelectItem key={key} value={key}>
+                                                                                {platform.icon} {platform.name}
+                                                                            </SelectItem>
+                                                                        ))}
+                                                                    </SelectContent>
+                                                                </Select>
 
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                onClick={() => removeSocialLink(index)}
-                                                            >
-                                                                <Trash2 className="h-4 w-4"/>
-                                                            </Button>
-                                                        </div>
-                                                    ))}
+                                                                <div className="flex-1 relative">
+                                                                    <Input
+                                                                        placeholder={placeholder}
+                                                                        value={social.link}
+                                                                        onChange={(e) => updateSocialLink(index, 'link', e.target.value)}
+                                                                        className={`${
+                                                                            social.link && !isValid
+                                                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
+                                                                                : ''
+                                                                        }`}
+                                                                    />
+                                                                    {social.link && !isValid && (
+                                                                        <div
+                                                                            className="absolute -bottom-4 left-0 text-xs text-red-500">
+                                                                            Некорректный формат
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    onClick={() => removeSocialLink(index)}
+                                                                    className="hover:bg-red-50 hover:border-red-300"
+                                                                >
+                                                                    <Trash2 className="h-4 w-4"/>
+                                                                </Button>
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </div>
                                             )}
                                         </TabsContent>
@@ -662,15 +701,51 @@ const EditorPage = () => {
                                         {compressionStats && (
                                             <div className="mt-4 text-center">
                                                 <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
-                                                    <div className="flex justify-between items-center">
-                                                        <span>Размер ссылки:</span>
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span>Исходный размер:</span>
+                                                        <span
+                                                            className="font-mono">{compressionStats.originalSize} символов</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span>Сжатый размер:</span>
                                                         <span
                                                             className="font-mono">{compressionStats.compressedSize} символов</span>
                                                     </div>
-                                                    <div className="flex justify-between items-center mt-1">
-                                                        <span>Сжатие:</span>
-                                                        <span
-                                                            className="text-green-600 font-medium">{compressionStats.compressionRatio}%</span>
+                                                    <div className="flex justify-between items-center">
+                                                        <span>Экономия:</span>
+                                                        <span className="text-green-600 font-medium">
+                    {compressionStats.compressionRatio}% ({compressionStats.savedBytes} символов)
+                </span>
+                                                    </div>
+
+                                                    {/* Индикатор качества сжатия */}
+                                                    <div className="mt-2 pt-2 border-t border-gray-200">
+                                                        <div className="flex items-center justify-between text-xs">
+                                                            <span>Качество ссылки:</span>
+                                                            <span className={`font-medium ${
+                                                                compressionStats.compressedSize < 500 ? 'text-green-600' :
+                                                                    compressionStats.compressedSize < 1000 ? 'text-yellow-600' :
+                                                                        compressionStats.compressedSize < 1500 ? 'text-orange-600' : 'text-red-600'
+                                                            }`}>
+                        {compressionStats.compressedSize < 500 ? '🟢 Отлично' :
+                            compressionStats.compressedSize < 1000 ? '🟡 Хорошо' :
+                                compressionStats.compressedSize < 1500 ? '🟠 Приемлемо' : '🔴 Длинно'}
+                    </span>
+                                                        </div>
+
+                                                        {/* Прогресс-бар */}
+                                                        <div className="mt-1 bg-gray-200 rounded-full h-1">
+                                                            <div
+                                                                className={`h-1 rounded-full transition-all duration-300 ${
+                                                                    compressionStats.compressedSize < 500 ? 'bg-green-500' :
+                                                                        compressionStats.compressedSize < 1000 ? 'bg-yellow-500' :
+                                                                            compressionStats.compressedSize < 1500 ? 'bg-orange-500' : 'bg-red-500'
+                                                                }`}
+                                                                style={{
+                                                                    width: `${Math.min(100, (compressionStats.compressedSize / 2000) * 100)}%`
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

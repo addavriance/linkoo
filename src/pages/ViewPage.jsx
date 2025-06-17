@@ -17,6 +17,8 @@ import {
 import {getThemeById, applyThemeStyles} from '@/lib/themes';
 import {extractCardDataFromUrl} from '@/lib/compression';
 import {useToast} from '@/components/ui/use-toast';
+import {openInNewTab} from "@/lib/navigation.js";
+import {openSocialLink, processSocialLink} from "@/lib/socialLinks.js";
 
 const socialPlatforms = {
     telegram: {name: 'Telegram', icon: '📱', color: 'bg-blue-500'},
@@ -75,7 +77,7 @@ const ViewPage = ({cardData: propCardData}) => {
                             Ссылка повреждена или визитка не существует
                         </p>
                         <Button
-                            onClick={() => window.location.href = '/'}
+                            onClick={() => navigate("/")}
                             className="w-full"
                         >
                             Создать свою визитку
@@ -144,9 +146,16 @@ const ViewPage = ({cardData: propCardData}) => {
         }
     };
 
-    // Открыть ссылку
     const openLink = (url) => {
-        window.open(url, '_blank', 'noopener,noreferrer');
+        // Если это обычная ссылка (website)
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            return;
+        }
+
+        // Если это не полная ссылка, добавляем https://
+        const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+        window.open(fullUrl, '_blank', 'noopener,noreferrer');
     };
 
     return (
@@ -336,28 +345,42 @@ const ViewPage = ({cardData: propCardData}) => {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {cardData.socials.map((social, index) => {
                                         const platform = socialPlatforms[social.platform] || socialPlatforms.custom;
-                                        const fullUrl = social.platform === 'custom'
+
+                                        const processedUrl = social.platform === 'custom'
                                             ? social.link
-                                            : social.link.startsWith('http')
-                                                ? social.link
-                                                : `${socialPlatforms[social.platform]?.prefix || ''}${social.link}`;
+                                            : processSocialLink(social.platform, social.link);
 
                                         return (
                                             <button
                                                 key={index}
-                                                onClick={() => openLink(fullUrl)}
-                                                className="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors text-left w-full"
+                                                onClick={() => openSocialLink(social.platform, processedUrl)}
+                                                className="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors text-left w-full group"
                                             >
-                                                <div className={`p-2 ${platform.color} rounded-lg text-white`}>
+                                                <div className={`p-2 ${platform.color} rounded-lg text-white transition-transform group-hover:scale-110`}>
                                                     <span className="text-sm">{platform.icon}</span>
                                                 </div>
-                                                <div className="flex-1">
+                                                <div className="flex-1 min-w-0">
                                                     <p className="font-medium text-gray-900">{platform.name}</p>
                                                     <p className="text-sm text-gray-600 truncate">
-                                                        {social.link}
+                                                        {social.platform === 'telegram' && !social.link.startsWith('http')
+                                                            ? `@${social.link.replace('@', '')}`
+                                                            : social.platform === 'whatsapp' && !social.link.startsWith('http')
+                                                                ? social.link
+                                                                : social.platform === 'instagram' && !social.link.startsWith('http')
+                                                                    ? `@${social.link.replace('@', '')}`
+                                                                    : social.platform === 'youtube' && !social.link.startsWith('http')
+                                                                        ? social.link.startsWith('@') ? social.link : `@${social.link}`
+                                                                        : social.platform === 'twitter' && !social.link.startsWith('http')
+                                                                            ? `@${social.link.replace('@', '')}`
+                                                                            : social.platform === 'github' && !social.link.startsWith('http')
+                                                                                ? `@${social.link.replace('@', '')}`
+                                                                                : social.platform === 'tiktok' && !social.link.startsWith('http')
+                                                                                    ? social.link.startsWith('@') ? social.link : `@${social.link}`
+                                                                                    : social.link
+                                                        }
                                                     </p>
                                                 </div>
-                                                <ExternalLink className="h-4 w-4 text-gray-400"/>
+                                                <ExternalLink className="h-4 w-4 text-gray-400 transition-colors group-hover:text-blue-600"/>
                                             </button>
                                         );
                                     })}
@@ -377,7 +400,7 @@ const ViewPage = ({cardData: propCardData}) => {
 
                         <Button
                             variant="outline"
-                            onClick={() => window.open('/', '_blank')}
+                            onClick={() => openInNewTab('/')}
                             className="w-full sm:w-auto"
                         >
                             <Plus className="h-4 w-4 mr-2"/>
