@@ -1,3 +1,5 @@
+import LZString from 'lz-string';
+
 const COMPRESSION_MAP = {
     name: 'n',
     title: 't',
@@ -116,73 +118,7 @@ const sanitizeData = (data) => {
     return sanitized;
 };
 
-const compressString = (str) => {
-    const compressionDict = {
-        'Frontend Developer': 'FE',
-        'Backend Developer': 'BE',
-        'Full Stack Developer': 'FS',
-        'Software Engineer': 'SE',
-        'Product Manager': 'PM',
-        'UI/UX Designer': 'UX',
-        'Data Scientist': 'DS',
-        'DevOps Engineer': 'DO',
-        'Mobile Developer': 'MD',
-        'Web Developer': 'WD',
-        'React Developer': 'RD',
-        'JavaScript Developer': 'JD',
-        'Python Developer': 'PD',
-        'Москва': 'MSK',
-        'Санкт-Петербург': 'SPB',
-        'Екатеринбург': 'EKB',
-        'Новосибирск': 'NSK',
-        'Россия': 'RU',
-        'Украина': 'UA',
-        'Беларусь': 'BY',
-        'Казахстан': 'KZ'
-    };
-
-    let compressed = str;
-    Object.entries(compressionDict).forEach(([full, short]) => {
-        compressed = compressed.replace(new RegExp(full, 'gi'), short);
-    });
-
-    return compressed;
-};
-
-const decompressString = (str) => {
-    const decompressionDict = {
-        'FE': 'Frontend Developer',
-        'BE': 'Backend Developer',
-        'FS': 'Full Stack Developer',
-        'SE': 'Software Engineer',
-        'PM': 'Product Manager',
-        'UX': 'UI/UX Designer',
-        'DS': 'Data Scientist',
-        'DO': 'DevOps Engineer',
-        'MD': 'Mobile Developer',
-        'WD': 'Web Developer',
-        'RD': 'React Developer',
-        'JD': 'JavaScript Developer',
-        'PD': 'Python Developer',
-        'MSK': 'Москва',
-        'SPB': 'Санкт-Петербург',
-        'EKB': 'Екатеринбург',
-        'NSK': 'Новосибирск',
-        'RU': 'Россия',
-        'UA': 'Украина',
-        'BY': 'Беларусь',
-        'KZ': 'Казахстан'
-    };
-
-    let decompressed = str;
-    Object.entries(decompressionDict).forEach(([short, full]) => {
-        decompressed = decompressed.replace(new RegExp('\\b' + short + '\\b', 'g'), full);
-    });
-
-    return decompressed;
-};
-
-export const compressCardData = (data) => {
+const compressCardData = (data) => {
     try {
         const sanitized = sanitizeData(data);
 
@@ -200,10 +136,7 @@ export const compressCardData = (data) => {
                 const compressedSocials = value.map(social => ({
                     [COMPRESSION_MAP[social.platform] || social.platform]: social.link
                 }));
-
                 compressed[compressedKey] = compressedSocials;
-            } else if (['title', 'description', 'location'].includes(key)) {
-                compressed[compressedKey] = compressString(String(value));
             } else {
                 compressed[compressedKey] = value;
             }
@@ -211,14 +144,9 @@ export const compressCardData = (data) => {
 
         const jsonString = JSON.stringify(compressed);
 
-        const base64 = btoa(
-            encodeURIComponent(jsonString)
-                .replace(/%([0-9A-F]{2})/g, (match, p1) =>
-                    String.fromCharCode('0x' + p1)
-                )
-        );
+        const lzCompressed = LZString.compressToEncodedURIComponent(jsonString);
 
-        return base64.replace(/=+$/, '');
+        return lzCompressed;
 
     } catch (error) {
         console.error('Ошибка сжатия данных:', error);
@@ -232,17 +160,12 @@ const decompressCardData = (compressedData) => {
             return {};
         }
 
-        let base64 = compressedData;
-        while (base64.length % 4) {
-            base64 += '=';
-        }
+        const jsonString = LZString.decompressFromEncodedURIComponent(compressedData);
 
-        const decoded = atob(base64);
-        const jsonString = decodeURIComponent(
-            decoded.split('').map(c =>
-                '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-            ).join('')
-        );
+        if (!jsonString) {
+            console.error('Не удалось распаковать данные');
+            return {};
+        }
 
         const compressed = JSON.parse(jsonString);
         const decompressed = {};
@@ -258,8 +181,6 @@ const decompressCardData = (compressedData) => {
                         link: link
                     };
                 });
-            } else if (['title', 'description', 'location'].includes(originalKey)) {
-                decompressed[originalKey] = decompressString(String(value));
             } else {
                 decompressed[originalKey] = value;
             }
@@ -284,7 +205,8 @@ const getCompressionStats = (cardData) => {
                 originalSize: 0,
                 compressedSize: 0,
                 compressionRatio: '0.0',
-                savedBytes: 0
+                savedBytes: 0,
+                method: 'LZ-string'
             };
         }
 
@@ -375,9 +297,9 @@ const checkUrlLimits = (url) => {
         withinSafari: length < 80000,
         withinIE: length < 2083,
         recommended: length < 2000,
-        status: length < 2000 ? 'excellent' :
-            length < 2048 ? 'good' :
-                length < 8192 ? 'warning' : 'critical'
+        status: length < 1000 ? 'excellent' :
+            length < 2000 ? 'good' :
+                length < 4000 ? 'warning' : 'critical'
     };
 };
 
@@ -385,11 +307,7 @@ const ultraCompress = (cardData) => {
     const essential = {};
 
     if (cardData.name && cardData.name.trim()) {
-        essential.name = cardData.name.trim().slice(0, 50);
-    }
-
-    if (cardData.title && cardData.title.trim()) {
-        essential.title = compressString(cardData.title.trim().slice(0, 30));
+        essential.name = cardData.name.trim().slice(0, 30);
     }
 
     if (cardData.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email)) {
@@ -403,7 +321,7 @@ const ultraCompress = (cardData) => {
     if (cardData.socials && Array.isArray(cardData.socials)) {
         const validSocials = cardData.socials
             .filter(s => s.platform && s.link)
-            .slice(0, 3).map(s => ({
+            .slice(0, 2).map(s => ({
                 platform: s.platform,
                 link: s.link.replace(/^https?:\/\//, '')
             }));
@@ -411,10 +329,6 @@ const ultraCompress = (cardData) => {
         if (validSocials.length > 0) {
             essential.socials = validSocials;
         }
-    }
-
-    if (cardData.theme) {
-        essential.theme = cardData.theme;
     }
 
     return compressCardData(essential);
@@ -497,24 +411,24 @@ const showShortenDialog = (url, onSuccess, onClose) => {
             </p>
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <button onclick="window.open('https://tinyurl.com', '_blank')" 
-                        style="padding: 12px 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
-                    📱 TinyURL.com - Открыть в новой вкладке
+                        style="padding: 12px 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                    📱 TinyURL.com
                 </button>
                 <button onclick="window.open('https://bit.ly', '_blank')" 
-                        style="padding: 12px 16px; background: #ff6b35; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
-                    🔥 Bit.ly - Открыть в новой вкладке
+                        style="padding: 12px 16px; background: #ff6b35; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                    🔥 Bit.ly
                 </button>
                 <button onclick="window.open('https://is.gd', '_blank')" 
-                        style="padding: 12px 16px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
-                    ⚡ Is.gd - Открыть в новой вкладке
+                        style="padding: 12px 16px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                    ⚡ Is.gd
                 </button>
                 <button onclick="copyToClipboard('${url}'); document.body.removeChild(this.closest('div').parentElement)" 
-                        style="padding: 12px 16px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">
-                    📋 Просто скопировать полную ссылку
+                        style="padding: 12px 16px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                    📋 Скопировать полную ссылку
                 </button>
             </div>
             <button onclick="document.body.removeChild(this.closest('div').parentElement)" 
-                    style="margin-top: 20px; padding: 8px 20px; background: #e9ecef; color: #495057; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                    style="margin-top: 20px; padding: 8px 20px; background: #e9ecef; color: #495057; border: none; border-radius: 8px; cursor: pointer;">
                 ✕ Закрыть
             </button>
         </div>
@@ -550,8 +464,6 @@ export {
     validatePhone,
     formatPhone,
     sanitizeData,
-    compressString,
-    decompressString,
     getCompressionStats,
     generateCardUrl,
     extractCardDataFromUrl,
