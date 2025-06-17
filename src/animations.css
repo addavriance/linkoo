@@ -1,0 +1,285 @@
+/* Плавные анимации для всех интерактивных элементов */
+
+/* Базовые кнопки */
+.btn, button {
+    @apply transition-all duration-300 ease-out;
+}
+
+/* Кнопки с тенью и подъемом */
+.btn-primary, .btn-gradient {
+    @apply transition-all duration-300 ease-out;
+    transform: translateY(0px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary:hover, .btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary:active, .btn-gradient:active {
+    transform: translateY(0px);
+    transition-duration: 150ms;
+}
+
+/* Карточки с hover эффектами */
+.card {
+    @apply transition-all duration-300 ease-out;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Главная страница - feature карточки */
+.feature-card {
+    @apply transition-all duration-300 ease-out transform;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Галерея тем - карточки тем */
+.theme-card {
+    @apply transition-all duration-300 ease-out transform;
+    will-change: transform, box-shadow;
+}
+
+.theme-card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.theme-card:active {
+    transform: translateY(-2px) scale(1.01);
+    transition-duration: 150ms;
+}
+
+/* Превью тем внутри карточек */
+.theme-preview {
+    @apply transition-all duration-300 ease-out;
+}
+
+.theme-card:hover .theme-preview {
+    transform: scale(1.05);
+}
+
+/* Кнопки действий в overlay */
+.theme-overlay {
+    @apply transition-all duration-300 ease-out;
+    backdrop-filter: blur(4px);
+}
+
+.theme-overlay button {
+    @apply transition-all duration-200 ease-out transform;
+}
+
+.theme-overlay button:hover {
+    transform: scale(1.05);
+}
+
+/* Социальные ссылки */
+.social-link {
+    @apply transition-all duration-200 ease-out transform;
+}
+
+.social-link:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Инпуты с плавным фокусом */
+.input, input, textarea, select {
+    @apply transition-all duration-200 ease-out;
+}
+
+.input:focus, input:focus, textarea:focus, select:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04), 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Badges и теги */
+.badge {
+    @apply transition-all duration-200 ease-out;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+}
+
+/* Иконки с вращением */
+.icon-hover {
+    @apply transition-transform duration-200 ease-out;
+}
+
+.icon-hover:hover {
+    transform: rotate(5deg) scale(1.1);
+}
+
+/* Контейнеры с hover эффектами */
+.hover-lift {
+    @apply transition-all duration-300 ease-out;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Специальные анимации для главной страницы */
+.hero-button {
+    @apply transition-all duration-300 ease-out;
+    transform: translateY(0px) scale(1);
+}
+
+.hero-button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 25px rgba(59, 130, 246, 0.2);
+}
+
+.hero-button:active {
+    transform: translateY(-1px) scale(1.01);
+    transition-duration: 150ms;
+}
+
+/* Статистики с pulse эффектом */
+.stat-item {
+    @apply transition-all duration-300 ease-out select-none;
+}
+
+.stat-item:hover {
+    transform: scale(1.05);
+}
+
+.stat-icon {
+    @apply transition-all duration-300 ease-out;
+}
+
+.stat-item:hover .stat-icon {
+    transform: scale(1.2) rotate(5deg);
+    color: #3B82F6;
+}
+
+/* Навигация с плавными переходами */
+.nav-item {
+    @apply transition-all duration-200 ease-out;
+    position: relative;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+    transition: width 0.3s ease-out;
+}
+
+.nav-item:hover::after {
+    width: 100%;
+}
+
+/* Модальные окна с плавным появлением */
+.modal-overlay {
+    @apply transition-all duration-300 ease-out;
+}
+
+.modal-content {
+    @apply transition-all duration-300 ease-out;
+    transform: scale(0.95) translateY(20px);
+}
+
+.modal-content.open {
+    transform: scale(1) translateY(0px);
+}
+
+/* Загрузочные состояния */
+.loading-state {
+    @apply transition-all duration-200 ease-out;
+}
+
+.loading-state button {
+    transform: scale(0.98);
+    opacity: 0.8;
+}
+
+/* Успешные состояния */
+.success-state {
+    @apply transition-all duration-300 ease-out;
+    animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Микроанимации для взаимодействий */
+.click-feedback {
+    @apply transition-transform duration-150 ease-out;
+}
+
+.click-feedback:active {
+    transform: scale(0.98);
+}
+
+/* Плавное появление элементов */
+.fade-in {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Градиентные фоны с анимацией */
+.bg-gradient-animated {
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Responsive анимации - отключаем на мобильных если prefer-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Smooth scroll для всей страницы */
+/*html {*/
+/*    scroll-behavior: smooth;*/
+/*}*/
+
+/* Улучшенные тени для глубины */
+.shadow-soft {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-medium {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.shadow-strong {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.16);
+}
