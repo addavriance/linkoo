@@ -1,6 +1,5 @@
 import {HashRouter as Router, Routes, Route} from 'react-router-dom';
 import {useEffect, useState} from 'react';
-import {Toaster} from '@/components/ui/toaster';
 import {extractCardDataFromUrl} from '@/lib/compression';
 
 import HomePage from '@/pages/HomePage';
@@ -10,6 +9,7 @@ import ThemesPage from '@/pages/ThemesPage';
 
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import {Toaster} from "@/components/ui/use-toast.jsx";
 
 function App() {
     const [cardData, setCardData] = useState(null);
