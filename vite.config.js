@@ -5,6 +5,7 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: '/linkoo/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -16,6 +17,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    assetsDir: 'assets'
+    // sourcemap: true,
   },
 })
