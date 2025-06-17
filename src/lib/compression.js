@@ -135,8 +135,8 @@ export const generateCardUrl = (cardData, baseUrl = window.location.origin) => {
     const compressed = compressCardData(cardData);
     if (!compressed) return null;
 
-    const currentPath = window.location.pathname;
-    const basePath = currentPath.endsWith('/') ? currentPath : currentPath + '/';
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    const basePath = isGitHubPages ? '/linkoo/' : '/';
 
     return `${baseUrl}${basePath}?card=${compressed}`;
 };
