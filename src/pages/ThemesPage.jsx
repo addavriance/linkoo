@@ -54,6 +54,14 @@ const ThemesPage = () => {
     const useTheme = (themeId) => {
         // Сохраняем выбранную тему в localStorage
         localStorage.setItem('linkoo_selected_theme', themeId);
+
+        localStorage.setItem('linkoo_draft',
+            JSON.stringify({
+                ...JSON.parse(localStorage.getItem('linkoo_draft')),
+                theme: themeId
+            })
+        )
+
         // Переходим в редактор
         navigate('/editor');
     };
