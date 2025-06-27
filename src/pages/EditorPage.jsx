@@ -371,15 +371,15 @@ const EditorPage = () => {
                                                 </div>
                                             </div>
 
+                                            {/* Фото и местоположение в отдельном ряду */}
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                        Фото (URL)
+                                                        Фото профиля
                                                     </label>
-                                                    <Input
-                                                        placeholder="https://example.com/photo.jpg"
+                                                    <ImageUpload
                                                         value={cardData.avatar}
-                                                        onChange={(e) => updateCardData('avatar', e.target.value)}
+                                                        onChange={(url) => updateCardData('avatar', url)}
                                                     />
                                                 </div>
                                                 <div>
@@ -430,11 +430,17 @@ const EditorPage = () => {
                                                                         <SelectValue/>
                                                                     </SelectTrigger>
                                                                     <SelectContent>
-                                                                        {Object.entries(socialPlatforms).map(([key, platform]) => (
-                                                                            <SelectItem key={key} value={key}>
-                                                                                {platform.icon} {platform.name}
-                                                                            </SelectItem>
-                                                                        ))}
+                                                                        {Object.entries(socialPlatforms).map(([key, platform]) => {
+                                                                            const Icon = platform.icon;
+
+                                                                            return (
+                                                                                <SelectItem key={key} value={key}>
+                                                                                    <span className="flex gap-1 items-center">
+                                                                                        <Icon/> {platform.name}
+                                                                                    </span>
+                                                                                </SelectItem>
+                                                                            )
+                                                                        })}
                                                                     </SelectContent>
                                                                 </Select>
 
