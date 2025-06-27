@@ -10,7 +10,7 @@ const fetchAuthToken = async (proxyIndex = 0) => {
         return null;
     }
 
-    const headers = {
+    const baseHeaders = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,es;q=0.6",
         "cache-control": "no-cache",
@@ -29,12 +29,16 @@ const fetchAuthToken = async (proxyIndex = 0) => {
     try {
         console.log(`Получаем токен через прокси ${proxyIndex + 1}...`);
 
+        const proxy = CORS_PROXIES[proxyIndex];
         let proxyUrl;
-        if (CORS_PROXIES[proxyIndex].includes('allorigins')) {
-            proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(FREEIMAGE_HOME_URL);
+
+        if (proxy.needsEncoding) {
+            proxyUrl = proxy.url + encodeURIComponent(FREEIMAGE_HOME_URL);
         } else {
-            proxyUrl = CORS_PROXIES[proxyIndex] + FREEIMAGE_HOME_URL;
+            proxyUrl = proxy.url + FREEIMAGE_HOME_URL;
         }
+
+        const headers = { ...baseHeaders, ...proxy.headers };
 
         const response = await fetch(proxyUrl, {
             headers,
@@ -127,12 +131,42 @@ export const uploadImageDirect = async (file, useNewToken = false) => {
 };
 
 const CORS_PROXIES = [
-    'https://thingproxy.freeboard.io/fetch/',
-    'https://api.allorigins.win/raw?url=',
-    'https://cors-anywhere.herokuapp.com/',
-    'https://api.codetabs.com/v1/proxy?quest=',
-    'https://cors.bridged.cc/',
-    'https://yacdn.org/proxy/',
+    {
+        url: 'https://thingproxy.freeboard.io/fetch/',
+        needsEncoding: false,
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Referer': 'http://localhost:3000/',
+            'Origin': 'http://localhost:3000'
+        }
+    },
+    {
+        url: 'https://api.allorigins.win/raw?url=',
+        needsEncoding: true,
+        headers: {}
+    },
+    {
+        url: 'https://cors-anywhere.herokuapp.com/',
+        needsEncoding: false,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    },
+    {
+        url: 'https://api.codetabs.com/v1/proxy?quest=',
+        needsEncoding: false,
+        headers: {}
+    },
+    {
+        url: 'https://cors.bridged.cc/',
+        needsEncoding: false,
+        headers: {}
+    },
+    {
+        url: 'https://yacdn.org/proxy/',
+        needsEncoding: false,
+        headers: {}
+    },
 ];
 
 export const uploadImageWithProxy = async (file, proxyIndex = 0, useNewToken = false) => {
@@ -161,15 +195,18 @@ export const uploadImageWithProxy = async (file, proxyIndex = 0, useNewToken = f
         formData.append('timestamp', Date.now().toString());
         formData.append('auth_token', currentToken);
 
+        const proxy = CORS_PROXIES[proxyIndex];
         let proxyUrl;
-        if (CORS_PROXIES[proxyIndex].includes('allorigins')) {
-            proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(FREEIMAGE_UPLOAD_URL);
+
+        if (proxy.needsEncoding) {
+            proxyUrl = proxy.url + encodeURIComponent(FREEIMAGE_UPLOAD_URL);
         } else {
-            proxyUrl = CORS_PROXIES[proxyIndex] + FREEIMAGE_UPLOAD_URL;
+            proxyUrl = proxy.url + FREEIMAGE_UPLOAD_URL;
         }
 
         const response = await fetch(proxyUrl, {
             method: 'POST',
+            headers: proxy.headers,
             body: formData,
         });
 
