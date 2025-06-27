@@ -152,7 +152,7 @@ const ViewPage = ({cardData: propCardData}) => {
                     {/* Главная карточка */}
                     <Card className="mb-6 overflow-hidden shadow-xl">
                         <div
-                            className="card-preview p-8 text-center relative"
+                            className="card-preview p-8 text-center relative rounded-none"
                             style={applyThemeStyles(theme)}
                         >
                             {/* Аватар */}
@@ -189,7 +189,7 @@ const ViewPage = ({cardData: propCardData}) => {
                             )}
 
                             {cardData.description && (
-                                <p className="text-sm opacity-90 mb-6 max-w-md mx-auto leading-relaxed">
+                                <p className="text-sm opacity-90 mb-6 max-w-md mx-auto leading-relaxed break-words">
                                     {cardData.description}
                                 </p>
                             )}
@@ -216,7 +216,6 @@ const ViewPage = ({cardData: propCardData}) => {
 
                                 <Button
                                     onClick={shareCard}
-                                    variant="outline"
                                     className="bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur text-inherit"
                                 >
                                     <Share2 className="h-4 w-4 mr-2"/>

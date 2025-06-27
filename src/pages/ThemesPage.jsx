@@ -134,7 +134,7 @@ const ThemesPage = () => {
                                     {/* Превью темы */}
                                     <div className="relative">
                                         <div
-                                            className="h-48 p-6 flex flex-col items-center justify-center text-center transition-transform group-hover:scale-105"
+                                            className="h-48 p-6 flex flex-col items-center justify-center text-center transition-transform"
                                             style={applyThemeStyles(theme)}
                                         >
                                             {/* Мини-карточка */}
