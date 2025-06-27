@@ -1,7 +1,91 @@
 const FREEIMAGE_UPLOAD_URL = 'https://freeimage.host/json';
-const AUTH_TOKEN = '01d5e6ba55efefbd9901ca05d7bb8fd5bf407ea4';
+const FREEIMAGE_HOME_URL = 'https://freeimage.host/';
+let AUTH_TOKEN = '01d5e6ba55efefbd9901ca05d7bb8fd5bf407ea4';
 
-export const uploadImageDirect = async (file) => {
+const TOKEN_STORAGE_KEY = 'freeimage_auth_token';
+
+const fetchAuthToken = async (proxyIndex = 0) => {
+    if (proxyIndex >= CORS_PROXIES.length) {
+        console.error('Все прокси для получения токена недоступны');
+        return null;
+    }
+
+    const headers = {
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,es;q=0.6",
+        "cache-control": "no-cache",
+        "pragma": "no-cache",
+        "priority": "u=0, i",
+        "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1"
+    };
+
+    try {
+        console.log(`Получаем токен через прокси ${proxyIndex + 1}...`);
+
+        let proxyUrl;
+        if (CORS_PROXIES[proxyIndex].includes('allorigins')) {
+            proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(FREEIMAGE_HOME_URL);
+        } else {
+            proxyUrl = CORS_PROXIES[proxyIndex] + FREEIMAGE_HOME_URL;
+        }
+
+        const response = await fetch(proxyUrl, {
+            headers,
+            method: "GET",
+        });
+
+        if (!response.ok) {
+            throw new Error(`Ошибка запроса: ${response.status}`);
+        }
+
+        const html = await response.text();
+        const match = html.match(/PF\.obj\.config\.auth_token\s*=\s*"([^"]+)"/);
+
+        if (match && match[1]) {
+            const newToken = match[1];
+            console.log('Получен новый токен:', newToken.substring(0, 10) + '...');
+
+            try {
+                localStorage.setItem(TOKEN_STORAGE_KEY, newToken);
+            } catch (e) {
+                console.warn('Не удалось сохранить токен в localStorage:', e);
+            }
+
+            return newToken;
+        }
+
+        throw new Error('Токен не найден в HTML');
+
+    } catch (error) {
+        console.error(`Прокси ${proxyIndex + 1} для токена не работает:`, error);
+
+        return fetchAuthToken(proxyIndex + 1);
+    }
+};
+
+const getAuthToken = async () => {
+    try {
+        const savedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
+        if (savedToken && savedToken !== AUTH_TOKEN) {
+            console.log('Используем сохраненный токен');
+            AUTH_TOKEN = savedToken;
+            return savedToken;
+        }
+    } catch (e) {
+        console.warn('Не удалось прочитать токен из localStorage:', e);
+    }
+
+    return AUTH_TOKEN;
+};
+
+export const uploadImageDirect = async (file, useNewToken = false) => {
     if (file.size > 10 * 1024 * 1024) {
         throw new Error('Файл слишком большой. Максимум 10MB.');
     }
@@ -11,18 +95,28 @@ export const uploadImageDirect = async (file) => {
     }
 
     try {
+        let currentToken = useNewToken ? await fetchAuthToken() : await getAuthToken();
+        if (!currentToken) {
+            throw new Error('Не удалось получить токен авторизации');
+        }
+
         const formData = new FormData();
         formData.append('source', file);
         formData.append('type', 'file');
         formData.append('action', 'upload');
         formData.append('timestamp', Date.now().toString());
-        formData.append('auth_token', AUTH_TOKEN);
+        formData.append('auth_token', currentToken);
 
         const response = await fetch(FREEIMAGE_UPLOAD_URL, {
             method: 'POST',
             body: formData,
-            mode: 'cors', // Попробуем напрямую
+            mode: 'cors',
         });
+
+        if (response.status === 500 && !useNewToken) {
+            console.log('Ошибка 500, пробуем с новым токеном...');
+            return uploadImageDirect(file, true);
+        }
 
         return await processResponse(response);
 
@@ -34,11 +128,14 @@ export const uploadImageDirect = async (file) => {
 
 const CORS_PROXIES = [
     'https://thingproxy.freeboard.io/fetch/',
+    'https://api.allorigins.win/raw?url=',
+    'https://cors-anywhere.herokuapp.com/',
+    'https://api.codetabs.com/v1/proxy?quest=',
     'https://cors.bridged.cc/',
     'https://yacdn.org/proxy/',
 ];
 
-export const uploadImageWithProxy = async (file, proxyIndex = 0) => {
+export const uploadImageWithProxy = async (file, proxyIndex = 0, useNewToken = false) => {
     if (file.size > 10 * 1024 * 1024) {
         throw new Error('Файл слишком большой. Максимум 10MB.');
     }
@@ -52,34 +149,56 @@ export const uploadImageWithProxy = async (file, proxyIndex = 0) => {
     }
 
     try {
+        let currentToken = useNewToken ? await fetchAuthToken() : await getAuthToken();
+        if (!currentToken) {
+            throw new Error('Не удалось получить токен авторизации');
+        }
+
         const formData = new FormData();
         formData.append('source', file);
         formData.append('type', 'file');
         formData.append('action', 'upload');
         formData.append('timestamp', Date.now().toString());
-        formData.append('auth_token', AUTH_TOKEN);
+        formData.append('auth_token', currentToken);
 
-        const proxyUrl = CORS_PROXIES[proxyIndex] + FREEIMAGE_UPLOAD_URL;
+        let proxyUrl;
+        if (CORS_PROXIES[proxyIndex].includes('allorigins')) {
+            proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(FREEIMAGE_UPLOAD_URL);
+        } else {
+            proxyUrl = CORS_PROXIES[proxyIndex] + FREEIMAGE_UPLOAD_URL;
+        }
 
         const response = await fetch(proxyUrl, {
             method: 'POST',
             body: formData,
         });
 
+        // Если ошибка 500 и мы еще не пробовали новый токен
+        if (response.status === 500 && !useNewToken) {
+            console.log('Ошибка 500, пробуем с новым токеном...');
+            return uploadImageWithProxy(file, proxyIndex, true);
+        }
+
         return await processResponse(response);
 
     } catch (error) {
         console.error(`Прокси ${proxyIndex} не работает:`, error);
 
-        // Пробуем следующий прокси
-        if (proxyIndex < CORS_PROXIES.length - 1) {
-            return uploadImageWithProxy(file, proxyIndex + 1);
+        // Если ошибка 500 и мы еще не пробовали новый токен
+        if (error.message.includes('500') && !useNewToken) {
+            console.log('Ошибка 500, пробуем с новым токеном...');
+            return uploadImageWithProxy(file, proxyIndex, true);
+        }
+
+        // Пробуем следующий прокси только если это не повторная попытка с новым токеном
+        if (proxyIndex < CORS_PROXIES.length - 1 && !useNewToken) {
+            return uploadImageWithProxy(file, proxyIndex + 1, false);
         }
         throw error;
     }
 };
 
-export const uploadImageAsBase64 = async (file) => {
+export const uploadImageAsBase64 = async (file, useNewToken = false) => {
     if (file.size > 10 * 1024 * 1024) {
         throw new Error('Файл слишком большой. Максимум 10MB.');
     }
@@ -89,6 +208,12 @@ export const uploadImageAsBase64 = async (file) => {
     }
 
     try {
+        let currentToken = useNewToken ? await fetchAuthToken() : await getAuthToken();
+        if (!currentToken) {
+            throw new Error('Не удалось получить токен авторизации');
+        }
+
+        // Конвертируем файл в base64
         const base64 = await fileToBase64(file);
 
         const payload = {
@@ -96,7 +221,7 @@ export const uploadImageAsBase64 = async (file) => {
             type: 'base64',
             action: 'upload',
             timestamp: Date.now().toString(),
-            auth_token: AUTH_TOKEN,
+            auth_token: currentToken,
         };
 
         const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(FREEIMAGE_UPLOAD_URL), {
@@ -107,59 +232,68 @@ export const uploadImageAsBase64 = async (file) => {
             body: JSON.stringify(payload),
         });
 
+        // Если ошибка 500 и мы еще не пробовали новый токен
+        if (response.status === 500 && !useNewToken) {
+            console.log('Ошибка 500, пробуем с новым токеном...');
+            return uploadImageAsBase64(file, true);
+        }
+
         return await processResponse(response);
 
     } catch (error) {
         console.error('Ошибка загрузки base64:', error);
+
+        // Если ошибка 500 и мы еще не пробовали новый токен
+        if (error.message.includes('500') && !useNewToken) {
+            console.log('Ошибка 500, пробуем с новым токеном...');
+            return uploadImageAsBase64(file, true);
+        }
+
         throw error;
     }
 };
 
-export const uploadImageViaBackend = async (file) => { // TODO: Когда-то потом...
-    if (file.size > 10 * 1024 * 1024) {
-        throw new Error('Файл слишком большой. Максимум 10MB.');
-    }
-
-    if (!file.type.startsWith('image/')) {
-        throw new Error('Можно загружать только изображения.');
-    }
-
-    try {
-        const formData = new FormData();
-        formData.append('image', file);
-
-        // Здесь должен быть ваш бэкенд endpoint
-        const response = await fetch('/api/upload-image', {
-            method: 'POST',
-            body: formData,
-        });
-
-        return await processResponse(response);
-
-    } catch (error) {
-        console.error('Ошибка загрузки через backend:', error);
-        throw error;
-    }
-};
-
-export const uploadImage = async (file) => {
+export const uploadImage = async (file, retryWithNewToken = false) => {
     const methods = [
-        () => uploadImageDirect(file),
-        () => uploadImageWithProxy(file),
-        () => uploadImageAsBase64(file),
+        () => uploadImageDirect(file, retryWithNewToken),
+        () => uploadImageWithProxy(file, 0, retryWithNewToken),
+        () => uploadImageAsBase64(file, retryWithNewToken),
     ];
+
+    let lastError = null;
+    let has500Error = false;
 
     for (let i = 0; i < methods.length; i++) {
         try {
-            console.log(`Пробуем метод ${i + 1}...`);
+            console.log(`Пробуем метод ${i + 1}${retryWithNewToken ? ' (с новым токеном)' : ''}...`);
             return await methods[i]();
         } catch (error) {
             console.error(`Метод ${i + 1} не удался:`, error);
-            if (i === methods.length - 1) {
-                throw new Error('Все методы загрузки не удались');
+            lastError = error;
+
+            // Проверяем на ошибку 500
+            if (error.message.includes('500') || (error.response && error.response.status === 500)) {
+                has500Error = true;
             }
         }
     }
+
+    // Если получили ошибку 500 и еще не пробовали с новым токеном
+    if (has500Error && !retryWithNewToken) {
+        console.log('Все методы вернули 500, пробуем с новым токеном...');
+        try {
+            // Принудительно получаем новый токен
+            const newToken = await fetchAuthToken();
+            if (newToken) {
+                AUTH_TOKEN = newToken;
+                return uploadImage(file, true);
+            }
+        } catch (tokenError) {
+            console.error('Не удалось получить новый токен:', tokenError);
+        }
+    }
+
+    throw new Error(`Все методы загрузки не удались. Последняя ошибка: ${lastError?.message || 'Неизвестная ошибка'}`);
 };
 
 const processResponse = async (response) => {
@@ -197,7 +331,6 @@ const fileToBase64 = (file) => {
     });
 };
 
-// Функция для проверки доступности изображения по URL
 export const validateImageUrl = (url) => {
     return new Promise((resolve) => {
         const img = new Image();
