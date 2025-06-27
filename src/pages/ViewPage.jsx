@@ -18,21 +18,8 @@ import {getThemeById, applyThemeStyles} from '@/lib/themes';
 import {extractCardDataFromUrl} from '@/lib/compression';
 import {useToast} from '@/components/ui/use-toast';
 import {openInNewTab} from "@/lib/navigation.js";
-import {openSocialLink, processSocialLink} from "@/lib/socialLinks.js";
+import {socialPlatforms, openSocialLink, processSocialLink, formatSocialLink} from "@/lib/socialLinks.js";
 
-const socialPlatforms = {
-    telegram: {name: 'Telegram', icon: '📱', color: 'bg-blue-500'},
-    whatsapp: {name: 'WhatsApp', icon: '💬', color: 'bg-green-500'},
-    instagram: {name: 'Instagram', icon: '📸', color: 'bg-pink-500'},
-    youtube: {name: 'YouTube', icon: '📺', color: 'bg-red-500'},
-    linkedin: {name: 'LinkedIn', icon: '💼', color: 'bg-blue-600'},
-    twitter: {name: 'Twitter/X', icon: '🐦', color: 'bg-gray-900'},
-    facebook: {name: 'Facebook', icon: '👥', color: 'bg-blue-600'},
-    github: {name: 'GitHub', icon: '🔧', color: 'bg-gray-800'},
-    tiktok: {name: 'TikTok', icon: '🎵', color: 'bg-black'},
-    vk: {name: 'VKontakte', icon: '🔵', color: 'bg-blue-700'},
-    custom: {name: 'Другое', icon: '🔗', color: 'bg-gray-500'}
-};
 
 const ViewPage = ({cardData: propCardData}) => {
     const {toast} = useToast();
@@ -345,6 +332,7 @@ const ViewPage = ({cardData: propCardData}) => {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {cardData.socials.map((social, index) => {
                                         const platform = socialPlatforms[social.platform] || socialPlatforms.custom;
+                                        const Icon = platform.icon;
 
                                         const processedUrl = social.platform === 'custom'
                                             ? social.link
@@ -357,27 +345,12 @@ const ViewPage = ({cardData: propCardData}) => {
                                                 className="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors text-left w-full group"
                                             >
                                                 <div className={`p-2 ${platform.color} rounded-lg text-white transition-transform group-hover:scale-110`}>
-                                                    <span className="text-sm">{platform.icon}</span>
+                                                    <Icon className="text-2xl text-gray-900"/>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <p className="font-medium text-gray-900">{platform.name}</p>
                                                     <p className="text-sm text-gray-600 truncate">
-                                                        {social.platform === 'telegram' && !social.link.startsWith('http')
-                                                            ? `@${social.link.replace('@', '')}`
-                                                            : social.platform === 'whatsapp' && !social.link.startsWith('http')
-                                                                ? social.link
-                                                                : social.platform === 'instagram' && !social.link.startsWith('http')
-                                                                    ? `@${social.link.replace('@', '')}`
-                                                                    : social.platform === 'youtube' && !social.link.startsWith('http')
-                                                                        ? social.link.startsWith('@') ? social.link : `@${social.link}`
-                                                                        : social.platform === 'twitter' && !social.link.startsWith('http')
-                                                                            ? `@${social.link.replace('@', '')}`
-                                                                            : social.platform === 'github' && !social.link.startsWith('http')
-                                                                                ? `@${social.link.replace('@', '')}`
-                                                                                : social.platform === 'tiktok' && !social.link.startsWith('http')
-                                                                                    ? social.link.startsWith('@') ? social.link : `@${social.link}`
-                                                                                    : social.link
-                                                        }
+                                                        {formatSocialLink(social)}
                                                     </p>
                                                 </div>
                                                 <ExternalLink className="h-4 w-4 text-gray-400 transition-colors group-hover:text-blue-600"/>

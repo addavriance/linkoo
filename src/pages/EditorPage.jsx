@@ -24,22 +24,10 @@ import {
 import {cardThemes, getThemeById, applyThemeStyles, getAllThemes} from '@/lib/themes';
 import {generateCardUrl, getCompressionStats, shortenUrl, showShortenDialog, validatePhone} from '@/lib/compression';
 import {useToast} from '@/components/ui/use-toast';
-import {validateSocialInput, getSocialPlaceholder} from "@/lib/socialLinks.js";
+import {validateSocialInput, getSocialPlaceholder, socialPlatforms} from "@/lib/socialLinks.js";
 import PhoneInput from "@/components/ui/phone-input.jsx";
-
-const socialPlatforms = {
-    telegram: {name: 'Telegram', icon: '📱', prefix: 'https://t.me/'},
-    whatsapp: {name: 'WhatsApp', icon: '💬', prefix: 'https://wa.me/'},
-    instagram: {name: 'Instagram', icon: '📸', prefix: 'https://instagram.com/'},
-    youtube: {name: 'YouTube', icon: '📺', prefix: 'https://youtube.com/'},
-    linkedin: {name: 'LinkedIn', icon: '💼', prefix: 'https://linkedin.com/in/'},
-    twitter: {name: 'Twitter/X', icon: '🐦', prefix: 'https://x.com/'},
-    facebook: {name: 'Facebook', icon: '👥', prefix: 'https://facebook.com/'},
-    github: {name: 'GitHub', icon: '🔧', prefix: 'https://github.com/'},
-    tiktok: {name: 'TikTok', icon: '🎵', prefix: 'https://tiktok.com/@'},
-    vk: {name: 'VKontakte', icon: '🔵', prefix: 'https://vk.com/'},
-    custom: {name: 'Другое', icon: '🔗', prefix: ''}
-};
+import {FaGlobe} from "react-icons/fa";
+import ImageUpload from "@/components/ui/image-upload.jsx";
 
 const EditorPage = () => {
     const {toast} = useToast();
@@ -675,15 +663,18 @@ const EditorPage = () => {
                                                 {/* Социальные сети */}
                                                 {cardData.socials.length > 0 && (
                                                     <div className="card-preview-socials">
-                                                        {cardData.socials.slice(0, 6).map((social, index) => (
-                                                            <span
-                                                                key={index}
-                                                                className="card-preview-social-item"
-                                                                title={socialPlatforms[social.platform]?.name}
-                                                            >
-                                                                {socialPlatforms[social.platform]?.icon || '🔗'}
-                                                            </span>
-                                                        ))}
+                                                        {cardData.socials.slice(0, 6).map((social, index) => {
+                                                            const Icon = socialPlatforms[social.platform]?.icon || FaGlobe;
+                                                            return (
+                                                                <span
+                                                                    key={index}
+                                                                    className="card-preview-social-item"
+                                                                    title={socialPlatforms[social.platform]?.name}
+                                                                    >
+                                                                    <Icon/>
+                                                                </span>
+                                                            )
+                                                        })}
                                                         {cardData.socials.length > 6 && (
                                                             <span
                                                                 className="card-preview-social-item"

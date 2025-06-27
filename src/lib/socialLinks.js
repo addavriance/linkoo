@@ -1,77 +1,102 @@
-// Конфигурация социальных платформ с префиксами
-const socialPlatforms = {
+import {
+    FaInstagram,
+    FaLinkedin,
+    FaTelegram,
+    FaWhatsapp,
+    FaYoutube,
+    FaTwitter,
+    FaFacebook,
+    FaGithub, FaTiktok, FaVk, FaDiscord, FaGlobe
+} from "react-icons/fa";
+
+export const socialPlatforms = {
     telegram: {
         name: 'Telegram',
-        icon: '📱',
+        icon: FaTelegram,
         prefix: 'https://t.me/',
         patterns: ['@', 't.me/', 'telegram.me/']
     },
     whatsapp: {
         name: 'WhatsApp',
-        icon: '💬',
+        icon: FaWhatsapp,
         prefix: 'https://wa.me/',
         patterns: ['+', 'wa.me/', 'whatsapp.com/']
     },
     instagram: {
         name: 'Instagram',
-        icon: '📸',
+        icon: FaInstagram,
         prefix: 'https://instagram.com/',
         patterns: ['@', 'instagram.com/', 'instagr.am/']
     },
     youtube: {
         name: 'YouTube',
-        icon: '📺',
+        icon: FaYoutube,
         prefix: 'https://youtube.com/',
         patterns: ['youtube.com/', 'youtu.be/', '@']
     },
     linkedin: {
         name: 'LinkedIn',
-        icon: '💼',
+        icon: FaLinkedin,
         prefix: 'https://linkedin.com/in/',
         patterns: ['linkedin.com/', 'in/']
     },
     twitter: {
         name: 'Twitter/X',
-        icon: '🐦',
+        icon: FaTwitter,
         prefix: 'https://x.com/',
         patterns: ['@', 'x.com/', 'twitter.com/']
     },
     facebook: {
         name: 'Facebook',
-        icon: '👥',
+        icon: FaFacebook,
         prefix: 'https://facebook.com/',
         patterns: ['facebook.com/', 'fb.com/', 'fb.me/']
     },
     github: {
         name: 'GitHub',
-        icon: '🔧',
+        icon: FaGithub,
         prefix: 'https://github.com/',
         patterns: ['github.com/', '@']
     },
     tiktok: {
         name: 'TikTok',
-        icon: '🎵',
+        icon: FaTiktok,
         prefix: 'https://tiktok.com/@',
         patterns: ['@', 'tiktok.com/', 'vm.tiktok.com/']
     },
     vk: {
         name: 'VKontakte',
-        icon: '🔵',
+        icon: FaVk,
         prefix: 'https://vk.com/',
         patterns: ['vk.com/', 'vkontakte.ru/']
     },
     discord: {
         name: 'Discord',
-        icon: '🎮',
+        icon: FaDiscord,
         prefix: 'https://discord.gg/',
         patterns: ['discord.gg/', 'discord.com/']
     },
     custom: {
         name: 'Другое',
-        icon: '🔗',
+        icon: FaGlobe,
         prefix: ''
     }
 };
+
+export const formatSocialLink = (social) => {
+    const { platform, link } = social;
+    const isHttp = link.startsWith('http');
+    const atLink = link.startsWith('@') ? link : `@${link.replace('@', '')}`;
+
+    if (platform === 'telegram' && !isHttp) return `@${link.replace('@', '')}`;
+    if (platform === 'whatsapp' && !isHttp) return link;
+    if (platform === 'instagram' && !isHttp) return `@${link.replace('@', '')}`;
+    if (platform === 'youtube' && !isHttp) return atLink;
+    if (platform === 'twitter' && !isHttp) return `@${link.replace('@', '')}`;
+    if (platform === 'github' && !isHttp) return `@${link.replace('@', '')}`;
+    if (platform === 'tiktok' && !isHttp) return atLink;
+    return link;
+}
 
 // Умная функция для обработки социальных ссылок
 export const processSocialLink = (platform, input) => {
@@ -92,8 +117,8 @@ export const processSocialLink = (platform, input) => {
     // Специальная обработка для разных платформ
     switch (platform) {
         case 'telegram':
-            // @addavriance -> https://t.me/addavriance
-            // addavriance -> https://t.me/addavriance
+            // @username -> https://t.me/username
+            // username -> https://t.me/username
             const telegramUsername = cleanInput.replace(/^@/, '');
             return `https://t.me/${telegramUsername}`;
 
@@ -104,14 +129,14 @@ export const processSocialLink = (platform, input) => {
             return `https://wa.me/${phoneNumber}`;
 
         case 'instagram':
-            // @addavriance -> https://instagram.com/addavriance
-            // addavriance -> https://instagram.com/addavriance
+            // @username -> https://instagram.com/username
+            // username -> https://instagram.com/username
             const instagramUsername = cleanInput.replace(/^@/, '');
             return `https://instagram.com/${instagramUsername}`;
 
         case 'youtube':
-            // @addavriance -> https://youtube.com/@addavriance
-            // addavriance -> https://youtube.com/@addavriance
+            // @username -> https://youtube.com/@username
+            // username -> https://youtube.com/@username
             // UCxxxxxxxxx -> https://youtube.com/channel/UCxxxxxxxxx
             if (cleanInput.startsWith('UC') && cleanInput.length === 24) {
                 return `https://youtube.com/channel/${cleanInput}`;
@@ -120,35 +145,35 @@ export const processSocialLink = (platform, input) => {
             return `https://youtube.com/${youtubeHandle}`;
 
         case 'linkedin':
-            // addavriance -> https://linkedin.com/in/addavriance
+            // username -> https://linkedin.com/in/username
             const linkedinUsername = cleanInput.replace(/^@/, '');
             return `https://linkedin.com/in/${linkedinUsername}`;
 
         case 'twitter':
-            // @addavriance -> https://x.com/addavriance
-            // addavriance -> https://x.com/addavriance
+            // @username -> https://x.com/username
+            // username -> https://x.com/username
             const twitterUsername = cleanInput.replace(/^@/, '');
             return `https://x.com/${twitterUsername}`;
 
         case 'facebook':
-            // addavriance -> https://facebook.com/addavriance
+            // username -> https://facebook.com/username
             const facebookUsername = cleanInput.replace(/^@/, '');
             return `https://facebook.com/${facebookUsername}`;
 
         case 'github':
-            // @addavriance -> https://github.com/addavriance
-            // addavriance -> https://github.com/addavriance
+            // @username -> https://github.com/username
+            // username -> https://github.com/username
             const githubUsername = cleanInput.replace(/^@/, '');
             return `https://github.com/${githubUsername}`;
 
         case 'tiktok':
-            // @addavriance -> https://tiktok.com/@addavriance
-            // addavriance -> https://tiktok.com/@addavriance
+            // @username -> https://tiktok.com/@username
+            // username -> https://tiktok.com/@username
             const tiktokUsername = cleanInput.startsWith('@') ? cleanInput : `@${cleanInput}`;
             return `https://tiktok.com/${tiktokUsername}`;
 
         case 'vk':
-            // addavriance -> https://vk.com/addavriance
+            // username -> https://vk.com/username
             // id123456 -> https://vk.com/id123456
             const vkUsername = cleanInput.replace(/^@/, '');
             return `https://vk.com/${vkUsername}`;
@@ -239,10 +264,4 @@ export const getSocialPlaceholder = (platform) => {
     };
 
     return placeholders[platform] || 'username или ссылка';
-};
-
-// Экспорт всех функций
-export {
-    socialPlatforms,
-    processSocialLink as default
 };
