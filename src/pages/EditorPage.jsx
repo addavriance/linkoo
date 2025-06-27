@@ -21,8 +21,8 @@ import {
     ExternalLink
 } from 'lucide-react';
 
-import {cardThemes, getThemeById, applyThemeStyles, getAllThemes} from '@/lib/themes';
-import {generateCardUrl, getCompressionStats, shortenUrl, showShortenDialog, validatePhone} from '@/lib/compression';
+import {getThemeById, applyThemeStyles, getAllThemes} from '@/lib/themes';
+import {generateCardUrl, shortenUrl, showShortenDialog, validatePhone} from '@/lib/compression';
 import {useToast} from '@/components/ui/use-toast';
 import {validateSocialInput, getSocialPlaceholder, socialPlatforms} from "@/lib/socialLinks.js";
 import PhoneInput from "@/components/ui/phone-input.jsx";
@@ -48,7 +48,6 @@ const EditorPage = () => {
     });
 
     const [exportUrl, setExportUrl] = useState('');
-    const [compressionStats, setCompressionStats] = useState(null);
     const [availableThemes, setAvailableThemes] = useState({});
     const [isShortening, setIsShortening] = useState(false);
 
@@ -69,9 +68,6 @@ const EditorPage = () => {
         if (cardData.name || cardData.email || cardData.phone) {
             const url = generateCardUrl(cardData);
             setExportUrl(url || '');
-
-            const stats = getCompressionStats(cardData);
-            setCompressionStats(stats);
         }
     }, [cardData]);
 
@@ -542,13 +538,6 @@ const EditorPage = () => {
                                             </div>
                                         </div>
 
-                                        {compressionStats && (
-                                            <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                                                Размер: {compressionStats.compressedSize} символов
-                                                (сжато на {compressionStats.compressionRatio}%)
-                                            </div>
-                                        )}
-
                                         <div className="flex gap-2 flex-wrap">
                                             <Button onClick={openPreview} className="flex-1">
                                                 <Eye className="h-4 w-4 mr-2"/>
@@ -687,60 +676,6 @@ const EditorPage = () => {
                                                 )}
                                             </div>
                                         </div>
-
-                                        {/* Статистика превью */}
-                                        {compressionStats && (
-                                            <div className="mt-4 text-center">
-                                                <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
-                                                    <div className="flex justify-between items-center mb-1">
-                                                        <span>Исходный размер:</span>
-                                                        <span
-                                                            className="font-mono">{compressionStats.originalSize} символов</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center mb-1">
-                                                        <span>Сжатый размер:</span>
-                                                        <span
-                                                            className="font-mono">{compressionStats.compressedSize} символов</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <span>Экономия:</span>
-                                                        <span className="text-green-600 font-medium">
-                    {compressionStats.compressionRatio}% ({compressionStats.savedBytes} символов)
-                </span>
-                                                    </div>
-
-                                                    {/* Индикатор качества сжатия */}
-                                                    <div className="mt-2 pt-2 border-t border-gray-200">
-                                                        <div className="flex items-center justify-between text-xs">
-                                                            <span>Качество ссылки:</span>
-                                                            <span className={`font-medium ${
-                                                                compressionStats.compressedSize < 500 ? 'text-green-600' :
-                                                                    compressionStats.compressedSize < 1000 ? 'text-yellow-600' :
-                                                                        compressionStats.compressedSize < 1500 ? 'text-orange-600' : 'text-red-600'
-                                                            }`}>
-                        {compressionStats.compressedSize < 500 ? '🟢 Отлично' :
-                            compressionStats.compressedSize < 1000 ? '🟡 Хорошо' :
-                                compressionStats.compressedSize < 1500 ? '🟠 Приемлемо' : '🔴 Длинно'}
-                    </span>
-                                                        </div>
-
-                                                        {/* Прогресс-бар */}
-                                                        <div className="mt-1 bg-gray-200 rounded-full h-1">
-                                                            <div
-                                                                className={`h-1 rounded-full transition-all duration-300 ${
-                                                                    compressionStats.compressedSize < 500 ? 'bg-green-500' :
-                                                                        compressionStats.compressedSize < 1000 ? 'bg-yellow-500' :
-                                                                            compressionStats.compressedSize < 1500 ? 'bg-orange-500' : 'bg-red-500'
-                                                                }`}
-                                                                style={{
-                                                                    width: `${Math.min(100, (compressionStats.compressedSize / 2000) * 100)}%`
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
