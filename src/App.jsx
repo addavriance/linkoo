@@ -10,6 +10,7 @@ import ThemesPage from '@/pages/ThemesPage';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import {Toaster} from "@/components/ui/use-toast.jsx";
+import {ScrollToTop} from "@/components/ui/scroll-to-top.jsx";
 
 function App() {
     const [cardData, setCardData] = useState(null);
@@ -26,13 +27,17 @@ function App() {
 
     // Если это режим просмотра карточки, показываем ток карточку
     if (isViewMode && cardData) {
-        return (<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
                 <ViewPage cardData={cardData}/>
                 <Toaster/>
-            </div>);
+            </div>
+        );
     }
 
-    return (<Router>
+    return (
+        <Router>
+            <ScrollToTop/>
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
                 {/* Header */}
                 <Header/>
@@ -53,7 +58,8 @@ function App() {
                 {/* Toast notifications */}
                 <Toaster/>
             </div>
-        </Router>);
+        </Router>
+    );
 }
 
 export default App;
