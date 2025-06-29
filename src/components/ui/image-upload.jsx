@@ -83,6 +83,14 @@ const ImageUpload = ({value, onChange, className = ''}) => {
         }
     };
 
+    const handleInputClick = (e) => {
+        if (isUploading) {
+            return e.preventDefault();
+        }
+
+        fileInputRef.current?.click()
+    }
+
     const removeImage = () => {
         setImageLoaded(false);
         // Небольшая задержка для анимации исчезновения
@@ -152,14 +160,16 @@ const ImageUpload = ({value, onChange, className = ''}) => {
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={handleInputClick}
                 >
                     {isUploading ? (
-                        <div className="upload-content flex flex-col items-center">
-                            <Loader2 className="upload-spinner h-8 w-8 text-blue-500"/>
-                            <p className="text-sm text-gray-600 mt-2">Загружаем изображение...</p>
+                        <>
+                            <div className="upload-content flex flex-col items-center">
+                                <Loader2 className="upload-spinner h-8 w-8 text-blue-500"/>
+                                <p className="text-sm text-gray-600 mt-2">Загружаем изображение...</p>
+                            </div>
                             <div className="upload-progress"></div>
-                        </div>
+                        </>
                     ) : (
                         <div className="upload-content flex flex-col items-center">
                             <Upload className="h-8 w-8 text-gray-400 transition-transform duration-200"/>
