@@ -244,7 +244,7 @@ const processResponse = async (response) => {
             size: data.image.size_formatted,
             dimensions: `${data.image.width}x${data.image.height}`,
             id: data.image.id_encoded,
-            service: 'Freeimage.host'
+            service: 'ImgBB'
         };
     } else {
         throw new Error(data.error?.message || 'Ошибка загрузки изображения');
