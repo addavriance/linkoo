@@ -563,7 +563,7 @@
     }
 
     .card-preview-socials {
-        @apply flex flex-wrap justify-center gap-2 max-w-xs;
+        @apply flex flex-wrap justify-center gap-2 max-w-xs items-center;
     }
 
     .card-preview-social-item {
@@ -571,7 +571,7 @@
     }
 
     .card-preview-contact-item {
-        @apply bg-white/20 rounded-lg px-3 py-2 text-xs sm:text-sm backdrop-blur-sm transition-all duration-300 hover:bg-white/30;
+        @apply bg-white/20 rounded-lg px-3 py-2 text-xs sm:text-sm backdrop-blur-sm transition-all duration-300 hover:bg-white/30 flex items-center justify-center gap-2;
     }
 
     .card-preview::before {

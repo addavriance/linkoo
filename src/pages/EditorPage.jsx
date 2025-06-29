@@ -26,8 +26,9 @@ import {generateCardUrl, shortenUrl, showShortenDialog, validatePhone} from '@/l
 import {useToast} from '@/components/ui/use-toast';
 import {validateSocialInput, getSocialPlaceholder, socialPlatforms} from "@/lib/socialLinks.js";
 import PhoneInput from "@/components/ui/phone-input.jsx";
-import {FaGlobe} from "react-icons/fa";
+import {FaEnvelope, FaGlobe, FaPhone} from "react-icons/fa";
 import ImageUpload from "@/components/ui/image-upload.jsx";
+import {FaLocationDot} from "react-icons/fa6";
 
 const EditorPage = () => {
     const {toast} = useToast();
@@ -634,22 +635,22 @@ const EditorPage = () => {
                                                     <div className="card-preview-contacts">
                                                         {cardData.email && (
                                                             <div className="card-preview-contact-item">
-                                                                📧 {cardData.email}
+                                                                <FaEnvelope/> {cardData.email}
                                                             </div>
                                                         )}
                                                         {cardData.phone && (
                                                             <div className="card-preview-contact-item">
-                                                                📱 {cardData.phone}
+                                                                <FaPhone/> {cardData.phone}
                                                             </div>
                                                         )}
                                                         {cardData.website && (
                                                             <div className="card-preview-contact-item">
-                                                                🌐 {cardData.website.replace(/^https?:\/\//, '')}
+                                                                <FaGlobe/> {cardData.website.replace(/^https?:\/\//, '')}
                                                             </div>
                                                         )}
                                                         {cardData.location && (
                                                             <div className="card-preview-contact-item">
-                                                                📍 {cardData.location}
+                                                                <FaLocationDot/> {cardData.location}
                                                             </div>
                                                         )}
                                                     </div>

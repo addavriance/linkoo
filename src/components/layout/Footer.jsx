@@ -154,7 +154,7 @@ const Footer = () => {
                     <div
                         className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 text-sm">
             <span className="text-gray-600">
-              🌱 Каждая цифровая визитка спасает до 10 бумажных карточек
+              🌱 Каждая цифровая визитка спасает до 10 бумажных карточек
             </span>
                     </div>
                 </div>
