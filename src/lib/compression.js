@@ -338,6 +338,10 @@ const ultraCompress = (cardData) => {
 const shortenUrl = async (url) => {
     const services = [
         {
+            name: 'Linkoo URLs',
+            url: 'https://url.linkoo.dev/api/shorten'
+        },
+        {
             name: 'TinyURL',
             url: `https://api.allorigins.win/get?url=${encodeURIComponent('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url))}`
         },
@@ -349,17 +353,37 @@ const shortenUrl = async (url) => {
 
     for (const service of services) {
         try {
-            const response = await fetch(service.url);
-            if (response.ok) {
-                const data = await response.json();
-                const shortUrl = data.contents.trim();
+            if (services.indexOf(service) === 0) {
+                const response = await fetch(service.url, {
+                    "method": "POST",
+                    "body": JSON.stringify({url: url})
+                });
 
-                if (shortUrl.startsWith('http')) {
+                if (response.ok) {
+                    const data = await response.json();
+                    const shortUrl = data.shortUrl;
+
                     return {
                         success: true,
                         shortUrl: shortUrl,
                         service: service.name
                     };
+                }
+
+            } else {
+                const response = await fetch(service.url);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const shortUrl = data.contents.trim();
+
+                    if (shortUrl.startsWith('http')) {
+                        return {
+                            success: true,
+                            shortUrl: shortUrl,
+                            service: service.name
+                        };
+                    }
                 }
             }
         } catch (error) {

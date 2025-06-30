@@ -2,7 +2,7 @@
   "name": "linkoo",
   "private": true,
   "version": "1.0.0",
-  "homepage": "https://addavriance.github.io/linkoo",
+  "homepage": "https://linkoo.dev/",
   "type": "module",
   "scripts": {
     "dev": "vite",
