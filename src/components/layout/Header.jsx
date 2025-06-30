@@ -211,7 +211,7 @@ const Header = () => {
                     {/* Mobile menu panel */}
                     <div
                         id="mobile-menu"
-                        className="mobile-menu-panel fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl lg:hidden overflow-y-auto"
+                        className="mobile-menu-panel fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl lg:hidden overflow-y-auto select-none"
                         style={{
                             animation: 'slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
                         }}
