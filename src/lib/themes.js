@@ -48,7 +48,7 @@ export const cardThemes = {
         id: 'gradient_royal',
         name: 'Royal Purple',
         category: 'gradient',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #4B006E 0%, #7851A9 100%)',
         textColor: '#ffffff',
         accentColor: '#ffffff',
         preview: '👑',
