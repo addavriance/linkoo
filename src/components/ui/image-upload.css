@@ -1,0 +1,114 @@
+.preview-container {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.preview-container.loaded {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.preview-image {
+    opacity: 0;
+    transform: scale(0.9);
+    filter: blur(4px);
+}
+
+.preview-image.loaded {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+}
+
+.remove-btn {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease-out;
+}
+
+.preview-container:hover .remove-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.drop-zone {
+    width: 100%;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(45deg, transparent 0%, rgba(59, 130, 246, 0.02) 50%, transparent 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.drop-zone:hover {
+    border-color: #3b82f6;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(59, 130, 246, 0.05) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.drop-zone.drag-over {
+    border-color: #2563eb;
+    background: rgba(59, 130, 246, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+.drop-zone.uploading {
+    border-color: #10b981;
+    background: linear-gradient(45deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.1) 50%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.upload-content {
+    transition: all 0.3s ease-out;
+}
+
+.drop-zone:hover .upload-content {
+    transform: translateY(-2px);
+}
+
+.upload-spinner {
+    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+}
+
+.upload-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(90deg, #10b981, #3b82f6);
+    animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes progress {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(0%); }
+    100% { transform: translateX(100%); }
+}
+
+.url-input-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.url-input-container.show {
+    max-height: 60px;
+    opacity: 1;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
