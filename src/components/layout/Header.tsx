@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { OAuthButtons } from '@/components/auth/OAuthButtons';
 import {
     Menu,
     X,
@@ -8,22 +11,30 @@ import {
     Plus,
     Home,
     Github,
-    Heart
+    Heart,
+    User,
+    LogOut,
+    Info
 } from 'lucide-react';
+import './Header.css';
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+    const { user, isAuthenticated, logout } = useAuth();
 
     const navigation = [
         { name: 'Главная', href: '/', icon: Home },
+        { name: 'О проекте', href: '/about', icon: Info },
         { name: 'Создать', href: '/editor', icon: Plus },
         { name: 'Темы', href: '/themes', icon: Palette },
     ];
 
-    const isActive = (path) => location.pathname === path;
+    const isActive = (path: string) => location.pathname === path;
 
     // Закрываем меню при изменении маршрута
     useEffect(() => {
@@ -61,7 +72,7 @@ const Header = () => {
 
     // Закрываем меню по Escape
     useEffect(() => {
-        const handleEscape = (e) => {
+        const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && mobileMenuOpen) {
                 handleCloseMenu();
             }
@@ -78,8 +89,8 @@ const Header = () => {
         setIsAnimating(true);
 
         // Запускаем анимацию закрытия
-        const backdrop = document.querySelector('.mobile-backdrop');
-        const panel = document.querySelector('.mobile-menu-panel');
+        const backdrop: HTMLElement | null = document.querySelector('.mobile-backdrop');
+        const panel: HTMLElement | null = document.querySelector('.mobile-menu-panel');
 
         if (backdrop) {
             backdrop.style.animation = 'backdropFadeOut 0.3s ease-out forwards';
@@ -96,7 +107,7 @@ const Header = () => {
         }, 300);
     };
 
-    const handleMobileNavClick = (href) => {
+    const handleMobileNavClick = (href: string) => {
         handleCloseMenu();
         // Небольшая задержка для плавности
         setTimeout(() => {
@@ -163,23 +174,23 @@ const Header = () => {
                     </div>
 
                     {/* Desktop CTA */}
-                    <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="hover-lift transition-all duration-200"
-                        >
-                            <a
-                                href="https://github.com/addavriance/linkoo"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center space-x-2"
-                            >
-                                <Github className="h-4 w-4" />
-                                <span>GitHub</span>
-                            </a>
-                        </Button>
+                    <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
+                        {/*<Button*/}
+                        {/*    variant="outline"*/}
+                        {/*    size="sm"*/}
+                        {/*    asChild*/}
+                        {/*    className="hover-lift transition-all duration-200"*/}
+                        {/*>*/}
+                        {/*    <a*/}
+                        {/*        href="https://github.com/addavriance/linkoo"*/}
+                        {/*        target="_blank"*/}
+                        {/*        rel="noopener noreferrer"*/}
+                        {/*        className="flex items-center space-x-2"*/}
+                        {/*    >*/}
+                        {/*        <Github className="h-4 w-4" />*/}
+                        {/*        <span>GitHub</span>*/}
+                        {/*    </a>*/}
+                        {/*</Button>*/}
 
                         <Button
                             size="sm"
@@ -189,6 +200,74 @@ const Header = () => {
                             <Plus className="h-4 w-4 mr-2 transition-transform duration-200 group-hover:rotate-90" />
                             Создать
                         </Button>
+
+                        {/* Auth Section */}
+                        {isAuthenticated && user ? (
+                            <div className="relative">
+                                <button
+                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                    className="flex items-center space-x-2 rounded-lg p-2 hover:bg-gray-100 transition-all"
+                                >
+                                    {user.profile.avatar ? (
+                                        <img
+                                            src={user.profile.avatar}
+                                            alt={user.profile.name}
+                                            className="h-8 w-8 rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium text-sm">
+                                            {user.profile.name[0]}
+                                        </div>
+                                    )}
+                                </button>
+
+                                {userMenuOpen && (
+                                    <>
+                                        <div
+                                            className="fixed inset-0 z-30"
+                                            onClick={() => setUserMenuOpen(false)}
+                                        />
+                                        <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white shadow-lg border border-gray-200 z-40">
+                                            <div className="p-4 border-b border-gray-100">
+                                                <p className="font-medium text-gray-900">{user.profile.name}</p>
+                                                <p className="text-sm text-gray-500">{user.email}</p>
+                                            </div>
+                                            <div className="p-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setUserMenuOpen(false);
+                                                        navigate('/profile');
+                                                    }}
+                                                    className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                >
+                                                    <User className="h-4 w-4" />
+                                                    <span>Профиль</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setUserMenuOpen(false);
+                                                        logout();
+                                                    }}
+                                                    className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                >
+                                                    <LogOut className="h-4 w-4" />
+                                                    <span>Выйти</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        ) : (
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setLoginDialogOpen(true)}
+                            >
+                                <User className="h-4 w-4 mr-2" />
+                                Войти
+                            </Button>
+                        )}
                     </div>
                 </nav>
             </header>
@@ -198,12 +277,7 @@ const Header = () => {
                 <>
                     {/* Backdrop */}
                     <div
-                        className="mobile-backdrop fixed inset-0 z-50 bg-black/50 lg:hidden"
-                        style={{
-                            backdropFilter: 'blur(8px)',
-                            WebkitBackdropFilter: 'blur(8px)',
-                            animation: 'backdropFadeIn 0.3s ease-out forwards'
-                        }}
+                        className="mobile-backdrop fixed inset-0 z-50 bg-black/50 lg:hidden animate-[backdropFadeIn_0.3s_ease-out_forwards]"
                         onClick={handleCloseMenu}
                         aria-hidden="true"
                     />
@@ -211,10 +285,7 @@ const Header = () => {
                     {/* Mobile menu panel */}
                     <div
                         id="mobile-menu"
-                        className="mobile-menu-panel fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl lg:hidden overflow-y-auto select-none"
-                        style={{
-                            animation: 'slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
-                        }}
+                        className="mobile-menu-panel mobile-menu-panel-animated fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl lg:hidden overflow-y-auto select-none"
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="mobile-menu-title"
@@ -260,17 +331,13 @@ const Header = () => {
                                                         : 'text-gray-900 hover:bg-gray-50 hover:text-blue-600'
                                                 }`}
                                                 style={{
-                                                    opacity: 0,
-                                                    transform: 'translateX(20px)',
                                                     animation: `slideInItem 0.4s ease-out ${0.1 + index * 0.05}s forwards`
                                                 }}
                                             >
                                                 <Icon className="nav-icon h-5 w-5 transition-all duration-200" />
                                                 <span className="flex-1">{item.name}</span>
                                                 {active && (
-                                                    <div className="active-dot h-2 w-2 rounded-full bg-blue-600" style={{
-                                                        animation: 'activePulse 2s ease-in-out infinite'
-                                                    }}></div>
+                                                    <div className="active-dot active-dot-animated h-2 w-2 rounded-full bg-blue-600"></div>
                                                 )}
                                             </button>
                                         );
@@ -282,12 +349,7 @@ const Header = () => {
                             <div className="border-t border-gray-100 p-6 space-y-4">
                                 <Button
                                     variant="outline"
-                                    className="footer-button w-full justify-center hover-lift transition-all duration-200"
-                                    style={{
-                                        opacity: 0,
-                                        transform: 'translateY(20px)',
-                                        animation: 'slideInButton 0.4s ease-out 0.3s forwards'
-                                    }}
+                                    className="footer-button footer-button-animated-1 w-full justify-center hover-lift transition-all duration-200"
                                     asChild
                                 >
                                     <a
@@ -302,13 +364,8 @@ const Header = () => {
                                 </Button>
 
                                 <Button
-                                    className="footer-button w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hero-button group shadow-lg"
+                                    className="footer-button footer-button-animated-2 w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hero-button group shadow-lg"
                                     onClick={() => handleMobileNavClick('/editor')}
-                                    style={{
-                                        opacity: 0,
-                                        transform: 'translateY(20px)',
-                                        animation: 'slideInButton 0.4s ease-out 0.35s forwards'
-                                    }}
                                 >
                                     <Plus className="h-4 w-4 mr-2 transition-transform duration-200 group-hover:rotate-90" />
                                     Создать визитку
@@ -316,12 +373,7 @@ const Header = () => {
 
                                 {/* Version info */}
                                 <div
-                                    className="text-center pt-4 select-none version-info"
-                                    style={{
-                                        opacity: 0,
-                                        transform: 'translateY(10px)',
-                                        animation: 'fadeInUp 0.5s ease-out 0.4s forwards'
-                                    }}
+                                    className="text-center pt-4 select-none version-info version-info-animated"
                                 >
                                     <p className="text-xs text-gray-500 font-medium">
                                         Linkoo v1.0.0
@@ -336,75 +388,22 @@ const Header = () => {
                 </>
             )}
 
-            {/* Добавляем стили прямо в компонент для гарантии работы */}
-            <style jsx="true">{`
-                @keyframes backdropFadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                
-                @keyframes backdropFadeOut {
-                    from { opacity: 1; }
-                    to { opacity: 0; }
-                }
-                
-                @keyframes slideInRight {
-                    from { transform: translateX(100%); }
-                    to { transform: translateX(0); }
-                }
-                
-                @keyframes slideOutRight {
-                    from { transform: translateX(0); }
-                    to { transform: translateX(100%); }
-                }
-                
-                @keyframes slideInItem {
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
-                }
-                
-                @keyframes slideInButton {
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-                
-                @keyframes fadeInUp {
-                    to {
-                        opacity: 0.7;
-                        transform: translateY(0);
-                    }
-                }
-                
-                @keyframes activePulse {
-                    0%, 100% {
-                        opacity: 1;
-                        transform: scale(1);
-                    }
-                    50% {
-                        opacity: 0.7;
-                        transform: scale(0.8);
-                    }
-                }
-                
-                .close-button:hover .close-icon {
-                    color: #dc2626;
-                    transform: rotate(90deg) scale(1.1);
-                }
-                
-                .nav-item-mobile:hover .nav-icon {
-                    transform: scale(1.15) rotate(5deg);
-                    color: #3b82f6;
-                }
-                
-                .version-info:hover {
-                    opacity: 1 !important;
-                    transform: translateY(-2px);
-                }
-            `}</style>
+            {/* Login Dialog */}
+            <Dialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-bold text-center">
+                            Вход в Linkoo
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <p className="text-center text-gray-600 mb-6">
+                            Войдите, чтобы сохранять карточки в облаке и получать короткие ссылки
+                        </p>
+                        <OAuthButtons />
+                    </div>
+                </DialogContent>
+            </Dialog>
         </>
     );
 };

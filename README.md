@@ -1,12 +1,77 @@
-# React + Vite
+# Linkoo - Digital Business Card Platform (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Современная платформа для создания цифровых визиток с поддержкой как гостевого режима (хранение в URL), так и авторизованного режима (сохранение в базе данных).
 
-Currently, two official plugins are available:
+## 🚀 Особенности
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Гостевой режим**: Создание карточек без регистрации (данные в URL)
+- **Авторизованный режим**: OAuth авторизация (Google, VK, Discord, GitHub)
+- **TypeScript**: Полная типизация проекта
+- **Responsive Design**: Адаптивный дизайн для всех устройств
+- **Темы**: Множество встроенных тем + кастомные темы
+- **Free & Paid аккаунты**:
+  - Free: 1 карточка
+  - Paid: Неограниченное количество карточек + custom домены
 
-## Expanding the ESLint configuration
+## 📦 Установка
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+```
+
+## ⚙️ Конфигурация
+
+Создайте файл \`.env\` в корне проекта:
+
+```env
+VITE_API_URL=http://localhost:3001/api
+```
+
+## 🏃 Запуск
+
+### Development
+```bash
+npm run dev
+```
+
+### Production Build
+```bash
+npm run build
+npm run preview
+```
+
+## 🗂️ Структура проекта
+
+```
+src/
+├── components/
+│   ├── auth/          # OAuth компоненты
+│   ├── layout/        # Header, Footer
+│   └── ui/            # UI компоненты (shadcn/ui)
+├── contexts/
+│   └── AuthContext.tsx  # Auth state management
+├── lib/
+│   ├── api.ts         # API клиент (axios)
+│   ├── compression.ts # URL compression для гостей
+│   └── themes.ts      # Темы карточек
+├── pages/
+│   ├── HomePage.tsx
+│   ├── EditorPage.tsx
+│   ├── ViewPage.tsx
+│   ├── ProfilePage.tsx
+│   └── ThemesPage.tsx
+└── types/
+    └── index.ts       # TypeScript типы
+```
+
+## 🔌 API Integration
+
+Фронтенд интегрирован с backend API. См. \`linkoo_backend\` репозиторий для настройки сервера.
+
+## 🎨 Технологии
+
+- React 19 + Vite + TypeScript
+- TailwindCSS + Framer Motion
+- Radix UI + shadcn/ui
+- Axios + React Router
+- LZ-String (URL compression)

@@ -1,0 +1,92 @@
+@layer components {
+    /* Social link component */
+    .social-link {
+        @apply inline-flex items-center space-x-2 rounded-lg bg-white/20 px-3 py-2 text-sm font-medium text-white backdrop-blur transition-all hover:bg-white/30 hover:scale-105;
+    }
+
+    /* Main card preview container */
+    .card-preview {
+        @apply relative overflow-hidden rounded-2xl p-6 text-center shadow-xl transition-all duration-300;
+        min-height: auto;
+        height: auto;
+    }
+
+    .card-preview-content {
+        @apply flex flex-col items-center justify-start gap-3;
+        min-height: 300px;
+    }
+
+    /* Avatar styles */
+    .card-preview-avatar {
+        @apply w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full mx-auto object-cover border-2 border-white/20 transition-all duration-300;
+    }
+
+    .card-preview-avatar-placeholder {
+        @apply w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full mx-auto bg-white/20 flex items-center justify-center text-xl sm:text-2xl lg:text-3xl transition-all duration-300;
+    }
+
+    /* Text content styles */
+    .card-preview-name {
+        @apply text-lg sm:text-xl lg:text-2xl font-bold leading-tight;
+    }
+
+    .card-preview-title {
+        @apply text-sm sm:text-base opacity-90 leading-tight;
+    }
+
+    .card-preview-company {
+        @apply text-xs sm:text-sm opacity-80 flex items-center justify-center gap-1;
+    }
+
+    .card-preview-description {
+        @apply text-xs sm:text-sm opacity-80 leading-relaxed line-clamp-3 max-w-xs;
+    }
+
+    /* Contact and social styles */
+    .card-preview-contacts {
+        @apply space-y-2 w-full max-w-xs;
+    }
+
+    .card-preview-socials {
+        @apply flex flex-wrap justify-center gap-2 items-center;
+    }
+
+    .card-preview-social-item {
+        @apply bg-white/20 rounded-lg px-2 py-1 text-xs sm:text-sm backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-105;
+    }
+
+    .card-preview-contact-item {
+        @apply bg-white/20 rounded-lg px-3 py-2 text-xs sm:text-sm backdrop-blur-sm transition-all duration-300 hover:bg-white/30 flex items-center justify-center gap-2;
+    }
+
+    /* Background pattern overlay */
+    .card-preview::before {
+        @apply absolute inset-0 opacity-10;
+        content: '';
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .card-preview {
+            @apply p-4;
+        }
+
+        .card-preview-content {
+            @apply gap-2;
+            min-height: 250px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .card-preview {
+            @apply p-8;
+        }
+
+        .card-preview-content {
+            @apply gap-4;
+            min-height: 350px;
+        }
+    }
+}

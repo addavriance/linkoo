@@ -11,14 +11,14 @@ const Footer = () => {
             {name: 'Примеры', href: '#'},
         ],
         resources: [
-            {name: 'Документация', href: '#'},
-            {name: 'API', href: '#'},
-            {name: 'Блог', href: '#'},
+            {name: 'Документация', href: '/api'},
+            {name: 'API', href: '/api'},
+            {name: 'Блог', href: 'https://t.me/linkoo_app'},
         ],
         company: [
-            {name: 'О проекте', href: '#'},
-            {name: 'Конфиденциальность', href: '#'},
-            {name: 'Условия использования', href: '#'},
+            {name: 'О проекте', href: '/about'},
+            {name: 'Конфиденциальность', href: '/privacy'},
+            {name: 'Условия использования', href: '/terms'},
         ],
     };
 
@@ -99,12 +99,23 @@ const Footer = () => {
                                 <ul className="mt-4 space-y-3">
                                     {links.resources.map((item) => (
                                         <li key={item.name}>
-                                            <a
-                                                href={item.href}
-                                                className="text-gray-600 hover:text-gray-900 transition-colors"
-                                            >
-                                                {item.name}
-                                            </a>
+                                            {item.href.startsWith('http') ? (
+                                                <a
+                                                    href={item.href}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                                                >
+                                                    {item.name}
+                                                </a>
+                                            ) : (
+                                                <Link
+                                                    to={item.href}
+                                                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
@@ -118,12 +129,21 @@ const Footer = () => {
                                 <ul className="mt-4 space-y-3">
                                     {links.company.map((item) => (
                                         <li key={item.name}>
-                                            <a
-                                                href={item.href}
-                                                className="text-gray-600 hover:text-gray-900 transition-colors"
-                                            >
-                                                {item.name}
-                                            </a>
+                                            {item.href.startsWith('#') ? (
+                                                <a
+                                                    href={item.href}
+                                                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                                                >
+                                                    {item.name}
+                                                </a>
+                                            ) : (
+                                                <Link
+                                                    to={item.href}
+                                                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
@@ -135,9 +155,20 @@ const Footer = () => {
                 {/* Bottom section */}
                 <div className="mt-12 border-t border-gray-200 pt-8">
                     <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
-                        <p className="text-gray-600 text-sm">
-                            © {currentYear} Linkoo. Все права защищены.
-                        </p>
+                        <div className="flex flex-col items-center md:items-start space-y-2">
+                            <p className="text-gray-600 text-sm">
+                                © {currentYear} Linkoo. Все права защищены.
+                            </p>
+                            <div className="flex items-center space-x-3 text-xs text-gray-500">
+                                <Link to="/privacy" className="hover:text-gray-900 transition-colors">
+                                    Конфиденциальность
+                                </Link>
+                                <span>•</span>
+                                <Link to="/terms" className="hover:text-gray-900 transition-colors">
+                                    Условия использования
+                                </Link>
+                            </div>
+                        </div>
 
                         <div className="flex items-center space-x-2 text-sm text-gray-600">
                             <span>Сделано с</span>
