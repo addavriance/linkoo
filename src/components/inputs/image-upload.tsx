@@ -229,7 +229,7 @@ const ImageUpload = ({value, onChange, className = ''}: ImageUploadProps) => {
 
             {/* Ввод URL */}
             <div className={`url-input-container ${showUrlInput ? 'show' : ''}`}>
-                <div className="w-full flex gap-2">
+                <div className="w-full flex gap-2 items-center">
                     <Input
                         placeholder="https://example.com/image.jpg"
                         value={urlValue}
@@ -248,11 +248,6 @@ const ImageUpload = ({value, onChange, className = ''}: ImageUploadProps) => {
                     </Button>
                 </div>
             </div>
-
-            {/* Подсказка */}
-            <p className="text-xs text-gray-500 text-center transition-opacity duration-200">
-                Максимум 10MB. Поддерживаются JPG, PNG, GIF, WebP
-            </p>
 
             {/* Скрытый input для файлов */}
             <input

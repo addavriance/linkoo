@@ -1,8 +1,8 @@
 import React from 'react';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import PhoneInput from '@/components/ui/phone-input';
-import ImageUpload from '@/components/ui/image-upload';
+import PhoneInput from '@/components/inputs/phone-input';
+import ImageUpload from '@/components/inputs/image-upload';
 import {validatePhone} from '@/lib/compression';
 import type {Card} from '@/types';
 
