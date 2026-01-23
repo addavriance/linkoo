@@ -436,7 +436,7 @@ const shortenUrl = async (url: string): Promise<ShortenResult> => {
  *
  * Example migration:
  * ```tsx
- * import { ShortenDialog } from '@/components/ui/shorten-dialog';
+ * import { ShortenDialog } from '@/components/dialogs/shorten-dialog';
  *
  * const [dialogOpen, setDialogOpen] = useState(false);
  *

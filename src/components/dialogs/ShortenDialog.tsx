@@ -1,3 +1,6 @@
+/* WARN: DEPRECATED MODULE */
+/* Раньше использовался, пока приложение было без бекенда и полагалось на сторонние сервисы */
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';

@@ -13,6 +13,7 @@ import {Label} from '@/components/ui/label';
 import {toast} from '@/lib/toast';
 import QRCodeStyling from 'qr-code-styling';
 import {Download, QrCode as QrCodeIcon, Palette, Upload, X} from 'lucide-react';
+import {CORNER_DOT_TYPES, CORNER_SQUARE_TYPES, DOT_TYPES, QR_SIZES} from "@/constants";
 
 interface QRCodeDialogProps {
     open: boolean;
@@ -22,35 +23,10 @@ interface QRCodeDialogProps {
     avatar?: string;
 }
 
-const QR_SIZES = [
-    {label: 'Маленький', value: 512},
-    {label: 'Средний', value: 1024},
-    {label: 'Большой', value: 2048},
-];
-
-const DOT_TYPES = [
-    {label: 'Квадраты', value: 'square'},
-    {label: 'Точки', value: 'dots'},
-    {label: 'Скругленные', value: 'rounded'},
-    {label: 'Экстра', value: 'extra-rounded'},
-    {label: 'Classy', value: 'classy'},
-    {label: 'Classy Round', value: 'classy-rounded'},
-] as const;
-
-const CORNER_SQUARE_TYPES = [
-    {label: 'Квадрат', value: 'square'},
-    {label: 'Точка', value: 'dot'},
-    {label: 'Экстра', value: 'extra-rounded'},
-] as const;
-
-const CORNER_DOT_TYPES = [
-    {label: 'Квадрат', value: 'square'},
-    {label: 'Точка', value: 'dot'},
-] as const;
-
 export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCodeDialogProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const qrCodeRef = useRef<QRCodeStyling | null>(null);
+    const currentElementRef = useRef<HTMLDivElement | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [foregroundColor, setForegroundColor] = useState('#000000');
@@ -63,24 +39,24 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
     const [logoImage, setLogoImage] = useState<string | undefined>(avatar);
     const [logoSize, setLogoSize] = useState(0.2);
 
-    // Обновление логотипа при изменении аватара
     useEffect(() => {
         if (avatar) {
             setLogoImage(avatar);
         }
     }, [avatar]);
 
-    // Генерация QR кода при открытии диалога
     useEffect(() => {
         if (!open) {
-            // Cleanup when dialog closes
             if (qrCodeRef.current) {
                 qrCodeRef.current = null;
             }
+            if (containerRef.current) {
+                containerRef.current.innerHTML = '';
+            }
+            currentElementRef.current = null;
             return;
         }
 
-        // Wait for dialog animation and DOM to be ready
         const timer = setTimeout(() => {
             if (containerRef.current && !qrCodeRef.current) {
                 generateQRCode();
@@ -92,28 +68,22 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
         };
     }, [open]);
 
-    // Обновление QR кода при изменении параметров
     useEffect(() => {
         if (open && qrCodeRef.current) {
             updateQRCode();
         }
     }, [url, foregroundColor, backgroundColor, dotType, cornerSquareType, cornerDotType, margin, logoImage, logoSize]);
 
-    const generateQRCode = () => {
-        if (!containerRef.current) return;
-
-        // Очищаем предыдущий QR код
-        containerRef.current.innerHTML = '';
-
-        qrCodeRef.current = new QRCodeStyling({
-            width: 300, // Фиксированный размер для превью
+    const createQRCode = () => {
+        return new QRCodeStyling({
+            width: 300,
             height: 300,
             data: url,
             margin: margin,
             qrOptions: {
                 typeNumber: 0,
                 mode: 'Byte',
-                errorCorrectionLevel: 'H', // Высокий для логотипа
+                errorCorrectionLevel: 'H',
             },
             imageOptions: {
                 hideBackgroundDots: true,
@@ -137,38 +107,57 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
             },
             image: logoImage,
         });
+    }
 
-        qrCodeRef.current.append(containerRef.current);
+    const generateQRCode = () => {
+        if (!containerRef.current) return;
+
+        const tempContainer = document.createElement('div');
+
+        qrCodeRef.current = createQRCode();
+        qrCodeRef.current.append(tempContainer);
+
+        containerRef.current.innerHTML = '';
+        containerRef.current.appendChild(tempContainer);
+        currentElementRef.current = tempContainer;
     };
 
-    const updateQRCode = () => {
-        if (!qrCodeRef.current) return;
+    const updateQRCode = async () => {
+        if (!qrCodeRef.current || !containerRef.current) return;
 
-        qrCodeRef.current.update({
-            data: url,
-            margin: margin,
-            dotsOptions: {
-                type: dotType,
-                color: foregroundColor,
-            },
-            backgroundOptions: {
-                color: backgroundColor,
-            },
-            cornersSquareOptions: {
-                type: cornerSquareType,
-                color: foregroundColor,
-            },
-            cornersDotOptions: {
-                type: cornerDotType,
-                color: foregroundColor,
-            },
-            image: logoImage,
-            imageOptions: {
-                hideBackgroundDots: true,
-                imageSize: logoSize,
-                margin: 5,
-            },
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.top = '1rem';
+        tempContainer.style.left = '1rem';
+        tempContainer.style.opacity = '0';
+        tempContainer.style.width = '100%';
+
+        const newQR = createQRCode();
+
+        await newQR.append(tempContainer);
+
+        const oldElement = currentElementRef.current;
+
+        containerRef.current.appendChild(tempContainer);
+
+        requestAnimationFrame(() => {
+            tempContainer.style.transition = 'opacity 150ms ease-in-out';
+            tempContainer.style.opacity = '1';
+
+            // Удаляем старый элемент после завершения анимации
+            setTimeout(() => {
+                if (oldElement && oldElement.parentNode) {
+                    oldElement.parentNode.removeChild(oldElement);
+                }
+
+                // Убираем позиционирование у нового элемента
+                tempContainer.style.position = 'static';
+            }, 150);
         });
+
+        // Обновляем ссылки
+        currentElementRef.current = tempContainer;
+        qrCodeRef.current = newQR;
     };
 
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,46 +187,15 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
         if (!qrCodeRef.current) return;
 
         try {
-            // Создаем временный QR код с нужным размером
-            const tempQR = new QRCodeStyling({
-                width: size,
-                height: size,
-                data: url,
-                margin: margin,
-                qrOptions: {
-                    typeNumber: 0,
-                    mode: 'Byte',
-                    errorCorrectionLevel: 'H',
-                },
-                imageOptions: {
-                    hideBackgroundDots: true,
-                    imageSize: logoSize,
-                    margin: 5,
-                },
-                dotsOptions: {
-                    type: dotType,
-                    color: foregroundColor,
-                },
-                backgroundOptions: {
-                    color: backgroundColor,
-                },
-                cornersSquareOptions: {
-                    type: cornerSquareType,
-                    color: foregroundColor,
-                },
-                cornersDotOptions: {
-                    type: cornerDotType,
-                    color: foregroundColor,
-                },
-                image: logoImage,
-            });
+            const tempQR = createQRCode();
 
             const fileName = `${cardName.replace(/\s+/g, '_')}_qr_code`;
 
             if (format === 'png') {
                 const blob = await tempQR.getRawData('png');
                 if (!blob) return;
-                const url = URL.createObjectURL(blob);
+                const url = URL.createObjectURL(blob as Blob);
+
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = `${fileName}.png`;
@@ -248,7 +206,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
             } else {
                 const blob = await tempQR.getRawData('svg');
                 if (!blob) return;
-                const url = URL.createObjectURL(blob);
+                const url = URL.createObjectURL(blob as Blob);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = `${fileName}.svg`;
@@ -283,7 +241,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                     <div className="lg:col-span-2 flex flex-col items-center justify-center bg-gray-50 rounded-lg p-6">
                         <div
                             ref={containerRef}
-                            className="bg-white p-4 rounded-lg shadow-md"
+                            className="bg-white p-4 rounded-lg shadow-md relative"
                         />
                         <p className="text-xs text-gray-500 mt-3 text-center break-all max-w-[300px]">
                             {url}
@@ -432,26 +390,14 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                                     </div>
                                     <div>
                                         <Label htmlFor="logo-size">Размер логотипа: {Math.round(logoSize * 100)}%</Label>
-                                        <Input
-                                            id="logo-size"
-                                            type="range"
-                                            min="0.1"
-                                            max="0.4"
-                                            step="0.05"
-                                            value={logoSize}
+                                        <Input id="logo-size" type="range" min="0.1" max="0.4" step="0.05" value={logoSize}
                                             onChange={(e) => setLogoSize(parseFloat(e.target.value))}
                                         />
                                     </div>
                                 </div>
                             ) : (
                                 <div>
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleLogoUpload}
-                                        className="hidden"
-                                    />
+                                    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden"/>
                                     <Button
                                         variant="outline"
                                         size="sm"
@@ -471,12 +417,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                         {/* Отступ */}
                         <div className="space-y-2">
                             <Label htmlFor="margin">Отступ: {margin} пикселей</Label>
-                            <Input
-                                id="margin"
-                                type="range"
-                                min="0"
-                                max="50"
-                                value={margin}
+                            <Input id="margin" type="range" min="0" max="50" value={margin}
                                 onChange={(e) => setMargin(parseInt(e.target.value))}
                             />
                         </div>

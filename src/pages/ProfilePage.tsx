@@ -7,8 +7,8 @@ import {Card} from '@/components/ui/card';
 import type {Card as CardType} from '@/types';
 import {useNavigate} from 'react-router-dom';
 import {Star, Award, Eye, Globe, Lock, Edit, Trash2, Plus, Copy, ExternalLink, Link as LinkIcon, QrCode} from 'lucide-react';
-import {ManageLinkDialog} from '@/components/ui/manage-link-dialog';
-import {QRCodeDialog} from '@/components/ui/qr-code-dialog';
+import {ManageLinkDialog} from '@/components/dialogs/ManageLinkDialog';
+import {QRCodeDialog} from '@/components/dialogs/QRCodeDialog';
 
 export default function ProfilePage() {
     const {user, isLoading: authLoading, logout} = useAuth();
