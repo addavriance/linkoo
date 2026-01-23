@@ -15,8 +15,8 @@ import ApiDocsPage from '@/pages/ApiDocsPage';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Toaster } from 'sonner';
-import {ScrollToTop} from "@/components/ui/scroll-to-top.jsx";
-import {CookieConsent} from "@/components/ui/cookie-consent";
+import {ScrollToTop} from "@/components/common/ScrollToTop.tsx";
+import {CookieConsent} from "@/components/common/CookieConsent.tsx";
 
 function App() {
     return (

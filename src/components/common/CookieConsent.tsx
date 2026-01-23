@@ -27,10 +27,8 @@ export function CookieConsent() {
     });
 
     useEffect(() => {
-        // Проверяем, было ли уже дано согласие
         const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
         if (!consent) {
-            // Показываем баннер через небольшую задержку для лучшего UX
             setTimeout(() => setShowBanner(true), 1000);
         }
     }, []);
@@ -40,15 +38,13 @@ export function CookieConsent() {
         setShowBanner(false);
         setShowSettings(false);
 
-        // Здесь можно добавить логику инициализации аналитики и других сервисов
-        // в зависимости от предпочтений пользователя
         if (prefs.analytics) {
-            // Инициализация аналитики
-            console.log('Analytics enabled');
+            /* логика для аналитики */
+            // console.log('Analytics enabled');
         }
         if (prefs.marketing) {
-            // Инициализация маркетинговых скриптов
-            console.log('Marketing cookies enabled');
+            /* логика для маркетинга */
+            // console.log('Marketing cookies enabled');
         }
     };
 
@@ -82,7 +78,6 @@ export function CookieConsent() {
 
     return (
         <>
-            {/* Cookie Banner */}
             <div className="fixed bottom-0 left-0 right-0 z-50 p-4 animate-in slide-in-from-bottom-5">
                 <Card className="max-w-4xl mx-auto p-6 shadow-2xl border-2">
                     <div className="flex items-start gap-4">

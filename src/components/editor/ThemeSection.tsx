@@ -5,7 +5,7 @@ import {getAllThemes, type Theme} from '@/lib/themes';
 import {Palette} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import type {Card} from '@/types';
-import {ThemeIcon} from '@/components/ui/theme-icon';
+import {ThemeIcon} from '@/components/common/ThemeIcon.tsx';
 
 interface ThemeSectionProps {
     cardData: Partial<Card>;

@@ -21,7 +21,7 @@ import {
     Wrench
 } from 'lucide-react';
 import {Input} from '@/components/ui/input';
-import {ThemeIcon} from '@/components/ui/theme-icon';
+import {ThemeIcon} from '@/components/common/ThemeIcon.tsx';
 
 import {
     cardThemes,
