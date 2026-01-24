@@ -231,14 +231,6 @@ export const applyThemeStyles = (theme: Theme): React.CSSProperties => {
     return styles;
 };
 
-// Проверить контрастность текста
-export const getTextContrast = (backgroundColor: string): string => {
-    // Простая проверка - если фон тёмный, текст светлый и наоборот
-    const isDark = backgroundColor.includes('rgb(') ? backgroundColor.includes('0.8') || backgroundColor.includes('0.9') : !backgroundColor.includes('#f') && !backgroundColor.includes('light');
-
-    return isDark ? '#ffffff' : '#1f2937';
-};
-
 // Сохранить кастомную тему в localStorage
 export const saveCustomTheme = (theme: Partial<Theme>): string | null => {
     try {
