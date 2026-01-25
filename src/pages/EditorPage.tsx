@@ -1,23 +1,28 @@
 import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {User, Palette, Share2, Copy, Eye, Trash2, Link as LinkIcon, Mail, Phone, Globe as GlobeIcon, Building, MapPin, Lightbulb} from 'lucide-react';
+import {
+    User,
+    Share2,
+    Copy,
+    Eye,
+    Trash2,
+    Link as LinkIcon,
+    Lightbulb
+} from 'lucide-react';
 
 import {useCardEditor} from '@/hooks/useCardEditor';
 import {SaveButton, EditorModeInfo} from '@/components/editor/SaveButton';
 import {BasicInfoSection} from '@/components/editor/BasicInfoSection';
 import {SocialLinksSection} from '@/components/editor/SocialLinksSection';
 import {ThemeSection} from '@/components/editor/ThemeSection';
-import {getThemeById, applyThemeStyles} from '@/lib/themes';
+import {getThemeById} from '@/lib/themes';
 import {shortenUrl} from '@/lib/compression';
 import {toast} from '@/lib/toast';
-import {socialPlatforms} from "@/lib/socialLinks.ts";
-import {FaGlobe} from "react-icons/fa";
+import {CardPreview} from '@/components/CardPreview';
 
 const EditorPage: React.FC = () => {
-    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('basic');
     const [isShortening, setIsShortening] = useState(false);
 
@@ -98,24 +103,12 @@ const EditorPage: React.FC = () => {
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                        <h1 className="text-3xl font-bold">
                             {isEditMode ? 'Редактировать визитку' : 'Создать визитку'}
                         </h1>
-                        <p className="text-lg text-gray-600">
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                             Заполните информацию и создайте свою уникальную цифровую визитку
                         </p>
-
-                        {/* Actions */}
-                        <div className="flex justify-center gap-4 mt-4">
-                            <Button variant="outline" onClick={() => navigate('/themes')}>
-                                <Palette className="h-4 w-4 mr-2"/>
-                                Галерея тем
-                            </Button>
-                            <Button variant="outline" onClick={clearForm}>
-                                <Trash2 className="h-4 w-4 mr-2"/>
-                                Очистить
-                            </Button>
-                        </div>
                     </div>
 
                     {/* Mode Info */}
@@ -126,9 +119,17 @@ const EditorPage: React.FC = () => {
                         <div className="space-y-6">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <User className="h-5 w-5"/>
-                                        Редактор визитки
+                                    <CardTitle className="flex justify-between">
+                                        <div className="flex gap-2 items-center">
+                                            <User className="h-5 w-5"/>
+                                            Редактор визитки
+                                        </div>
+                                        {/* Actions */}
+                                        <div className="flex justify-center gap-4">
+                                            <Button variant="outline" onClick={clearForm}>
+                                                <Trash2 className="h-4 w-4"/>
+                                            </Button>
+                                        </div>
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
@@ -238,100 +239,10 @@ const EditorPage: React.FC = () => {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div
-                                        className="relative overflow-hidden rounded-xl p-8 min-h-[500px] transition-all duration-300"
-                                        style={applyThemeStyles(currentTheme)}
-                                    >
-                                        <div className="max-w-md mx-auto space-y-6">
-                                            {/* Avatar */}
-                                            {cardData.avatar && (
-                                                <div className="flex justify-center">
-                                                    <img
-                                                        src={cardData.avatar}
-                                                        alt={cardData.name || 'Avatar'}
-                                                        className="w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-lg"
-                                                    />
-                                                </div>
-                                            )}
-
-                                            {/* Name & Title */}
-                                            <div className="text-center space-y-2">
-                                                <h2 className="text-2xl font-bold">
-                                                    {cardData.name || 'Ваше имя'}
-                                                </h2>
-                                                {cardData.title && (
-                                                    <p className="text-lg opacity-90">{cardData.title}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Description */}
-                                            {cardData.description && (
-                                                <p className="text-center opacity-80 text-sm">
-                                                    {cardData.description}
-                                                </p>
-                                            )}
-
-                                            {/* Contact Info */}
-                                            <div className="space-y-2">
-                                                {cardData.email && (
-                                                    <div className="flex items-center justify-center gap-2 text-sm">
-                                                        <Mail className="h-4 w-4 opacity-75" />
-                                                        <span>{cardData.email}</span>
-                                                    </div>
-                                                )}
-                                                {cardData.phone && (
-                                                    <div className="flex items-center justify-center gap-2 text-sm">
-                                                        <Phone className="h-4 w-4 opacity-75" />
-                                                        <span>{cardData.phone}</span>
-                                                    </div>
-                                                )}
-                                                {cardData.website && (
-                                                    <div className="flex items-center justify-center gap-2 text-sm">
-                                                        <GlobeIcon className="h-4 w-4 opacity-75" />
-                                                        <span>{cardData.website}</span>
-                                                    </div>
-                                                )}
-                                                {cardData.company && (
-                                                    <div className="flex items-center justify-center gap-2 text-sm">
-                                                        <Building className="h-4 w-4 opacity-75" />
-                                                        <span>{cardData.company}</span>
-                                                    </div>
-                                                )}
-                                                {cardData.location && (
-                                                    <div className="flex items-center justify-center gap-2 text-sm">
-                                                        <MapPin className="h-4 w-4 opacity-75" />
-                                                        <span>{cardData.location}</span>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Social Links */}
-                                            {cardData.socials && cardData.socials.length > 0 && (
-                                                <div className="card-preview-socials">
-                                                    {cardData.socials.slice(0, 6).map((social, index) => {
-                                                        const Icon = socialPlatforms[social.platform]?.icon || FaGlobe;
-                                                        return (
-                                                            <span
-                                                                key={index}
-                                                                className="card-preview-social-item"
-                                                                title={socialPlatforms[social.platform]?.name}
-                                                            >
-                                                                    <Icon/>
-                                                                </span>
-                                                        )
-                                                    })}
-                                                    {cardData.socials.length > 6 && (
-                                                        <span
-                                                            className="card-preview-social-item"
-                                                            title={`+${cardData.socials.length - 6} еще`}
-                                                        >
-                                                                +{cardData.socials.length - 6}
-                                                            </span>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                                    <CardPreview
+                                        cardData={cardData}
+                                        theme={currentTheme}
+                                    />
                                 </CardContent>
                             </Card>
                         </div>
