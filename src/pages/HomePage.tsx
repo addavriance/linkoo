@@ -3,51 +3,33 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import {
-    Sparkles, Share2, Palette, Zap, Globe, Users, ArrowRight, Star, TrendingUp, Smartphone
+    Sparkles, Share2, Palette, Zap, ArrowRight, Smartphone
 } from 'lucide-react';
-import * as Example from '@/assets/example.png';
+import {CardsCarousel} from '@/components/CardsCarousel';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    // const [animationStep, setAnimationStep] = useState(0);
-
-    // useEffect(() => {
-    //     const timer = setInterval(() => {
-    //         setAnimationStep(prev => (prev + 1) % 3);
-    //     }, 2000);
-    //     return () => clearInterval(timer);
-    // }, []);
 
     const features = [{
         icon: <Palette className="h-6 w-6"/>,
-        title: "30+ Тем",
+        title: "30+ Тем оформления",
         description: "От минимализма до ярких градиентов",
         color: "bg-purple-500"
     }, {
         icon: <Share2 className="h-6 w-6"/>,
-        title: "Умное Сжатие",
-        description: "Ссылки в 10 раз короче конкурентов",
+        title: "Короткие ссылки",
+        description: "Компактные ссылки вида linkoo.dev/yourname",
         color: "bg-blue-500"
     }, {
         icon: <Zap className="h-6 w-6"/>,
-        title: "Мгновенно",
-        description: "Создание карточки за 30 секунд",
+        title: "Быстрое создание",
+        description: "Создайте визитку за пару минут",
         color: "bg-green-500"
     }, {
         icon: <Smartphone className="h-6 w-6"/>,
-        title: "Адаптивно",
+        title: "Адаптивный дизайн",
         description: "Отлично работает на всех устройствах",
         color: "bg-orange-500"
-    }];
-
-    const stats = [{number: "500K+", label: "Карточек создано", icon: <Users className="h-5 w-5"/>}, {
-        number: "150+",
-        label: "Стран используют",
-        icon: <Globe className="h-5 w-5"/>
-    }, {number: "4.9", label: "Рейтинг пользователей", icon: <Star className="h-5 w-5"/>}, {
-        number: "99.9%",
-        label: "Время работы",
-        icon: <TrendingUp className="h-5 w-5"/>
     }];
 
     return (<div className="relative overflow-hidden">
@@ -162,44 +144,17 @@ const HomePage = () => {
             </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="px-6 py-16 lg:px-8">
-            <div className="mx-auto max-w-7xl">
-                <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-                    {stats.map((stat, index) => (
-                        <div key={index} className="text-center stat-item">
-                            <div className="mb-2 flex justify-center text-blue-600 stat-icon">
-                                {stat.icon}
-                            </div>
-                            <div
-                                className="text-3xl font-bold text-gray-900 sm:text-4xl transition-colors duration-300">
-                                {stat.number}
-                            </div>
-                            <div className="text-sm text-gray-600 sm:text-base">
-                                {stat.label}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-
         {/* Demo Section */}
         <section className="px-6 py-16 lg:px-8 bg-gray-50">
-            <div className="mx-auto max-w-4xl text-center">
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-8">
+            <div className="mx-auto max-w-7xl text-center">
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-12">
                     Посмотрите как это работает
                 </h2>
+                <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                    Реальные примеры визиток с разными темами оформления
+                </p>
 
-                <div className="relative mx-auto max-w-lg select-none">
-                    {/* Phone mockup */}
-                    <div
-                        className="relative mx-auto h-[600px] w-[300px] rounded-[3rem] border-8 border-gray-800 bg-gray-800">
-                        <div className="absolute inset-2 rounded-[2rem] bg-white overflow-hidden">
-                            <img alt="example" src="src/assets/img.png"/>
-                        </div>
-                    </div>
-                </div>
+                <CardsCarousel />
             </div>
         </section>
 
@@ -210,8 +165,7 @@ const HomePage = () => {
                     Готовы произвести впечатление?
                 </h2>
                 <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Присоединяйтесь к тысячам профессионалов, которые уже используют Linkoo для эффективного
-                    нетворкинга
+                    Начните использовать Linkoo для эффективного нетворкинга и обмена контактами
                 </p>
 
                 <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
