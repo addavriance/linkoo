@@ -2,37 +2,26 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { OAuthButtons } from '@/components/auth/OAuthButtons';
+import { AuthDialog } from '@/components/dialogs/AuthDialog';
 import {
     Menu,
-    X,
-    Palette,
-    Plus,
-    Home,
-    Github,
-    Heart,
     User,
     LogOut,
-    Info
 } from 'lucide-react';
 import './Header.css';
+import {MobileMenu} from "@/components/common/MobileMenu.tsx";
+import { NAVIGATION } from "@/constants";
+import {MaxAuthDialog} from "@/components/dialogs/MaxAuthDialog.tsx";
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
     const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+    const [maxDialogOpen, setMaxDialogOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
     const { user, isAuthenticated, logout } = useAuth();
-
-    const navigation = [
-        { name: 'Главная', href: '/', icon: Home },
-        { name: 'О проекте', href: '/about', icon: Info },
-        { name: 'Создать', href: '/editor', icon: Plus },
-        { name: 'Темы', href: '/themes', icon: Palette },
-    ];
 
     const isActive = (path: string) => location.pathname === path;
 
@@ -70,7 +59,6 @@ const Header = () => {
         }
     }, [mobileMenuOpen]);
 
-    // Закрываем меню по Escape
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && mobileMenuOpen) {
@@ -82,7 +70,6 @@ const Header = () => {
         return () => document.removeEventListener('keydown', handleEscape);
     }, [mobileMenuOpen]);
 
-    // Функция плавного закрытия
     const handleCloseMenu = () => {
         if (isAnimating) return;
 
@@ -107,19 +94,16 @@ const Header = () => {
         }, 300);
     };
 
-    const handleMobileNavClick = (href: string) => {
-        handleCloseMenu();
-        // Небольшая задержка для плавности
-        setTimeout(() => {
-            navigate(href);
-        }, 150);
-    };
-
     const handleOpenMenu = () => {
         if (isAnimating) return;
         setMobileMenuOpen(true);
         setIsAnimating(false);
     };
+
+    const handleOpenMax = () => {
+        setLoginDialogOpen(false);
+        setMaxDialogOpen(true);
+    }
 
     return (
         <>
@@ -137,24 +121,9 @@ const Header = () => {
                         </Link>
                     </div>
 
-                    {/* Mobile menu button */}
-                    <div className="flex lg:hidden">
-                        <button
-                            type="button"
-                            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 hover:bg-gray-100 transition-all duration-200 hover:scale-105 active:scale-95"
-                            onClick={handleOpenMenu}
-                            disabled={isAnimating}
-                            aria-expanded={mobileMenuOpen}
-                            aria-controls="mobile-menu"
-                        >
-                            <span className="sr-only">Открыть меню</span>
-                            <Menu className="h-6 w-6 transition-transform duration-200" aria-hidden="true" />
-                        </button>
-                    </div>
-
                     {/* Desktop navigation */}
                     <div className="hidden lg:flex lg:gap-x-8">
-                        {navigation.map((item) => {
+                        {NAVIGATION.map((item) => {
                             const Icon = item.icon;
                             return (
                                 <Link
@@ -173,40 +142,84 @@ const Header = () => {
                         })}
                     </div>
 
-                    {/* Desktop CTA */}
-                    <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
-                        {/*<Button*/}
-                        {/*    variant="outline"*/}
-                        {/*    size="sm"*/}
-                        {/*    asChild*/}
-                        {/*    className="hover-lift transition-all duration-200"*/}
-                        {/*>*/}
-                        {/*    <a*/}
-                        {/*        href="https://github.com/addavriance/linkoo"*/}
-                        {/*        target="_blank"*/}
-                        {/*        rel="noopener noreferrer"*/}
-                        {/*        className="flex items-center space-x-2"*/}
-                        {/*    >*/}
-                        {/*        <Github className="h-4 w-4" />*/}
-                        {/*        <span>GitHub</span>*/}
-                        {/*    </a>*/}
-                        {/*</Button>*/}
+                    {/* Right side - Auth & Mobile Menu */}
+                    <div className="flex flex-1 justify-end items-center">
+                        {/* Desktop Auth Section */}
+                        <div className="hidden lg:flex lg:gap-x-4 lg:items-center">
+                            {isAuthenticated && user ? (
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                        className="flex items-center space-x-2 rounded-lg p-2 hover:bg-gray-100 transition-all"
+                                    >
+                                        {user.profile.avatar ? (
+                                            <img
+                                                src={user.profile.avatar}
+                                                alt={user.profile.name}
+                                                className="h-8 w-8 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium text-sm">
+                                                {user.profile.name[0]}
+                                            </div>
+                                        )}
+                                    </button>
 
-                        <Button
-                            size="sm"
-                            className="hero-button bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 group shadow-lg"
-                            onClick={() => navigate('/editor')}
-                        >
-                            <Plus className="h-4 w-4 mr-2 transition-transform duration-200 group-hover:rotate-90" />
-                            Создать
-                        </Button>
+                                    {userMenuOpen && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-30"
+                                                onClick={() => setUserMenuOpen(false)}
+                                            />
+                                            <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white shadow-lg border border-gray-200 z-40">
+                                                <div className="p-4 border-b border-gray-100">
+                                                    <p className="font-medium text-gray-900">{user.profile.name}</p>
+                                                    <p className="text-sm text-gray-500">{user.email}</p>
+                                                </div>
+                                                <div className="p-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            setUserMenuOpen(false);
+                                                            navigate('/profile');
+                                                        }}
+                                                        className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                    >
+                                                        <User className="h-4 w-4" />
+                                                        <span>Профиль</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setUserMenuOpen(false);
+                                                            logout();
+                                                        }}
+                                                        className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                    >
+                                                        <LogOut className="h-4 w-4" />
+                                                        <span>Выйти</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            ) : (
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setLoginDialogOpen(true)}
+                                >
+                                    <User className="h-4 w-4 mr-2" />
+                                    Войти
+                                </Button>
+                            )}
+                        </div>
 
-                        {/* Auth Section */}
-                        {isAuthenticated && user ? (
-                            <div className="relative">
+                        {/* Mobile - User Avatar & Menu Button */}
+                        <div className="flex lg:hidden items-center gap-2">
+                            {isAuthenticated && user && (
                                 <button
                                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                    className="flex items-center space-x-2 rounded-lg p-2 hover:bg-gray-100 transition-all"
+                                    className="flex items-center rounded-lg p-1.5 hover:bg-gray-100 transition-all"
                                 >
                                     {user.profile.avatar ? (
                                         <img
@@ -220,190 +233,75 @@ const Header = () => {
                                         </div>
                                     )}
                                 </button>
+                            )}
 
-                                {userMenuOpen && (
-                                    <>
-                                        <div
-                                            className="fixed inset-0 z-30"
-                                            onClick={() => setUserMenuOpen(false)}
-                                        />
-                                        <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white shadow-lg border border-gray-200 z-40">
-                                            <div className="p-4 border-b border-gray-100">
-                                                <p className="font-medium text-gray-900">{user.profile.name}</p>
-                                                <p className="text-sm text-gray-500">{user.email}</p>
-                                            </div>
-                                            <div className="p-2">
-                                                <button
-                                                    onClick={() => {
-                                                        setUserMenuOpen(false);
-                                                        navigate('/profile');
-                                                    }}
-                                                    className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                                                >
-                                                    <User className="h-4 w-4" />
-                                                    <span>Профиль</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        setUserMenuOpen(false);
-                                                        logout();
-                                                    }}
-                                                    className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                                                >
-                                                    <LogOut className="h-4 w-4" />
-                                                    <span>Выйти</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        ) : (
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setLoginDialogOpen(true)}
+                            {/* Mobile Menu Button */}
+                            <button
+                                type="button"
+                                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 hover:bg-gray-100 transition-all duration-200 hover:scale-105 active:scale-95"
+                                onClick={handleOpenMenu}
+                                disabled={isAnimating}
+                                aria-expanded={mobileMenuOpen}
+                                aria-controls="mobile-menu"
                             >
-                                <User className="h-4 w-4 mr-2" />
-                                Войти
-                            </Button>
-                        )}
+                                <span className="sr-only">Открыть меню</span>
+                                <Menu className="h-6 w-6 transition-transform duration-200" aria-hidden="true" />
+                            </button>
+                        </div>
                     </div>
                 </nav>
             </header>
 
             {/* Mobile menu */}
             {mobileMenuOpen && (
+                <MobileMenu setLoginDialogOpen={setLoginDialogOpen} handleCloseMenu={handleCloseMenu} isAnimating={isAnimating}/>
+            )}
+
+            {/* Mobile User Menu */}
+            {userMenuOpen && isAuthenticated && user && (
                 <>
-                    {/* Backdrop */}
                     <div
-                        className="mobile-backdrop fixed inset-0 z-50 bg-black/50 lg:hidden animate-[backdropFadeIn_0.3s_ease-out_forwards]"
-                        onClick={handleCloseMenu}
-                        aria-hidden="true"
+                        className="fixed inset-0 z-30 lg:hidden"
+                        onClick={() => setUserMenuOpen(false)}
                     />
-
-                    {/* Mobile menu panel */}
-                    <div
-                        id="mobile-menu"
-                        className="mobile-menu-panel mobile-menu-panel-animated fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl lg:hidden overflow-y-auto select-none"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="mobile-menu-title"
-                    >
-                        <div className="flex h-full flex-col">
-                            {/* Header */}
-                            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                                <Link
-                                    to="/"
-                                    className="-m-1.5 p-1.5 flex items-center space-x-2 group"
-                                    onClick={handleCloseMenu}
-                                    id="mobile-menu-title"
-                                >
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold transition-all duration-200 group-hover:scale-110">
-                                        L
-                                    </div>
-                                    <span className="text-lg font-bold text-gray-900">Linkoo</span>
-                                </Link>
-                                <button
-                                    type="button"
-                                    className="close-button -m-2.5 rounded-md p-2.5 text-gray-700 hover:bg-red-50 transition-all duration-200 hover:scale-105 active:scale-95"
-                                    onClick={handleCloseMenu}
-                                    disabled={isAnimating}
-                                >
-                                    <span className="sr-only">Закрыть меню</span>
-                                    <X className="close-icon h-6 w-6 transition-all duration-300" aria-hidden="true" />
-                                </button>
-                            </div>
-
-                            {/* Navigation */}
-                            <div className="flex-1 px-6 py-6">
-                                <div className="space-y-2">
-                                    {navigation.map((item, index) => {
-                                        const Icon = item.icon;
-                                        const active = isActive(item.href);
-                                        return (
-                                            <button
-                                                key={item.name}
-                                                onClick={() => handleMobileNavClick(item.href)}
-                                                className={`nav-item-mobile w-full flex items-center space-x-3 rounded-xl px-4 py-3 text-left text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
-                                                    active
-                                                        ? 'nav-item-active bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
-                                                        : 'text-gray-900 hover:bg-gray-50 hover:text-blue-600'
-                                                }`}
-                                                style={{
-                                                    animation: `slideInItem 0.4s ease-out ${0.1 + index * 0.05}s forwards`
-                                                }}
-                                            >
-                                                <Icon className="nav-icon h-5 w-5 transition-all duration-200" />
-                                                <span className="flex-1">{item.name}</span>
-                                                {active && (
-                                                    <div className="active-dot active-dot-animated h-2 w-2 rounded-full bg-blue-600"></div>
-                                                )}
-                                            </button>
-                                        );
-                                    })}
+                    <div className="fixed top-16 right-4 z-40 w-64 rounded-lg bg-white shadow-2xl border border-gray-200 lg:hidden">
+                        <div className="p-4 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-medium text-gray-900 truncate">{user.profile.name}</p>
+                                    <p className="text-sm text-gray-500 truncate">{user.email}</p>
                                 </div>
                             </div>
-
-                            {/* Footer actions */}
-                            <div className="border-t border-gray-100 p-6 space-y-4">
-                                <Button
-                                    variant="outline"
-                                    className="footer-button footer-button-animated-1 w-full justify-center hover-lift transition-all duration-200"
-                                    asChild
-                                >
-                                    <a
-                                        href="https://github.com/addavriance/linkoo"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center space-x-2"
-                                    >
-                                        <Github className="h-4 w-4" />
-                                        <span>GitHub проект</span>
-                                    </a>
-                                </Button>
-
-                                <Button
-                                    className="footer-button footer-button-animated-2 w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hero-button group shadow-lg"
-                                    onClick={() => handleMobileNavClick('/editor')}
-                                >
-                                    <Plus className="h-4 w-4 mr-2 transition-transform duration-200 group-hover:rotate-90" />
-                                    Создать визитку
-                                </Button>
-
-                                {/* Version info */}
-                                <div
-                                    className="text-center pt-4 select-none version-info version-info-animated"
-                                >
-                                    <p className="text-xs text-gray-500 font-medium">
-                                        Linkoo v1.0.0
-                                    </p>
-                                    <p className="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
-                                        Сделано с <Heart className="h-3 w-3 text-red-500 animate-pulse" /> в России
-                                    </p>
-                                </div>
-                            </div>
+                        </div>
+                        <div className="p-2">
+                            <button
+                                onClick={() => {
+                                    setUserMenuOpen(false);
+                                    navigate('/profile');
+                                }}
+                                className="w-full flex items-center space-x-2 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                            >
+                                <User className="h-4 w-4" />
+                                <span>Профиль</span>
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setUserMenuOpen(false);
+                                    logout();
+                                }}
+                                className="w-full flex items-center space-x-2 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                            >
+                                <LogOut className="h-4 w-4" />
+                                <span>Выйти</span>
+                            </button>
                         </div>
                     </div>
                 </>
             )}
 
             {/* Login Dialog */}
-            <Dialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen}>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold text-center">
-                            Вход в Linkoo
-                        </DialogTitle>
-                    </DialogHeader>
-                    <div className="py-4">
-                        <p className="text-center text-gray-600 mb-6">
-                            Войдите, чтобы сохранять карточки в облаке и получать короткие ссылки
-                        </p>
-                        <OAuthButtons />
-                    </div>
-                </DialogContent>
-            </Dialog>
+            <AuthDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} openMaxDialog={handleOpenMax}/>
+            <MaxAuthDialog open={maxDialogOpen} onOpenChange={setMaxDialogOpen}></MaxAuthDialog>
         </>
     );
 };
