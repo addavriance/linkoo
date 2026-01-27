@@ -119,7 +119,6 @@ class ApiClient {
                 console.error('Token refresh failed:', error);
                 return null;
             } finally {
-                // Очищаем promise после завершения
                 this.refreshPromise = null;
             }
         })();
@@ -166,6 +165,10 @@ class ApiClient {
 
     getGithubAuthUrl(): string {
         return `${API_URL}/auth/github`;
+    }
+
+    getMaxCallbackURL(sessionId: string) {
+        return `${API_URL}/auth/max/callback?sessionId=${sessionId}`;
     }
 
     // ============= Cards API =============
@@ -260,6 +263,104 @@ class ApiClient {
     async deleteCardLink(slug: string): Promise<void> {
         await this.client.delete(`/links/${slug}`);
     }
+
+    /* fetch потому что axios не может в readable stream при POST запросе */
+    async startMaxAuth(onEvent: (event: string, data: any) => void): Promise<() => void> {
+        const userAgent = {
+            deviceType: 'WEB',
+            locale: navigator.language,
+            deviceLocale: navigator.language.split('-')[0],
+            osVersion: getOS(),
+            deviceName: getBrowser(),
+            headerUserAgent: navigator.userAgent,
+            appVersion: '26.2.1',
+            screen: `${window.screen.width}x${window.screen.height} ${window.devicePixelRatio}x`,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (this.accessToken) {
+            headers['Authorization'] = `Bearer ${this.accessToken}`;
+        }
+
+        const controller = new AbortController();
+
+        const response = await fetch(`${API_URL}/auth/max`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ userAgent }),
+            signal: controller.signal,
+        });
+
+        if (!response.ok) {
+            throw new Error('Ошибка подключения к серверу');
+        }
+
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error('Не удалось получить поток данных');
+
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let isReading = true;
+
+        const readStream = async () => {
+            while (isReading) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+
+                let boundary;
+                while ((boundary = buffer.search(/\r?\n\r?\n/)) !== -1) {
+                    const rawEvent = buffer.slice(0, boundary);
+                    buffer = buffer.slice(boundary + 2);
+
+                    const eventMatch = rawEvent.match(/^event:\s*(.+)$/m);
+                    const dataMatches = [...rawEvent.matchAll(/^data:\s*(.+)$/gm)];
+
+                    if (eventMatch && dataMatches.length) {
+                        const event = eventMatch[1];
+                        const dataStr = dataMatches.map(m => m[1]).join('');
+                        try {
+                            const data = JSON.parse(dataStr);
+                            onEvent(event, data);
+                        } catch (err) {
+                            console.error('SSE parse error:', err, 'data:', dataStr);
+                        }
+                    }
+                }
+            }
+        };
+
+        readStream();
+
+        return () => {
+            isReading = false;
+            controller.abort();
+        };
+    }
+}
+
+function getOS(): string {
+    const ua = navigator.userAgent;
+    if (ua.includes('Win')) return 'Windows';
+    if (ua.includes('Mac')) return 'macOS';
+    if (ua.includes('Linux')) return 'Linux';
+    if (ua.includes('Android')) return 'Android';
+    if (ua.includes('iOS')) return 'iOS';
+    return 'Unknown';
+}
+
+function getBrowser(): string {
+    const ua = navigator.userAgent;
+    if (ua.includes('Chrome')) return 'Chrome';
+    if (ua.includes('Safari')) return 'Safari';
+    if (ua.includes('Firefox')) return 'Firefox';
+    if (ua.includes('Edge')) return 'Edge';
+    return 'Unknown';
 }
 
 export const api = new ApiClient();
