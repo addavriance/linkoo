@@ -1,5 +1,5 @@
 // ============= Auth Types =============
-export type OAuthProvider = 'google' | 'vk' | 'discord' | 'github';
+export type OAuthProvider = 'google' | 'vk' | 'discord' | 'github' | 'max';
 export type AccountType = 'free' | 'paid';
 
 export interface UserProfile {
