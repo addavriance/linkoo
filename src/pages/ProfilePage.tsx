@@ -6,9 +6,23 @@ import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import type {Card as CardType} from '@/types';
 import {useNavigate} from 'react-router-dom';
-import {Star, Award, Eye, Globe, Lock, Edit, Trash2, Plus, Copy, ExternalLink, Link as LinkIcon, QrCode} from 'lucide-react';
-import {ManageLinkDialog} from '@/components/dialogs/ManageLinkDialog';
-import {QRCodeDialog} from '@/components/dialogs/QRCodeDialog';
+import {
+    Star,
+    Award,
+    Eye,
+    Globe,
+    Lock,
+    Edit,
+    Trash2,
+    Plus,
+    Copy,
+    ExternalLink,
+    Link as LinkIcon,
+    QrCode
+} from 'lucide-react';
+import {ManageLinkDialog} from '@/components/dialogs/ManageLinkDialog.tsx';
+import {QRCodeDialog} from '@/components/dialogs/QRCodeDialog.tsx';
+import { CardDeleteDialog } from "@/components/dialogs/CardDeleteDialog";
 
 export default function ProfilePage() {
     const {user, isLoading: authLoading, logout} = useAuth();
@@ -16,10 +30,13 @@ export default function ProfilePage() {
     const [isLoading, setIsLoading] = useState(true);
     const [manageLinkDialogOpen, setManageLinkDialogOpen] = useState(false);
     const [qrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
     const [selectedCardId, setSelectedCardId] = useState<string | undefined>();
     const [selectedCardSlug, setSelectedCardSlug] = useState<string | undefined>();
     const [selectedCardName, setSelectedCardName] = useState<string>('');
     const [selectedCardAvatar, setSelectedCardAvatar] = useState<string | undefined>();
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,9 +60,13 @@ export default function ProfilePage() {
         }
     };
 
-    const handleDeleteCard = async (cardId: string) => {
-        if (!confirm('Удалить эту карточку?')) return;
+    const handleDeleteConfirm = (cardId: string, cardName: string) => {
+        setSelectedCardId(cardId);
+        setSelectedCardName(cardName);
+        setDeleteDialogOpen(true)
+    }
 
+    const handleDeleteCard = async (cardId: string) => {
         try {
             await api.deleteCard(cardId);
             setCards(cards.filter(c => c._id !== cardId));
@@ -138,28 +159,28 @@ export default function ProfilePage() {
                             <h1 className="text-2xl font-bold">{user.profile.name}</h1>
                             <p className="text-gray-600">{user.email}</p>
                             <div className="flex gap-2 mt-2">
-                <span
-                    className={`px-2 py-1 rounded text-sm ${
-                        user.accountType === 'paid'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-gray-100 text-gray-800'
-                    }`}
-                >
-                  {user.accountType === 'paid' ? (
-                      <span className="flex items-center gap-1">
-                      <Star className="h-3 w-3"/>
-                      Premium
-                    </span>
-                  ) : (
-                      <span className="flex items-center gap-1">
-                      <Award className="h-3 w-3"/>
-                      Free
-                    </span>
-                  )}
-                </span>
+                                <span
+                                    className={`px-2 py-1 rounded text-sm ${
+                                        user.accountType === 'paid'
+                                            ? 'bg-purple-100 text-purple-800'
+                                            : 'bg-gray-100 text-gray-800'
+                                    }`}
+                                >
+                                    {user.accountType === 'paid' ? (
+                                        <span className="flex items-center gap-1">
+                                            <Star className="h-3 w-3"/>
+                                            Premium
+                                        </span>
+                                    ) : (
+                                        <span className="flex items-center gap-1">
+                                            <Award className="h-3 w-3"/>
+                                            Free
+                                        </span>
+                                    )}
+                                </span>
                                 <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                  {user.provider.toUpperCase()}
-                </span>
+                                    {user.provider.toUpperCase()}
+                                </span>
                             </div>
                         </div>
                         <Button variant="outline" onClick={handleLogout}>
@@ -224,24 +245,24 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div className="flex gap-2 text-xs text-gray-600 mb-3">
-                  <span className="flex items-center gap-1">
-                    <Eye className="h-3 w-3"/>
-                      {card.viewCount || 0} просмотров
-                  </span>
+                                    <span className="flex items-center gap-1">
+                                        <Eye className="h-3 w-3"/>
+                                        {card.viewCount || 0} просмотров
+                                    </span>
                                     <span>•</span>
                                     <span className="flex items-center gap-1">
-                    {card.isPublic ? (
-                        <>
-                            <Globe className="h-3 w-3"/>
-                            Публичная
-                        </>
-                    ) : (
-                        <>
-                            <Lock className="h-3 w-3"/>
-                            Приватная
-                        </>
-                    )}
-                  </span>
+                                        {card.isPublic ? (
+                                            <>
+                                                <Globe className="h-3 w-3"/>
+                                                Публичная
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Lock className="h-3 w-3"/>
+                                                Приватная
+                                            </>
+                                        )}
+                                    </span>
                                 </div>
 
                                 {/* Короткая ссылка */}
@@ -319,7 +340,7 @@ export default function ProfilePage() {
                                     <Button
                                         size="sm"
                                         variant="outline"
-                                        onClick={() => handleDeleteCard(card._id!)}
+                                        onClick={() => handleDeleteConfirm(card._id!, card.name)}
                                         className="text-red-600 hover:text-red-700"
                                     >
                                         <Trash2 className="h-4 w-4"/>
@@ -352,6 +373,7 @@ export default function ProfilePage() {
                     avatar={selectedCardAvatar}
                 />
             )}
+            <CardDeleteDialog open={deleteDialogOpen} cardName={selectedCardName} cardId={selectedCardId} onDelete={handleDeleteCard} onOpenChange={setDeleteDialogOpen}/>
         </div>
     );
 }
