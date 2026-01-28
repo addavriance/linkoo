@@ -13,15 +13,10 @@ import {
     Sparkles,
     Filter,
     Search,
-    User,
-    Mail,
-    Phone,
-    Linkedin,
-    Briefcase,
-    Wrench
 } from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {ThemeIcon} from '@/components/common/ThemeIcon.tsx';
+import ThemePreviewDialog from '@/components/dialogs/ThemePreviewDialog.tsx';
 
 import {
     cardThemes,
@@ -36,6 +31,7 @@ const ThemesPage = () => {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [previewTheme, setPreviewTheme] = useState<Theme | null>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     // Фильтрация тем
     const getFilteredThemes = () => {
@@ -77,6 +73,7 @@ const ThemesPage = () => {
     // Превью темы
     const previewThemeCard = (theme: Theme) => {
         setPreviewTheme(theme);
+        setIsPreviewOpen(true);
     };
 
     return (
@@ -85,8 +82,7 @@ const ThemesPage = () => {
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-2">
-                            <Palette className="h-8 w-8 text-blue-600"/>
+                        <h1 className="text-3xl font-bold">
                             Галерея Тем
                         </h1>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -175,7 +171,7 @@ const ThemesPage = () => {
                                                 </Badge>
                                             )}
                                             {theme.category && (
-                                                <Badge variant="outline" className="text-xs flex items-center gap-1">
+                                                <Badge className="text-xs flex items-center gap-1 bg-white/90 text-gray-900 hover:bg-white">
                                                     <ThemeIcon name={themeCategories[theme.category]?.icon} className="h-3 w-3" />
                                                     {themeCategories[theme.category]?.name}
                                                 </Badge>
@@ -271,102 +267,12 @@ const ThemesPage = () => {
             </div>
 
             {/* Модальное окно превью */}
-            {previewTheme && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-gray-900">
-                                {previewTheme.name}
-                            </h3>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPreviewTheme(null)}
-                            >
-                                ✕
-                            </Button>
-                        </div>
-
-                        {/* Превью карточки */}
-                        <div
-                            className="card-preview aspect-card p-6 text-center mb-6"
-                            style={applyThemeStyles(previewTheme)}
-                        >
-                            <div
-                                className="w-16 h-16 rounded-full bg-white/20 mx-auto mb-4 flex items-center justify-center">
-                                <User className="h-8 w-8" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-1">Иван Петров</h3>
-                            <p className="text-sm opacity-90 mb-3">Frontend Developer</p>
-                            <p className="text-xs opacity-80 mb-4">
-                                Создаю современные веб-приложения с фокусом на UX
-                            </p>
-                            <div className="space-y-2 mb-4 text-xs">
-                                <div className="bg-white/20 rounded px-2 py-1 flex items-center justify-center gap-2">
-                                    <Mail className="h-3 w-3" />
-                                    ivan@example.com
-                                </div>
-                                <div className="bg-white/20 rounded px-2 py-1 flex items-center justify-center gap-2">
-                                    <Phone className="h-3 w-3" />
-                                    +7 999 123-45-67
-                                </div>
-                            </div>
-                            <div className="flex justify-center gap-1">
-                                <span className="bg-white/20 rounded px-2 py-1 text-xs flex items-center">
-                                    <Linkedin className="h-3 w-3" />
-                                </span>
-                                <span className="bg-white/20 rounded px-2 py-1 text-xs flex items-center">
-                                    <Briefcase className="h-3 w-3" />
-                                </span>
-                                <span className="bg-white/20 rounded px-2 py-1 text-xs flex items-center">
-                                    <Wrench className="h-3 w-3" />
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Информация о теме */}
-                        <div className="space-y-3 mb-6">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-gray-600">Категория:</span>
-                                <Badge variant="outline" className="flex items-center gap-1">
-                                    <ThemeIcon name={themeCategories[previewTheme.category]?.icon} className="h-3 w-3" />
-                                    {themeCategories[previewTheme.category]?.name}
-                                </Badge>
-                            </div>
-                            {previewTheme.popular && (
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600">Статус:</span>
-                                    <Badge variant="secondary">
-                                        <Star className="h-3 w-3 mr-1"/>
-                                        Популярная тема
-                                    </Badge>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Действия */}
-                        <div className="flex gap-3">
-                            <Button
-                                variant="outline"
-                                className="flex-1"
-                                onClick={() => setPreviewTheme(null)}
-                            >
-                                Закрыть
-                            </Button>
-                            <Button
-                                className="flex-1"
-                                onClick={() => {
-                                    useTheme(previewTheme?.id);
-                                    setPreviewTheme(null);
-                                }}
-                            >
-                                <Plus className="h-4 w-4 mr-2"/>
-                                Использовать
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ThemePreviewDialog
+                theme={previewTheme}
+                open={isPreviewOpen}
+                onOpenChange={setIsPreviewOpen}
+                onUseTheme={useTheme}
+            />
         </div>
     );
 };
