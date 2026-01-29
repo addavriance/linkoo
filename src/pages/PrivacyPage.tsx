@@ -179,7 +179,7 @@ export default function PrivacyPage() {
                                 По вопросам обработки персональных данных вы можете обратиться:
                             </p>
                             <ul className="list-none space-y-1 text-gray-700 ml-4">
-                                <li><strong>Email:</strong> privacy@linkoo.dev</li>
+                                <li><strong>Email:</strong> support@linkoo.dev</li>
                                 <li><strong>Сайт:</strong> linkoo.dev</li>
                             </ul>
                         </section>
