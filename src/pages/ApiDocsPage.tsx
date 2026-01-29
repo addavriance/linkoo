@@ -1,12 +1,28 @@
 import {Card} from '@/components/ui/card';
-import {Link} from 'react-router-dom';
-import {Code, Lock, Zap, Database, Shield, ArrowRight} from 'lucide-react';
-import {useState} from 'react';
+import {Code, Lock, Zap, Database, Shield, ArrowRight, LucideProps} from 'lucide-react';
+import {ForwardRefExoticComponent, RefAttributes, useState} from 'react';
+
+interface ApiEndpoint {
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+    path: string;
+    description: string;
+    auth: boolean;
+    params?: Record<string, string>;
+    body?: any;
+    response: any;
+}
+
+interface ApiSection {
+    title: string;
+    icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
+    color: string;
+    endpoints: ApiEndpoint[];
+}
 
 export default function ApiDocsPage() {
     const [selectedEndpoint, setSelectedEndpoint] = useState<string | null>(null);
 
-    const apiSections = [
+    const apiSections: ApiSection[] = [
         {
             title: 'Аутентификация',
             icon: Lock,
@@ -316,7 +332,7 @@ export default function ApiDocsPage() {
                                                         {endpoint.path}
                                                     </code>
                                                     {endpoint.auth && (
-                                                        <Shield className="h-4 w-4 text-amber-600" title="Требует авторизации"/>
+                                                        <Shield className="h-4 w-4 text-amber-600"/>
                                                     )}
                                                 </div>
                                                 <ArrowRight
@@ -408,17 +424,6 @@ export default function ApiDocsPage() {
                         </table>
                     </div>
                 </Card>
-
-                {/* Footer */}
-                <div className="text-center pt-6 border-t">
-                    <p className="text-gray-600 mb-4">
-                        Нужна помощь с API? Свяжитесь с нами: <a href="mailto:api@linkoo.dev"
-                                                                   className="text-blue-600 hover:text-blue-800">api@linkoo.dev</a>
-                    </p>
-                    <Link to="/" className="text-blue-600 hover:text-blue-800">
-                        ← Вернуться на главную
-                    </Link>
-                </div>
             </div>
         </div>
     );
