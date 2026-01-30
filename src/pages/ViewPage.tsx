@@ -239,7 +239,7 @@ const ViewPage = () => {
                             )}
 
                             {/* Действия */}
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center text-black">
                                 <Button
                                     onClick={saveContact}
                                     variant="outline"
