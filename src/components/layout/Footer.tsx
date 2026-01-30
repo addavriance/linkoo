@@ -169,24 +169,6 @@ const Footer = () => {
                                 </Link>
                             </div>
                         </div>
-
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
-                            <span>Сделано с</span>
-                            <Heart className="h-4 w-4 text-red-500"/>
-                            <span>и</span>
-                            <Coffee className="h-4 w-4 text-amber-600"/>
-                            <span>для лучшего нетворкинга</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Fun fact */}
-                <div className="mt-8 text-center">
-                    <div
-                        className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 text-sm">
-            <span className="text-gray-600">
-              🌱 Каждая цифровая визитка спасает до 10 бумажных карточек
-            </span>
                     </div>
                 </div>
             </div>
