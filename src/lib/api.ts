@@ -1,5 +1,15 @@
 import axios, {AxiosInstance, InternalAxiosRequestConfig} from 'axios';
-import type {ApiResponse, AuthTokens, User, Card, ShortenedLink} from '@/types';
+import type {
+    ApiResponse,
+    AuthTokens,
+    User,
+    Card,
+    ShortenedLink,
+    PaymentStatus,
+    PaymentCreation,
+    PaymentResponse,
+    PaymentMethod,
+} from '@/types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -8,6 +18,8 @@ class ApiClient {
     private accessToken: string | null = null;
     private refreshToken: string | null = null;
     private refreshPromise: Promise<AuthTokens | null> | null = null;
+    private paymentCheckPromise: Promise<PaymentStatus | null> | null = null;
+    private paymentCreatePromise: Promise<PaymentResponse> | null = null;
 
     constructor() {
         this.client = axios.create({
@@ -150,6 +162,32 @@ class ApiClient {
         }
     }
 
+    // ============= User API =============
+    async updateProfile(data: { profile?: { name?: string } }): Promise<User> {
+        const response = await this.client.patch<ApiResponse<User>>('/users/me', data);
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to update profile');
+        }
+        return response.data.data;
+    }
+
+    async uploadAvatar(file: File): Promise<string> {
+        if (!file || file.size === 0) {
+            throw new Error('Invalid file');
+        }
+        const formData = new FormData();
+        formData.append('avatar', file);
+        const response = await this.client.post<ApiResponse<{ avatar: string }>>(
+            '/users/me/avatar',
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to upload avatar');
+        }
+        return response.data.data.avatar;
+    }
+
     // ============= OAuth URLs =============
     getGoogleAuthUrl(): string {
         return `${API_URL}/auth/google`;
@@ -209,27 +247,12 @@ class ApiClient {
     }
 
     // ============= Links API =============
-    async createShortLink(originalUrl: string, customCode?: string): Promise<ShortenedLink> {
-        const response = await this.client.post<ApiResponse<ShortenedLink>>('/links', {
-            originalUrl,
-            customCode,
-        });
-        if (!response.data.success || !response.data.data) {
-            throw new Error('Failed to create short link');
-        }
-        return response.data.data;
-    }
-
     async getMyLinks(): Promise<ShortenedLink[]> {
         const response = await this.client.get<ApiResponse<ShortenedLink[]>>('/links');
         if (!response.data.success || !response.data.data) {
             throw new Error('Failed to get links');
         }
         return response.data.data;
-    }
-
-    async deleteLink(linkId: string): Promise<void> {
-        await this.client.delete(`/links/${linkId}`);
     }
 
     async getLinkInfo(slug: string): Promise<ShortenedLink> {
@@ -248,6 +271,18 @@ class ApiClient {
         return response.data.data.link;
     }
 
+    async createGuestCardLink(rawData: string, customSlug?: string): Promise<ShortenedLink> {
+        const response = await this.client.post<ApiResponse<ShortenedLink>>('/links', {
+            targetType: 'url',
+            rawData,
+            customSlug,
+        });
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to create guest card link');
+        }
+        return response.data.data;
+    }
+
     async createCardLink(cardId: string, customSlug?: string): Promise<ShortenedLink> {
         const response = await this.client.post<ApiResponse<ShortenedLink>>('/links', {
             targetType: 'card',
@@ -262,6 +297,83 @@ class ApiClient {
 
     async deleteCardLink(slug: string): Promise<void> {
         await this.client.delete(`/links/${slug}`);
+    }
+
+    // ============= Payment API =============
+    async createPayment(data: PaymentCreation): Promise<PaymentResponse> {
+        // Защита от дубликатов запросов
+        if (this.paymentCreatePromise) {
+            return this.paymentCreatePromise;
+        }
+
+        this.paymentCreatePromise = (async () => {
+            try {
+                const response = await this.client.post<ApiResponse<PaymentResponse>>(
+                    '/payments/create',
+                    data
+                );
+                if (!response.data.success || !response.data.data) {
+                    throw new Error('Failed to create payment');
+                }
+                return response.data.data;
+            } finally {
+                this.paymentCreatePromise = null;
+            }
+        })();
+
+        return this.paymentCreatePromise;
+    }
+
+    async getPaymentStatus(paymentKey: string): Promise<PaymentStatus | null> {
+        if (this.paymentCheckPromise) {
+            return this.paymentCheckPromise;
+        }
+
+        this.paymentCheckPromise = (async () => {
+            try {
+                const response = await this.client.get<ApiResponse<PaymentStatus>>(
+                    `/payments/${paymentKey}`
+                );
+                if (!response.data.success || !response.data.data) {
+                    throw new Error('Failed to get payment status');
+                }
+                return response.data.data;
+            } catch {
+                return null;
+            } finally {
+                this.paymentCheckPromise = null;
+            }
+        })();
+
+        return this.paymentCheckPromise;
+    }
+
+    async getPaymentMethods(): Promise<PaymentMethod[]> {
+        const response = await this.client.get<ApiResponse<PaymentMethod[]>>('/payments/methods');
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to get payment methods');
+        }
+        return response.data.data;
+    }
+
+    async deletePaymentMethod(paymentMethodId: string): Promise<void> {
+        await this.client.delete(`/payments/methods/${paymentMethodId}`);
+    }
+
+    async getPaymentHistory(): Promise<any[]> {
+        const response = await this.client.get<ApiResponse<any[]>>('/payments/history');
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to get payment history');
+        }
+        return response.data.data;
+    }
+
+    async linkCard(): Promise<PaymentResponse> {
+        const response = await this.client.post<ApiResponse<PaymentResponse>>('/payments/link-card');
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to link card');
+        }
+        return response.data.data;
     }
 
     /* fetch потому что axios не может в readable stream при POST запросе */
