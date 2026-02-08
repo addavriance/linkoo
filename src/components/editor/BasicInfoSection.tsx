@@ -3,7 +3,6 @@ import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import PhoneInput from '@/components/inputs/phone-input';
 import ImageUpload from '@/components/inputs/image-upload';
-import {validatePhone} from '@/lib/compression';
 import type {Card} from '@/types';
 
 interface BasicInfoSectionProps {
@@ -88,11 +87,6 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                         onChange={(phone: string) => updateField('phone', phone)}
                         placeholder="+7 (999) 123-45-67"
                     />
-                    {cardData.phone && !validatePhone(cardData.phone) && (
-                        <p className="text-xs text-amber-600 mt-1">
-                            💡 Некорректный номер не будет включен в визитку
-                        </p>
-                    )}
                 </div>
             </div>
 

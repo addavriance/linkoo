@@ -89,8 +89,8 @@ export function ManageLinkDialog({
                     </DialogTitle>
                     <DialogDescription>
                         {currentSlug
-                            ? 'Вы можете удалить текущую ссылку и создать новую с другим slug.'
-                            : 'Создайте короткую ссылку на вашу визитку. Можете указать свой slug или оставить пустым для автоматической генерации.'}
+                            ? 'Вы можете удалить текущую ссылку и создать новую с другим наименованием.'
+                            : 'Создайте короткую ссылку на вашу визитку.'}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -109,7 +109,7 @@ export function ManageLinkDialog({
                                 <p className="font-medium mb-1">Удаление ссылки</p>
                                 <p className="text-yellow-700">
                                     После удаления старая ссылка перестанет работать. Вы сможете создать новую с любым
-                                    доступным slug.
+                                    доступным наименованием.
                                 </p>
                             </div>
                         </div>
@@ -117,9 +117,6 @@ export function ManageLinkDialog({
                 ) : (
                     <div className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium mb-2 block">
-                                Custom slug (необязательно)
-                            </label>
                             <div className="flex items-center gap-2">
                                 <span className="text-sm text-gray-500">{window.location.origin}/</span>
                                 <Input
@@ -136,10 +133,10 @@ export function ManageLinkDialog({
                         </div>
 
                         {!customSlug && (
-                            <div className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="flex center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                                 <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5"/>
                                 <p className="text-sm text-blue-800">
-                                    Если не указать slug, система сгенерирует случайный (например: abc12345)
+                                    Если не указать, сгенерируется случайный
                                 </p>
                             </div>
                         )}
