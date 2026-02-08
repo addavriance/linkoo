@@ -1,10 +1,7 @@
 import React from 'react';
 import {Button} from '@/components/ui/button';
 import {useAuth} from '@/contexts/AuthContext';
-import type {OAuthProvider} from '@/types';
-import {SiGoogle, SiVk, SiDiscord, SiGithub} from 'react-icons/si';
-import type {IconType} from 'react-icons';
-import {SiMessengerMax} from "@/constants/icons.ts";
+import {PROVIDERS} from "@/constants";
 
 interface OAuthButtonsProps {
     className?: string;
@@ -14,53 +11,9 @@ interface OAuthButtonsProps {
 export const OAuthButtons: React.FC<OAuthButtonsProps> = ({className = '', openMaxDialog}) => {
     const {login, isLoading} = useAuth();
 
-    const providers: Array<{
-        id: OAuthProvider;
-        name: string;
-        icon: IconType;
-        color: string;
-        description: string;
-    }> = [
-        {
-            id: 'vk',
-            name: 'VK',
-            icon: SiVk,
-            color: 'bg-[#0077FF] hover:bg-[#0066DD] text-white hover:shadow-lg hover:shadow-blue-500/30',
-            description: 'Вход через ВКонтакте'
-        },
-        {
-            id: 'max',
-            name: 'MAX',
-            icon: SiMessengerMax,
-            color: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg hover:shadow-blue-500/30',
-            description: 'Вход через MAX'
-        },
-        {
-            id: 'google',
-            name: 'Google',
-            icon: SiGoogle,
-            color: 'bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-200 hover:border-gray-300 hover:shadow-md',
-            description: 'Быстрый вход через Gmail'
-        },
-        {
-            id: 'discord',
-            name: 'Discord',
-            icon: SiDiscord,
-            color: 'bg-[#5865F2] hover:bg-[#4752C4] text-white hover:shadow-lg hover:shadow-indigo-500/30',
-            description: 'Вход через Discord'
-        },
-        {
-            id: 'github',
-            name: 'GitHub',
-            icon: SiGithub,
-            color: 'bg-[#24292e] hover:bg-[#1b1f23] text-white hover:shadow-lg hover:shadow-gray-800/30',
-            description: 'Вход для разработчиков'
-        },
-    ];
-
     return (
         <div className={`space-y-3 ${className}`}>
-            {providers.map((provider) => {
+            {PROVIDERS.map((provider) => {
                 const Icon = provider.icon;
                 return (
                     <Button

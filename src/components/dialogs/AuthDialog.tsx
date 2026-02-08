@@ -36,11 +36,11 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onOpenChange, open
                     {/* Footer note */}
                     <p className="text-sm text-center text-gray-500 px-4">
                         Продолжая, вы соглашаетесь с{' '}
-                        <Link to="/terms" className="text-blue-600 hover:text-blue-800 underline">
+                        <Link to="/terms" onClick={() => onOpenChange(false)} className="text-blue-600 hover:text-blue-800 underline">
                             условиями использования
                         </Link>{' '}
                         и{' '}
-                        <Link to="/privacy" className="text-blue-600 hover:text-blue-800 underline">
+                        <Link to="/privacy" onClick={() => onOpenChange(false)} className="text-blue-600 hover:text-blue-800 underline">
                             политикой конфиденциальности
                         </Link>
                     </p>

@@ -2,16 +2,17 @@ import {LogOut, User, X} from "lucide-react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {NAVIGATION} from "@/constants";
 import {useAuth} from "@/contexts/AuthContext.tsx";
+import {useDialog} from "@/contexts/DialogContext";
 import {Button} from "@/components/ui/button.tsx";
 
 interface MobileMenuProps {
     handleCloseMenu: () => void;
-    setLoginDialogOpen: (flag: boolean) => void;
     isAnimating: boolean;
 }
 
-export const MobileMenu = ({setLoginDialogOpen, handleCloseMenu, isAnimating}: MobileMenuProps) => {
+export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
     const { user, isAuthenticated, logout } = useAuth();
+    const { openLoginDialog } = useDialog();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -106,7 +107,7 @@ export const MobileMenu = ({setLoginDialogOpen, handleCloseMenu, isAnimating}: M
                                 className="footer-button footer-button-animated-1 w-full justify-center hover-lift transition-all duration-200"
                                 onClick={() => {
                                     handleCloseMenu();
-                                    setTimeout(() => setLoginDialogOpen(true), 300);
+                                    setTimeout(() => openLoginDialog(), 300);
                                 }}
                             >
                                 <User className="h-4 w-4 mr-2" />
