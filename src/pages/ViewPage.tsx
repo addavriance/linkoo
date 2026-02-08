@@ -54,10 +54,16 @@ const ViewPage = () => {
                         setCardData(card);
 
                         window.scrollTo({ top: 0, behavior: 'instant' });
-                    } else if (linkInfo.targetType === 'url' && linkInfo.originalUrl) {
-                        // Редирект на внешний URL
-                        window.location.href = linkInfo.originalUrl;
-                        return;
+                    } else if (linkInfo.targetType === 'url' && linkInfo.rawData) {
+                        // rawData содержит base64 данные карточки для гостей
+                        const {decompressCardData} = await import('@/lib/compression');
+                        const data = decompressCardData(linkInfo.rawData);
+                        if (data && Object.keys(data).length > 0) {
+                            setCardData(data);
+                        } else {
+                            setError('Не удалось загрузить данные карточки');
+                            setCardData(null);
+                        }
                     } else {
                         setError('Неверная ссылка');
                         setCardData(null);

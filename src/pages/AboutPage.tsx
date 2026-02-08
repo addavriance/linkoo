@@ -1,6 +1,4 @@
 import {Card} from '@/components/ui/card';
-import {Button} from '@/components/ui/button';
-import {useNavigate} from 'react-router-dom';
 import {
     Sparkles,
     Zap,
@@ -10,16 +8,10 @@ import {
     TrendingUp,
     Heart,
     Target,
-    CheckCircle,
-    Star,
-    Award,
-    Rocket,
 } from 'lucide-react';
-import {HOW_IT_WORKS, FREE_PLAN_FEATURES, PREMIUM_PLAN_FEATURES} from "@/constants";
+import {HOW_IT_WORKS} from "@/constants";
 
 export default function AboutPage() {
-    const navigate = useNavigate();
-
     const features = [
         {
             icon: Zap,
@@ -149,92 +141,30 @@ export default function AboutPage() {
                 </section>
 
                 {/* How it works */}
-                <Card className="p-8">
+                <section>
                     <h2 className="text-3xl font-bold text-center mb-8">Как это работает?</h2>
-                    <div className="space-y-6">
-                        {HOW_IT_WORKS.map((item) => (
-                            <div key={item.step} className="flex items-start gap-4">
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
-                                    {item.step}
+                    <Card className="p-8">
+                        <div className="space-y-6">
+                            {HOW_IT_WORKS.map((item) => (
+                                <div key={item.step} className="flex items-start gap-4">
+                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                                        {item.step}
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg md:text-xl font-semibold mb-1">{item.title}</h3>
+                                        <p className="text-gray-600 text-sm md:text-base">
+                                            {item.text}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="flex-1">
-                                    <h3 className="text-lg md:text-xl font-semibold mb-1">{item.title}</h3>
-                                    <p className="text-gray-600 text-sm md:text-base">
-                                        {item.text}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </Card>
-
-                {/* Free vs Premium */}
-                <section className="space-y-8">
-                    <h2 className="text-3xl font-bold text-center">Выберите подходящий план</h2>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {/* Free */}
-                        <Card className="p-6 hover:shadow-md transition-shadow border border-slate-100">
-                            <div className="text-center mb-6 space-y-2">
-                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100">
-                                    <Award className="h-6 w-6 text-slate-600" />
-                                </div>
-                                <h3 className="text-2xl font-bold">Free</h3>
-                                <div className="text-3xl font-bold text-gray-900">
-                                    0 ₽<span className="text-lg text-gray-500">/месяц</span>
-                                </div>
-                            </div>
-                            <ul className="space-y-3 mb-6 text-sm md:text-base">
-                                {FREE_PLAN_FEATURES.map(
-                                    (item, i) => (
-                                        <li key={i} className="flex items-center gap-2">
-                                            <CheckCircle className="h-5 w-5 text-blue-600" />
-                                            <span>{item.text}</span>
-                                        </li>
-                                    ),
-                                )}
-                            </ul>
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => navigate('/editor')}
-                            >
-                                Начать бесплатно
-                            </Button>
-                        </Card>
-
-                        {/* Premium */}
-                        <Card className="p-6 hover:shadow-md transition-shadow relative border border-slate-200">
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                                Популярный
-                            </div>
-                            <div className="text-center mb-6 space-y-2 pt-2">
-                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
-                                    <Star className="h-6 w-6 text-blue-600" />
-                                </div>
-                                <h3 className="text-2xl font-bold">Premium</h3>
-                                <div className="text-3xl font-bold text-blue-600">
-                                    299 ₽<span className="text-lg text-gray-500">/месяц</span>
-                                </div>
-                            </div>
-                            <ul className="space-y-3 mb-6 text-sm md:text-base">
-                                {PREMIUM_PLAN_FEATURES.map((item, i) => (
-                                    <li key={i} className="flex items-center gap-2">
-                                        <CheckCircle className="h-5 w-5 text-blue-600" />
-                                        <span className={item.strong ? 'font-semibold' : ''}>
-                      {item.text}
-                    </span>
-                                    </li>
-                                ))}
-                            </ul>
-                            <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                                Обновить до Premium
-                            </Button>
-                        </Card>
-                    </div>
+                            ))}
+                        </div>
+                    </Card>
                 </section>
 
+
                 {/* Environmental Impact */}
-                <Card className="p-8 bg-slate-50">
+                <Card className="p-8">
                     <div className="text-center">
                         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-50 mb-4">
                             <Globe className="h-8 w-8 text-green-600" />
@@ -245,34 +175,6 @@ export default function AboutPage() {
                             Один раз создав цифровую визитку, вы можете делиться ею неограниченное количество раз
                             без необходимости печати новых карточек.
                         </p>
-                        <div className="text-4xl mb-1">🌍</div>
-                        <p className="text-gray-600 text-sm md:text-base">За экологичный нетворкинг!</p>
-                    </div>
-                </Card>
-
-                {/* CTA */}
-                <Card className="p-8 text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                    <Rocket className="h-12 w-12 mx-auto mb-4" />
-                    <h2 className="text-3xl font-bold mb-3">Готовы начать?</h2>
-                    <p className="text-lg mb-6 opacity-90">
-                        Создайте свою первую цифровую визитку прямо сейчас
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <Button
-                            size="lg"
-                            className="bg-white text-blue-600 hover:bg-gray-100"
-                            onClick={() => navigate('/editor')}
-                        >
-                            Создать визитку
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-white/70 text-white bg-transparent hover:bg-white/10"
-                            onClick={() => navigate('/themes')}
-                        >
-                            Посмотреть темы
-                        </Button>
                     </div>
                 </Card>
             </div>

@@ -1,379 +1,295 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef, ChangeEvent} from 'react';
 import {useAuth} from '@/contexts/AuthContext';
 import {api} from '@/lib/api';
 import {toast} from '@/lib/toast';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
-import type {Card as CardType} from '@/types';
 import {useNavigate} from 'react-router-dom';
-import {
-    Star,
-    Award,
-    Eye,
-    Globe,
-    Lock,
-    Edit,
-    Trash2,
-    Plus,
-    Copy,
-    ExternalLink,
-    Link as LinkIcon,
-    QrCode
-} from 'lucide-react';
-import {ManageLinkDialog} from '@/components/dialogs/ManageLinkDialog.tsx';
-import {QRCodeDialog} from '@/components/dialogs/QRCodeDialog.tsx';
-import { CardDeleteDialog } from "@/components/dialogs/CardDeleteDialog";
+import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink} from 'lucide-react';
+import {AccountBadge} from '@/components/common/AccountBadge';
 
 export default function ProfilePage() {
-    const {user, isLoading: authLoading, logout} = useAuth();
-    const [cards, setCards] = useState<CardType[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [manageLinkDialogOpen, setManageLinkDialogOpen] = useState(false);
-    const [qrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-    const [selectedCardId, setSelectedCardId] = useState<string | undefined>();
-    const [selectedCardSlug, setSelectedCardSlug] = useState<string | undefined>();
-    const [selectedCardName, setSelectedCardName] = useState<string>('');
-    const [selectedCardAvatar, setSelectedCardAvatar] = useState<string | undefined>();
-
+    const {user, isLoading: authLoading, refreshUser} = useAuth();
+    const [profileName, setProfileName] = useState('');
+    const [profileAvatar, setProfileAvatar] = useState('');
+    const [profileDirty, setProfileDirty] = useState(false);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+    const [isSavingProfile, setIsSavingProfile] = useState(false);
+    const avatarInputRef = useRef<HTMLInputElement>(null);
+    const profileInitialized = useRef(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!authLoading && !user) {
             navigate('/');
-        } else if (user) {
-            loadCards();
+        } else if (user && !profileInitialized.current) {
+            setProfileName(user.profile.name);
+            setProfileAvatar(user.profile.avatar || '');
+            profileInitialized.current = true;
         }
     }, [user, authLoading, navigate]);
 
-    const loadCards = async () => {
+    const handleAvatarSelect = async (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setIsUploadingAvatar(true);
         try {
-            setIsLoading(true);
-            const userCards = await api.getMyCards();
-            setCards(userCards);
-        } catch (error) {
-            console.error('Failed to load cards:', error);
-            toast.error('Не удалось загрузить карточки');
+            const avatarUrl = await api.uploadAvatar(file);
+            setProfileAvatar(avatarUrl);
+            await refreshUser();
+            toast.success('Фото профиля обновлено');
+        } catch (error: any) {
+            toast.error(error.message || 'Не удалось загрузить фото');
         } finally {
-            setIsLoading(false);
+            setIsUploadingAvatar(false);
+            if (avatarInputRef.current) avatarInputRef.current.value = '';
         }
     };
 
-    const handleDeleteConfirm = (cardId: string, cardName: string) => {
-        setSelectedCardId(cardId);
-        setSelectedCardName(cardName);
-        setDeleteDialogOpen(true)
-    }
-
-    const handleDeleteCard = async (cardId: string) => {
-        try {
-            await api.deleteCard(cardId);
-            setCards(cards.filter(c => c._id !== cardId));
-            toast.success('Карточка удалена');
-        } catch (error) {
-            console.error('Failed to delete card:', error);
-            toast.error('Не удалось удалить карточку');
-        }
-    };
-
-    const getCardUrl = (slug?: string) => {
-        if (!slug) return null;
-        return `${window.location.origin}/${slug}`;
-    };
-
-    const handleCopyLink = async (slug?: string) => {
-        const url = getCardUrl(slug);
-        if (!url) {
-            toast.error('Ссылка недоступна');
+    const handleSaveProfile = async () => {
+        if (!profileName.trim()) {
+            toast.error('Имя не может быть пустым');
             return;
         }
 
+        setIsSavingProfile(true);
         try {
-            await navigator.clipboard.writeText(url);
-            toast.success('Ссылка скопирована');
+            await api.updateProfile({
+                profile: {name: profileName.trim()},
+            });
+            setProfileDirty(false);
+            await refreshUser();
+            toast.success('Профиль обновлён');
         } catch (error) {
-            toast.error('Не удалось скопировать ссылку');
+            console.error('Failed to update profile:', error);
+            toast.error('Не удалось обновить профиль');
+        } finally {
+            setIsSavingProfile(false);
         }
     };
 
-    const handleOpenCard = (slug?: string) => {
-        const url = getCardUrl(slug);
-        if (url) {
-            window.open(url, '_blank');
-        }
-    };
+    if (!authLoading && !user) {
+        return null;
+    }
 
-    const handleManageLink = (cardId: string, currentSlug?: string) => {
-        setSelectedCardId(cardId);
-        setSelectedCardSlug(currentSlug);
-        setManageLinkDialogOpen(true);
-    };
-
-    const handleLinkUpdated = (cardId: string, newSlug?: string) => {
-        setCards(cards.map(card =>
-            card._id === cardId ? {...card, slug: newSlug} : card
-        ));
-    };
-
-    const handleShowQRCode = (slug: string, cardName: string, avatar?: string) => {
-        setSelectedCardSlug(slug);
-        setSelectedCardName(cardName);
-        setSelectedCardAvatar(avatar);
-        setQrCodeDialogOpen(true);
-    };
-
-    const handleLogout = async () => {
-        await logout();
-        navigate('/');
-    };
-
-    if (authLoading || isLoading) {
+    if (!user) {
         return (
             <div className="container mx-auto px-4 py-8">
-                <div className="text-center">Загрузка...</div>
+                <div className="max-w-3xl mx-auto">
+                    <Card className="p-6 animate-pulse">
+                        <div className="flex items-start gap-4">
+                            <div className="w-32 h-32 rounded-full bg-gray-200"/>
+                            <div className="flex-1 space-y-3 pt-1">
+                                <div className="h-8 bg-gray-200 rounded w-48"/>
+                                <div className="h-4 bg-gray-200 rounded w-32"/>
+                                <div className="flex gap-2 pt-1">
+                                    <div className="h-6 bg-gray-200 rounded w-20"/>
+                                    <div className="h-6 bg-gray-200 rounded w-16"/>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
             </div>
         );
     }
 
-    if (!user) {
-        return null;
-    }
-
-    const canCreateMore = user.accountType === 'paid' || cards.length === 0;
-
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
-                {/* User Profile */}
-                <Card className="p-6 mb-6">
-                    <div className="flex items-center gap-4 mb-4">
-                        {user.profile.avatar && (
-                            <img
-                                src={user.profile.avatar}
-                                alt={user.profile.name}
-                                className="w-16 h-16 rounded-full"
-                            />
-                        )}
-                        <div className="flex-1">
-                            <h1 className="text-2xl font-bold">{user.profile.name}</h1>
-                            <p className="text-gray-600">{user.email}</p>
-                            <div className="flex gap-2 mt-2">
-                                <span
-                                    className={`px-2 py-1 rounded text-sm ${
-                                        user.accountType === 'paid'
-                                            ? 'bg-purple-100 text-purple-800'
-                                            : 'bg-gray-100 text-gray-800'
-                                    }`}
-                                >
-                                    {user.accountType === 'paid' ? (
-                                        <span className="flex items-center gap-1">
-                                            <Star className="h-3 w-3"/>
-                                            Premium
-                                        </span>
-                                    ) : (
-                                        <span className="flex items-center gap-1">
-                                            <Award className="h-3 w-3"/>
-                                            Free
-                                        </span>
-                                    )}
-                                </span>
-                                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                                    {user.provider.toUpperCase()}
-                                </span>
-                            </div>
-                        </div>
-                        <Button variant="outline" onClick={handleLogout}>
-                            Выйти
-                        </Button>
-                    </div>
-
-                    {user.accountType === 'free' && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                            <p className="text-sm text-blue-900">
-                                <strong>Free аккаунт:</strong> Вы можете создать только 1 карточку.
-                                Обновитесь до Premium для неограниченного количества карточек и custom доменов.
-                            </p>
-                            <Button className="mt-2" size="sm">
-                                Обновить до Premium
-                            </Button>
-                        </div>
-                    )}
-                </Card>
-
-                {/* Cards List */}
-                <div className="mb-4 flex justify-between items-center">
-                    <h2 className="text-xl font-bold">Мои карточки</h2>
-                    {canCreateMore && (
-                        <Button onClick={() => navigate('/editor')}>
-                            <Plus className="h-4 w-4 mr-2"/>
-                            Создать карточку
-                        </Button>
-                    )}
+                {/* Header */}
+                <div className="mb-6">
+                    <h1 className="text-3xl font-bold">Профиль</h1>
+                    <p className="text-gray-600 mt-2">
+                        Управляйте настройками своего аккаунта
+                    </p>
                 </div>
 
-                {cards.length === 0 ? (
-                    <Card className="p-8 text-center">
-                        <p className="text-gray-600 mb-4">У вас пока нет карточек</p>
-                        <Button onClick={() => navigate('/editor')}>
-                            Создать первую карточку
-                        </Button>
-                    </Card>
-                ) : (
-                    <div className="grid gap-4 md:grid-cols-2">
-                        {cards.map((card) => (
-                            <Card key={card._id} className="p-4">
-                                <div className="flex items-start gap-3 mb-3">
-                                    {card.avatar && (
+                {/* Profile Card */}
+                <Card className="p-8 mb-6">
+                    <div className="flex flex-col md:flex-row gap-8">
+                        {/* Avatar Section */}
+                        <div className="flex flex-col items-center">
+                            <div className="relative group">
+                                <div
+                                    className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 cursor-pointer ring-4 ring-offset-2 ring-transparent hover:ring-blue-300 transition-all"
+                                    onClick={() => avatarInputRef.current?.click()}
+                                >
+                                    {profileAvatar ? (
                                         <img
-                                            src={card.avatar}
-                                            alt={card.name}
-                                            className="w-12 h-12 rounded-full object-cover"
+                                            src={profileAvatar}
+                                            alt={profileName}
+                                            className="w-full h-full object-cover"
                                         />
-                                    )}
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold truncate">{card.name}</h3>
-                                        {card.title && (
-                                            <p className="text-sm text-gray-600 truncate">{card.title}</p>
-                                        )}
-                                        {card.description && (
-                                            <p className="text-xs text-gray-500 line-clamp-2 mt-1">
-                                                {card.description}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-2 text-xs text-gray-600 mb-3">
-                                    <span className="flex items-center gap-1">
-                                        <Eye className="h-3 w-3"/>
-                                        {card.viewCount || 0} просмотров
-                                    </span>
-                                    <span>•</span>
-                                    <span className="flex items-center gap-1">
-                                        {card.isPublic ? (
-                                            <>
-                                                <Globe className="h-3 w-3"/>
-                                                Публичная
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Lock className="h-3 w-3"/>
-                                                Приватная
-                                            </>
-                                        )}
-                                    </span>
-                                </div>
-
-                                {/* Короткая ссылка */}
-                                {card.slug ? (
-                                    <div className="mb-3 p-2 bg-gray-50 rounded-lg">
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="text"
-                                                value={getCardUrl(card.slug) || ''}
-                                                readOnly
-                                                className="flex-1 px-2 py-1 bg-white border border-gray-200 rounded text-xs font-mono truncate"
-                                            />
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={() => handleCopyLink(card.slug)}
-                                                className="h-7 w-7 p-0"
-                                                title="Копировать ссылку"
-                                            >
-                                                <Copy className="h-3 w-3"/>
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={() => handleOpenCard(card.slug)}
-                                                className="h-7 w-7 p-0"
-                                                title="Открыть в новой вкладке"
-                                            >
-                                                <ExternalLink className="h-3 w-3"/>
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={() => handleManageLink(card._id!, card.slug)}
-                                                className="h-7 w-7 p-0"
-                                                title="Управление ссылкой"
-                                            >
-                                                <Edit className="h-3 w-3"/>
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={() => handleShowQRCode(card.slug!, card.name, card.avatar)}
-                                                className="h-7 w-7 p-0"
-                                                title="QR код"
-                                            >
-                                                <QrCode className="h-3 w-3"/>
-                                            </Button>
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <span className="text-5xl text-gray-400 font-semibold">
+                                                {profileName[0]?.toUpperCase()}
+                                            </span>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className="mb-3">
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handleManageLink(card._id!)}
-                                            className="w-full"
-                                        >
-                                            <LinkIcon className="h-4 w-4 mr-2"/>
-                                            Создать ссылку
-                                        </Button>
-                                    </div>
-                                )}
-
-                                <div className="flex gap-2">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => navigate(`/editor?cardId=${card._id}`)}
-                                        className="flex-1"
-                                    >
-                                        <Edit className="h-4 w-4 mr-2"/>
-                                        Редактировать
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => handleDeleteConfirm(card._id!, card.name)}
-                                        className="text-red-600 hover:text-red-700"
-                                    >
-                                        <Trash2 className="h-4 w-4"/>
-                                    </Button>
+                                    )}
                                 </div>
-                            </Card>
-                        ))}
+                                <div
+                                    className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                    onClick={() => avatarInputRef.current?.click()}
+                                >
+                                    {isUploadingAvatar ? (
+                                        <Loader2 className="h-6 w-6 text-white animate-spin"/>
+                                    ) : (
+                                        <Camera className="h-6 w-6 text-white"/>
+                                    )}
+                                </div>
+                                <input
+                                    ref={avatarInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleAvatarSelect}
+                                    className="hidden"
+                                />
+                            </div>
+                            <p className="text-xs text-gray-500 mt-3 text-center">
+                                Нажмите на фото<br/>чтобы изменить
+                            </p>
+                        </div>
+
+                        {/* Profile Info */}
+                        <div className="flex-1 space-y-6">
+                            {/* Name */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Имя
+                                </label>
+                                <div className="relative">
+                                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                    <input
+                                        type="text"
+                                        value={profileName}
+                                        maxLength={100}
+                                        onChange={(e) => {
+                                            setProfileName(e.target.value);
+                                            setProfileDirty(true);
+                                        }}
+                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Ваше имя"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Email (read-only) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Email
+                                </label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                    <input
+                                        type="email"
+                                        value={user.email}
+                                        readOnly
+                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                                    />
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Email связан с {user.provider.toUpperCase()} аккаунтом
+                                </p>
+                            </div>
+
+                            {/* Account Type */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Тип аккаунта
+                                </label>
+                                <div className="flex items-center gap-3">
+                                    <AccountBadge accountType={user.accountType}/>
+                                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium">
+                                        {user.provider.toUpperCase()}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Created At */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Регистрация
+                                </label>
+                                <div className="relative">
+                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                    <input
+                                        type="text"
+                                        value={new Date(user.createdAt).toLocaleDateString('ru-RU', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        })}
+                                        readOnly
+                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Save Button */}
+                            {profileDirty && (
+                                <Button
+                                    onClick={handleSaveProfile}
+                                    disabled={isSavingProfile}
+                                    className="w-full md:w-auto"
+                                >
+                                    {isSavingProfile && <Loader2 className="h-4 w-4 animate-spin mr-2"/>}
+                                    Сохранить изменения
+                                </Button>
+                            )}
+                        </div>
                     </div>
+                </Card>
+
+                {/* Premium Upsell for Free Users */}
+                {user.accountType === 'free' && (
+                    <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mb-6">
+                        <div className="flex items-start gap-4">
+                            <div className="flex-1">
+                                <h3 className="font-semibold text-lg mb-2">Обновитесь до Premium</h3>
+                                <p className="text-sm text-gray-700 mb-4">
+                                    Получите неограниченное количество карточек, custom домены, расширенную аналитику и
+                                    приоритетную поддержку.
+                                </p>
+                                <Button
+                                    onClick={() => navigate('/premium')}
+                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                                >
+                                    <ExternalLink className="h-4 w-4 mr-2"/>
+                                    Узнать больше о Premium
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
                 )}
+
+                {/* Quick Links */}
+                <div className="grid md:grid-cols-3 gap-4">
+                    <Card
+                        className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        onClick={() => navigate('/cards')}
+                    >
+                        <h3 className="font-semibold mb-1">Мои карточки</h3>
+                        <p className="text-sm text-gray-600">Управление визитками</p>
+                    </Card>
+                    <Card
+                        className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        onClick={() => navigate('/security')}
+                    >
+                        <h3 className="font-semibold mb-1">Безопасность</h3>
+                        <p className="text-sm text-gray-600">Активные сессии</p>
+                    </Card>
+                    <Card
+                        className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        onClick={() => navigate('/settings')}
+                    >
+                        <h3 className="font-semibold mb-1">Настройки</h3>
+                        <p className="text-sm text-gray-600">Персонализация</p>
+                    </Card>
+                </div>
             </div>
-
-            {/* Диалог управления ссылкой */}
-            {selectedCardId && (
-                <ManageLinkDialog
-                    open={manageLinkDialogOpen}
-                    onOpenChange={setManageLinkDialogOpen}
-                    cardId={selectedCardId}
-                    currentSlug={selectedCardSlug}
-                    onLinkUpdated={(newSlug) => handleLinkUpdated(selectedCardId, newSlug)}
-                />
-            )}
-
-            {/* Диалог QR кода */}
-            {selectedCardSlug && (
-                <QRCodeDialog
-                    open={qrCodeDialogOpen}
-                    onOpenChange={setQrCodeDialogOpen}
-                    url={getCardUrl(selectedCardSlug) || ''}
-                    cardName={selectedCardName}
-                    avatar={selectedCardAvatar}
-                />
-            )}
-            <CardDeleteDialog open={deleteDialogOpen} cardName={selectedCardName} cardId={selectedCardId} onDelete={handleDeleteCard} onOpenChange={setDeleteDialogOpen}/>
         </div>
     );
 }

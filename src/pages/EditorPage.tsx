@@ -9,22 +9,27 @@ import {
     Eye,
     Trash2,
     Link as LinkIcon,
-    Lightbulb
+    Lightbulb, LogIn
 } from 'lucide-react';
 
 import {useCardEditor} from '@/hooks/useCardEditor';
-import {SaveButton, EditorModeInfo} from '@/components/editor/SaveButton';
+import {SaveButton} from '@/components/editor/SaveButton';
 import {BasicInfoSection} from '@/components/editor/BasicInfoSection';
 import {SocialLinksSection} from '@/components/editor/SocialLinksSection';
 import {ThemeSection} from '@/components/editor/ThemeSection';
 import {getThemeById} from '@/lib/themes';
-import {shortenUrl} from '@/lib/compression';
+import {shortenGuestCardUrl} from '@/lib/compression';
 import {toast} from '@/lib/toast';
 import {CardPreview} from '@/components/CardPreview';
+import {useAuth} from "@/contexts/AuthContext.tsx";
+import {useDialog} from "@/contexts/DialogContext.tsx";
 
 const EditorPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('basic');
     const [isShortening, setIsShortening] = useState(false);
+    const {isAuthenticated} = useAuth();
+    const { openLoginDialog } = useDialog();
+
 
     const {
         cardData,
@@ -61,15 +66,15 @@ const EditorPage: React.FC = () => {
 
         setIsShortening(true);
         try {
-            const result = await shortenUrl(exportUrl);
+            const result = await shortenGuestCardUrl(exportUrl);
             if (result.success && result.shortUrl) {
                 await navigator.clipboard.writeText(result.shortUrl);
-                toast.success('Короткая ссылка скопирована', `Сервис: ${result.service}`);
+                toast.success('Короткая ссылка скопирована');
             } else {
-                toast.error('Не удалось сократить ссылку');
+                toast.error(result.error || 'Не удалось создать короткую ссылку');
             }
         } catch (error) {
-            toast.error('Ошибка сокращения ссылки');
+            toast.error('Ошибка создания короткой ссылки');
         } finally {
             setIsShortening(false);
         }
@@ -111,8 +116,25 @@ const EditorPage: React.FC = () => {
                         </p>
                     </div>
 
-                    {/* Mode Info */}
-                    <EditorModeInfo/>
+                    {!isAuthenticated && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <div className="flex items-start gap-3">
+                                <LogIn className="w-5 h-5 text-blue-600 mt-0.5"/>
+                                <div className="flex-1">
+                                    <h3 className="font-semibold text-blue-900 mb-1">
+                                        Гостевой режим
+                                    </h3>
+                                    <p className="text-sm text-blue-800 mb-2">
+                                        Ваша карточка будет сохранена в URL. Для сохранения карточек в облаке
+                                        и получения коротких ссылок - войдите в аккаунт.
+                                    </p>
+                                    <Button onClick={openLoginDialog} size="sm" variant="outline" className="border-blue-300">
+                                        Войти
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Editor */}
