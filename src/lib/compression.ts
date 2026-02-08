@@ -1,30 +1,12 @@
 import LZString from 'lz-string';
 import type { Card } from '@/types';
 
-interface CompressionStats {
-  originalSize: number;
-  compressedSize: number;
-  compressionRatio: string;
-  savedBytes: number;
-  method?: string;
-}
-
-interface UrlLimits {
-  length: number;
-  withinChrome: boolean;
-  withinFirefox: boolean;
-  withinSafari: boolean;
-  withinIE: boolean;
-  recommended: boolean;
-  status: 'excellent' | 'good' | 'warning' | 'critical';
-}
 
 interface ShortenResult {
   success: boolean;
   shortUrl?: string;
-  service?: string;
+  slug?: string;
   error?: string;
-  fallbackServices?: Array<{ name: string; url: string }>;
 }
 
 const COMPRESSION_MAP: Record<string, string> = {
@@ -221,46 +203,6 @@ const decompressCardData = (compressedData: string): Partial<Card> => {
     }
 };
 
-const getCompressionStats = (cardData: Partial<Card>): CompressionStats => {
-    try {
-        const sanitized = sanitizeData(cardData);
-        const original = JSON.stringify(sanitized);
-        const compressed = compressCardData(cardData);
-
-        if (!compressed || !original) {
-            return {
-                originalSize: 0,
-                compressedSize: 0,
-                compressionRatio: '0.0',
-                savedBytes: 0,
-                method: 'LZ-string'
-            };
-        }
-
-        const originalSize = original.length;
-        const compressedSize = compressed.length;
-
-        const ratio = originalSize > 0
-            ? Math.max(0, ((originalSize - compressedSize) / originalSize * 100))
-            : 0;
-
-        return {
-            originalSize,
-            compressedSize,
-            compressionRatio: ratio.toFixed(1),
-            savedBytes: Math.max(0, originalSize - compressedSize),
-        };
-    } catch (error) {
-        console.error('Ошибка подсчета статистики:', error);
-        return {
-            originalSize: 0,
-            compressedSize: 0,
-            compressionRatio: '0.0',
-            savedBytes: 0
-        };
-    }
-};
-
 const generateCardUrl = (cardData: Partial<Card>, baseUrl = window.location.origin): string | null => {
     const compressed = compressCardData(cardData);
     if (!compressed) return null;
@@ -314,232 +256,49 @@ const formatPhone = (phone: string): string => {
     return cleaned;
 };
 
-const checkUrlLimits = (url: string): UrlLimits => {
-    const length = url ? url.length : 0;
 
-    return {
-        length,
-        withinChrome: length < 2048,
-        withinFirefox: length < 65536,
-        withinSafari: length < 80000,
-        withinIE: length < 2083,
-        recommended: length < 2000,
-        status: length < 1000 ? 'excellent' :
-            length < 2000 ? 'good' :
-                length < 4000 ? 'warning' : 'critical'
-    };
+const shortenGuestCardUrl = async (url: string): Promise<ShortenResult> => {
+    try {
+        const urlObj = new URL(url);
+        const rawData = urlObj.searchParams.get('card') || urlObj.searchParams.get('c');
+
+        if (!rawData) {
+            return {
+                success: false,
+                error: 'Не удалось извлечь данные из URL'
+            };
+        }
+
+        const {api} = await import('@/lib/api');
+
+        const link = await api.createGuestCardLink(rawData);
+
+        const baseUrl = window.location.origin;
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        const basePath = isGitHubPages ? '/linkoo/' : '/';
+        const shortUrl = `${baseUrl}${basePath}${link.slug}`;
+
+        return {
+            success: true,
+            shortUrl,
+            slug: link.slug
+        };
+
+    } catch (error: any) {
+        console.error('Ошибка создания короткой ссылки:', error);
+        return {
+            success: false,
+            error: error.response?.data?.message || error.message || 'Не удалось создать короткую ссылку'
+        };
+    }
 };
 
-const ultraCompress = (cardData: Partial<Card>): string | null => {
-    const essential: Record<string, any> = {};
-
-    if (cardData.name && cardData.name.trim()) {
-        essential.name = cardData.name.trim().slice(0, 30);
-    }
-
-    if (cardData.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email)) {
-        essential.email = cardData.email.toLowerCase().trim();
-    }
-
-    if (cardData.phone && validatePhone(cardData.phone)) {
-        essential.phone = formatPhone(cardData.phone);
-    }
-
-    if (cardData.socials && Array.isArray(cardData.socials)) {
-        const validSocials = cardData.socials
-            .filter((s: any) => s.platform && s.link)
-            .slice(0, 2).map((s: any) => ({
-                platform: s.platform,
-                link: s.link.replace(/^https?:\/\//, '')
-            }));
-
-        if (validSocials.length > 0) {
-            essential.socials = validSocials;
-        }
-    }
-
-    return compressCardData(essential);
-};
-
-
-const shortenUrl = async (url: string): Promise<ShortenResult> => {
-    const services = [
-        {
-            name: 'Linkoo URLs',
-            url: 'https://url.linkoo.dev/api/shorten'
-        },
-        {
-            name: 'TinyURL',
-            url: `https://api.allorigins.win/get?url=${encodeURIComponent('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url))}`
-        },
-        {
-            name: 'is.gd',
-            url: `https://api.allorigins.win/get?url=${encodeURIComponent('https://is.gd/create.php?format=simple&url=' + encodeURIComponent(url))}`
-        }
-    ];
-
-    for (const service of services) {
-        try {
-            if (services.indexOf(service) === 0) {
-                const response = await fetch(service.url, {
-                    "method": "POST",
-                    "body": JSON.stringify({url: url})
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const shortUrl = data.shortUrl;
-
-                    return {
-                        success: true,
-                        shortUrl: shortUrl,
-                        service: service.name
-                    };
-                }
-
-            } else {
-                const response = await fetch(service.url);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const shortUrl = data.contents.trim();
-
-                    if (shortUrl.startsWith('http')) {
-                        return {
-                            success: true,
-                            shortUrl: shortUrl,
-                            service: service.name
-                        };
-                    }
-                }
-            }
-        } catch (error) {
-            console.log(`Ошибка с ${service.name}:`, error);
-            continue;
-        }
-    }
-
-    return {
-        success: false,
-        error: 'Не удалось сократить ссылку через автоматические сервисы',
-        fallbackServices: [
-            {name: 'TinyURL', url: 'https://tinyurl.com'},
-            {name: 'Bit.ly', url: 'https://bit.ly'},
-            {name: 'Is.gd', url: 'https://is.gd'}
-        ]
-    };
-};
-
-/**
- * @deprecated Use ShortenDialog component from '@/components/ui/shorten-dialog' instead.
- * This imperative approach is maintained for backwards compatibility only.
- *
- * Example migration:
- * ```tsx
- * import { ShortenDialog } from '@/components/dialogs/shorten-dialog';
- *
- * const [dialogOpen, setDialogOpen] = useState(false);
- *
- * <ShortenDialog
- *   open={dialogOpen}
- *   onOpenChange={setDialogOpen}
- *   url={yourUrl}
- *   onCopy={(msg) => toast.success(msg)}
- * />
- * ```
- */
-const showShortenDialog = (url: string, onSuccess?: (message: string) => void, onClose?: () => void): HTMLDivElement => {
-    console.warn('showShortenDialog is deprecated. Use ShortenDialog component instead.');
-
-    const dialog = document.createElement('div');
-    dialog.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        backdrop-filter: blur(4px);
-    `;
-
-    dialog.innerHTML = `
-        <div style="
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        ">
-            <h3 style="margin-bottom: 20px; color: #333; font-size: 18px; font-weight: 600;">Сокращение ссылки</h3>
-            <p style="margin-bottom: 20px; color: #666; font-size: 14px;">
-                Автоматическое сокращение недоступно. Выберите один из способов:
-            </p>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <button onclick="window.open('https://tinyurl.com', '_blank')"
-                        style="padding: 12px 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
-                    TinyURL.com
-                </button>
-                <button onclick="window.open('https://bit.ly', '_blank')"
-                        style="padding: 12px 16px; background: #ff6b35; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
-                    Bit.ly
-                </button>
-                <button onclick="window.open('https://is.gd', '_blank')"
-                        style="padding: 12px 16px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
-                    Is.gd
-                </button>
-                <button onclick="copyToClipboard('${url}'); document.body.removeChild(this.closest('div').parentElement)"
-                        style="padding: 12px 16px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
-                    Скопировать полную ссылку
-                </button>
-            </div>
-            <button onclick="document.body.removeChild(this.closest('div').parentElement)"
-                    style="margin-top: 20px; padding: 8px 20px; background: #e9ecef; color: #495057; border: none; border-radius: 8px; cursor: pointer;">
-                Закрыть
-            </button>
-        </div>
-    `;
-
-    (window as any).copyToClipboard = (window as any).copyToClipboard || function (text: string) {
-        navigator.clipboard.writeText(text).then(() => {
-            if (onSuccess) onSuccess('Ссылка скопирована!');
-        }).catch(() => {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            if (onSuccess) onSuccess('Ссылка скопирована!');
-        });
-    };
-
-    document.body.appendChild(dialog);
-
-    dialog.addEventListener('click', (e) => {
-        if (e.target === dialog) {
-            document.body.removeChild(dialog);
-            if (onClose) onClose();
-        }
-    });
-
-    return dialog;
-};
 
 export {
     validatePhone,
     formatPhone,
-    sanitizeData,
-    getCompressionStats,
     generateCardUrl,
     extractCardDataFromUrl,
-    checkUrlLimits,
-    ultraCompress,
-    shortenUrl,
-    showShortenDialog
+    decompressCardData,
+    shortenGuestCardUrl
 };

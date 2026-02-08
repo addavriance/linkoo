@@ -51,7 +51,7 @@ export const useCardEditor = (options: UseCardEditorOptions = {}) => {
         }
     }, [cardId, isAuthMode]);
 
-    // Загрузка черновика из localStorage (только для гостей)
+    // Загрузка черновика
     useEffect(() => {
         if (!cardId) {
             const draft = localStorage.getItem('linkoo_draft');

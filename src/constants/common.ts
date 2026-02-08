@@ -1,5 +1,9 @@
-import {Home, Info, Palette, Plus} from "lucide-react";
-import {Card} from "@/types";
+import {Infinity, BarChart3, Globe, Home, Info, Palette, Plus, Star, Zap} from "lucide-react";
+import {Card, OAuthProvider} from "@/types";
+import {SiGoogle, SiVk, SiDiscord, SiGithub} from 'react-icons/si';
+import {SiMessengerMax} from "@/constants/icons.ts";
+
+import {IconType} from 'react-icons';
 
 export const NAVIGATION = [
     { name: 'Главная', href: '/', icon: Home },
@@ -182,20 +186,41 @@ export const HOW_IT_WORKS = [
 
 // plans
 
-export const FREE_PLAN_FEATURES = [
+export const FREE_FEATURES = [
     { text: '1 визитка' },
     { text: 'Базовые темы' },
     { text: 'QR-код' },
     { text: 'Базовая статистика' },
 ];
 
-export const PREMIUM_PLAN_FEATURES = [
-    { text: 'Неограниченно визиток', strong: true },
-    { text: 'Все темы и настройки' },
-    { text: 'Пользовательские ссылки' },
-    { text: 'Расширенная статистика' },
-    { text: 'Приоритетная поддержка' },
+export const PREMIUM_FEATURES = [
+    {
+        icon: Infinity,
+        title: 'Неограниченные карточки',
+        description: 'Создавайте сколько угодно цифровых визиток для разных целей',
+    },
+    {
+        icon: Globe,
+        title: 'Custom домены',
+        description: 'Персональный поддомен: yourname.linkoo.dev',
+    },
+    {
+        icon: BarChart3,
+        title: 'Расширенная аналитика',
+        description: 'Детальная статистика просмотров, географии и источников',
+    },
+    {
+        icon: Zap,
+        title: 'Приоритетная поддержка',
+        description: 'Быстрые ответы на вопросы от команды Linkoo',
+    },
+    {
+        icon: Star,
+        title: 'Ранний доступ к новинкам',
+        description: 'Первыми тестируйте новые функции и возможности',
+    },
 ];
+
 
 // qr-code
 export const QR_SIZES = [
@@ -223,3 +248,49 @@ export const CORNER_DOT_TYPES = [
     {label: 'Квадрат', value: 'square'},
     {label: 'Точка', value: 'dot'},
 ] as const;
+
+// oauth providers
+
+export const PROVIDERS: Array<{
+    id: OAuthProvider;
+    name: string;
+    icon: IconType;
+    color: string;
+    description: string;
+}> = [
+    {
+        id: 'vk',
+        name: 'VK',
+        icon: SiVk,
+        color: 'bg-[#0077FF] hover:bg-[#0066DD] text-white hover:shadow-lg hover:shadow-blue-500/30',
+        description: 'Вход через ВКонтакте'
+    },
+    {
+        id: 'max',
+        name: 'MAX',
+        icon: SiMessengerMax,
+        color: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg hover:shadow-blue-500/30',
+        description: 'Вход через MAX'
+    },
+    {
+        id: 'google',
+        name: 'Google',
+        icon: SiGoogle,
+        color: 'bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-200 hover:border-gray-300 hover:shadow-md',
+        description: 'Быстрый вход через Gmail'
+    },
+    {
+        id: 'discord',
+        name: 'Discord',
+        icon: SiDiscord,
+        color: 'bg-[#5865F2] hover:bg-[#4752C4] text-white hover:shadow-lg hover:shadow-indigo-500/30',
+        description: 'Вход через Discord'
+    },
+    {
+        id: 'github',
+        name: 'GitHub',
+        icon: SiGithub,
+        color: 'bg-[#24292e] hover:bg-[#1b1f23] text-white hover:shadow-lg hover:shadow-gray-800/30',
+        description: 'Вход для разработчиков'
+    },
+];
