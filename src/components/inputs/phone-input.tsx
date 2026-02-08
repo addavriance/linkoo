@@ -142,7 +142,7 @@ const PhoneInput = ({
 
             {/* Индикатор валидности */}
             {displayValue && (
-                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="absolute right-3 top-[17px] -translate-y-1/2">
                     {isValid ? (
                         <span className="text-green-500 text-xs">✓</span>
                     ) : (
@@ -152,10 +152,15 @@ const PhoneInput = ({
             )}
 
             {/* Подсказка об ошибке */}
+            {/*{displayValue && !isValid && (*/}
+            {/*    <div className="absolute -bottom-5 left-0 text-xs text-red-500">*/}
+            {/*        Неверный формат номера*/}
+            {/*    </div>*/}
+            {/*)}*/}
             {displayValue && !isValid && (
-                <div className="absolute -bottom-5 left-0 text-xs text-red-500">
-                    Неверный формат номера
-                </div>
+                <p className="text-xs text-amber-600 mt-1">
+                    Некорректный номер не будет включен в визитку
+                </p>
             )}
         </div>
     );

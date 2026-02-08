@@ -1,5 +1,5 @@
 import {Link} from 'react-router-dom';
-import {Heart, Github, Twitter, Coffee} from 'lucide-react';
+import {Github} from 'lucide-react';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -27,11 +27,6 @@ const Footer = () => {
             name: 'GitHub',
             href: 'https://github.com/addavriance/linkoo',
             icon: Github,
-        },
-        {
-            name: 'Twitter',
-            href: 'https://twitter.com/linkoo_app',
-            icon: Twitter,
         },
     ];
 
