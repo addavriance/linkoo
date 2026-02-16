@@ -419,31 +419,47 @@ class ApiClient {
         let isReading = true;
 
         const readStream = async () => {
-            while (isReading) {
-                const { done, value } = await reader.read();
-                if (done) break;
+            try {
+                while (isReading) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        console.log('SSE stream closed');
+                        onEvent('close', { message: 'Соединение закрыто' });
+                        break;
+                    }
 
-                buffer += decoder.decode(value, { stream: true });
+                    buffer += decoder.decode(value, { stream: true });
 
-                let boundary;
-                while ((boundary = buffer.search(/\r?\n\r?\n/)) !== -1) {
-                    const rawEvent = buffer.slice(0, boundary);
-                    buffer = buffer.slice(boundary + 2);
+                    let match;
+                    const separatorRegex = /\r?\n\r?\n/;
+                    while ((match = buffer.match(separatorRegex)) !== null) {
+                        const rawEvent = buffer.slice(0, match.index);
+                        buffer = buffer.slice(match.index! + match[0].length);
 
-                    const eventMatch = rawEvent.match(/^event:\s*(.+)$/m);
-                    const dataMatches = [...rawEvent.matchAll(/^data:\s*(.+)$/gm)];
+                        const eventMatch = rawEvent.match(/^event:\s*(.+)$/m);
+                        const dataMatches = [...rawEvent.matchAll(/^data:\s*(.+)$/gm)];
 
-                    if (eventMatch && dataMatches.length) {
-                        const event = eventMatch[1];
-                        const dataStr = dataMatches.map(m => m[1]).join('');
-                        try {
-                            const data = JSON.parse(dataStr);
-                            onEvent(event, data);
-                        } catch (err) {
-                            console.error('SSE parse error:', err, 'data:', dataStr);
+                        if (eventMatch && dataMatches.length) {
+                            const event = eventMatch[1].trim();
+                            const dataStr = dataMatches.map(m => m[1]).join('');
+                            try {
+                                const data = JSON.parse(dataStr);
+                                onEvent(event, data);
+                            } catch (err) {
+                                console.error('SSE parse error:', err, 'data:', dataStr);
+                            }
                         }
                     }
                 }
+            } catch (error: any) {
+                if (error.name === 'AbortError') {
+                    console.log('SSE stream aborted');
+                    return;
+                }
+                console.error('SSE stream error:', error);
+                onEvent('error', { message: 'Ошибка соединения' });
+            } finally {
+                reader.releaseLock();
             }
         };
 
@@ -452,6 +468,7 @@ class ApiClient {
         return () => {
             isReading = false;
             controller.abort();
+            reader.cancel().catch(() => {});
         };
     }
 }
