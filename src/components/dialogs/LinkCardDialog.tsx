@@ -10,7 +10,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {toast} from '@/lib/toast';
 import {api} from '@/lib/api';
-import {CreditCard, Loader2, Info, CheckCircle} from 'lucide-react';
+import {CreditCard, Loader2, Info} from 'lucide-react';
 import {Card} from '@/components/ui/card';
 
 interface LinkCardDialogProps {
@@ -71,40 +71,6 @@ export function LinkCardDialog({open, onOpenChange}: LinkCardDialogProps) {
                             </div>
                         </div>
                     </Card>
-
-                    {/* Benefits */}
-                    <div className="space-y-2">
-                        <p className="text-sm font-medium text-gray-700">Преимущества:</p>
-                        <div className="space-y-2">
-                            <div className="flex items-start gap-2">
-                                <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5"/>
-                                <div>
-                                    <p className="font-medium text-sm">Автоматическое продление</p>
-                                    <p className="text-xs text-gray-600">
-                                        Подписка будет автоматически продлеваться
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-2">
-                                <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5"/>
-                                <div>
-                                    <p className="font-medium text-sm">Без повторного ввода данных</p>
-                                    <p className="text-xs text-gray-600">
-                                        Не нужно каждый раз вводить данные карты
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-2">
-                                <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5"/>
-                                <div>
-                                    <p className="font-medium text-sm">Полный контроль</p>
-                                    <p className="text-xs text-gray-600">
-                                        Вы можете отключить автопродление или удалить карту
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     {/* Security Notice */}
                     <div className="flex gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200 text-xs text-gray-600">
