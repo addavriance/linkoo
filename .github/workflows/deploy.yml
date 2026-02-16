@@ -28,8 +28,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd linkoo
+            cd /home/${{ secrets.SERVER_USER }}/linkoo
             git pull origin main
-            docker compose up -d --build frontend
+            cd /home/${{ secrets.SERVER_USER }}
+            docker compose build frontend
+            docker compose up -d --no-build frontend
             docker image prune -f
-            echo "✅ Deployed at $(date)"
+            echo "✅ Frontend deployed at $(date)"
