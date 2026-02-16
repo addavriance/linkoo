@@ -88,7 +88,6 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
                 color: '#000000',
                 type: 'dot'
             },
-            image: "/max_logo.png",
         });
 
         qrCodeRef.current.append(qrRef.current);
@@ -276,7 +275,9 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
                                             cancelStreamRef.current = null;
                                         }
                                         setAuthStatus({ status: 'idle' });
-                                        startAuth();
+                                        startAuth().catch(() => {
+                                            // Ошибка уже обработана в startAuth
+                                        });
                                     }}
                                     className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                                 >
