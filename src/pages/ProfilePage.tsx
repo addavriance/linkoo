@@ -5,7 +5,7 @@ import {toast} from '@/lib/toast';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {useNavigate} from 'react-router-dom';
-import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink} from 'lucide-react';
+import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink, Phone} from 'lucide-react';
 import {AccountBadge} from '@/components/common/AccountBadge';
 
 export default function ProfilePage() {
@@ -175,25 +175,46 @@ export default function ProfilePage() {
                                     />
                                 </div>
                             </div>
-
-                            {/* Email (read-only) */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Email
-                                </label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
-                                    <input
-                                        type="email"
-                                        value={user.email}
-                                        readOnly
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
-                                    />
+                            {/* Email / Phone (read-only) */}
+                            {user.email && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Email
+                                    </label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                        <input
+                                            type="email"
+                                            value={user.email}
+                                            readOnly
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Email связан с {user.provider.toUpperCase()} аккаунтом
+                                    </p>
                                 </div>
-                                <p className="text-xs text-gray-500 mt-1">
-                                    Email связан с {user.provider.toUpperCase()} аккаунтом
-                                </p>
-                            </div>
+                            )}
+
+                            {user.phone && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Номер телефона
+                                    </label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                        <input
+                                            type="phone"
+                                            value={user.phone}
+                                            readOnly
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Номер телефона связан с {user.provider.toUpperCase()} аккаунтом
+                                    </p>
+                                </div>
+                            )}
 
                             {/* Account Type */}
                             <div>

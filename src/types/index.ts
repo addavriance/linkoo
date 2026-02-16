@@ -21,7 +21,8 @@ export interface UserSettings {
 
 export interface User {
     _id: string;
-    email: string;
+    email?: string;
+    phone?: string;
     provider: OAuthProvider;
     providerId: string;
     accountType: AccountType;
