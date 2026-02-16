@@ -22,8 +22,7 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
     const [authStatus, setAuthStatus] = useState<AuthStatus>({ status: 'idle' });
     const qrRef = useRef<HTMLDivElement>(null);
     const qrCodeRef = useRef<QRCodeStyling | null>(null);
-    const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
-    const cancelStreamRef = useRef<(() => void) | null | void>(null);
+    const cancelStreamRef = useRef<(() => void) | null>(null);
 
     useEffect(() => {
         if (open && authStatus.status === 'idle') {
@@ -31,24 +30,33 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
         }
 
         return () => {
-            if (readerRef.current) {
-                readerRef.current.cancel();
-            }
-
+            // Очистка при размонтировании или закрытии диалога
             if (cancelStreamRef.current) {
                 cancelStreamRef.current();
+                cancelStreamRef.current = null;
             }
 
+            // Сбрасываем состояние
             setAuthStatus({ status: 'idle' });
+
+            // Очищаем QR код
+            if (qrCodeRef.current && qrRef.current) {
+                qrRef.current.innerHTML = '';
+                qrCodeRef.current = null;
+            }
         };
     }, [open]);
 
     useEffect(() => {
         if (
             authStatus.status !== 'qr-ready' ||
-            !qrRef.current ||
-            qrCodeRef.current
+            !qrRef.current
         ) return;
+
+        // Очищаем предыдущий QR код, если был
+        if (qrCodeRef.current) {
+            qrRef.current.innerHTML = '';
+        }
 
         qrCodeRef.current = new QRCodeStyling({
             width: 280,
@@ -110,8 +118,16 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
             onOpenChange(false);
         });
 
-
         cancelStreamRef.current = cancelStream;
+    };
+
+    const handleDialogClose = (open: boolean) => {
+        // Если закрываем диалог, сначала отменяем stream
+        if (!open && cancelStreamRef.current) {
+            cancelStreamRef.current();
+            cancelStreamRef.current = null;
+        }
+        onOpenChange(open);
     };
 
     const handleSSEEvent = (event: string, data: any) => {
@@ -156,11 +172,22 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
                 });
                 toast.error(data.message || 'Произошла ошибка авторизации');
                 break;
+
+            case 'close':
+                // Соединение закрыто сервером
+                if (authStatus.status !== 'success') {
+                    setAuthStatus({
+                        status: 'error',
+                        message: data.message || 'Соединение с сервером потеряно'
+                    });
+                    toast.error('Соединение с сервером потеряно');
+                }
+                break;
         }
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={handleDialogClose}>
             <DialogContent className="max-w-[480px] rounded-lg">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-center flex items-center justify-center">
@@ -243,6 +270,11 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
                                 </p>
                                 <button
                                     onClick={() => {
+                                        // Отменяем предыдущее соединение, если оно еще активно
+                                        if (cancelStreamRef.current) {
+                                            cancelStreamRef.current();
+                                            cancelStreamRef.current = null;
+                                        }
                                         setAuthStatus({ status: 'idle' });
                                         startAuth();
                                     }}
