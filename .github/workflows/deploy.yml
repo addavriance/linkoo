@@ -30,6 +30,6 @@ jobs:
           script: |
             cd /linkoo
             git pull origin main
-            docker compose up -d --build
+            docker compose up -d --build frontend
             docker image prune -f
             echo "✅ Deployed at $(date)"
