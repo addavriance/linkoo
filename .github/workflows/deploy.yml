@@ -3,6 +3,11 @@ name: Deploy to Server
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'docs/**'   
     
 jobs:
   deploy:
