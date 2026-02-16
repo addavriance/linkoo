@@ -1,4 +1,4 @@
-import {Infinity, BarChart3, Globe, Home, Info, Palette, Plus, Star, Zap} from "lucide-react";
+import {Infinity, BarChart3, Globe, Home, Info, Palette, Star, Zap} from "lucide-react";
 import {Card, OAuthProvider} from "@/types";
 import {SiGoogle, SiVk, SiDiscord, SiGithub} from 'react-icons/si';
 import {SiMessengerMax} from "@/constants/icons.ts";
@@ -8,7 +8,6 @@ import {IconType} from 'react-icons';
 export const NAVIGATION = [
     { name: 'Главная', href: '/', icon: Home },
     { name: 'О проекте', href: '/about', icon: Info },
-    { name: 'Создать', href: '/editor', icon: Plus },
     { name: 'Темы', href: '/themes', icon: Palette },
 ];
 
