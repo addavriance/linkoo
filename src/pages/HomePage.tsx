@@ -36,14 +36,6 @@ const HomePage = () => {
         {/* Hero Section */}
         <section className="relative px-6 pt-20 pb-16 text-center lg:px-8 lg:pt-32 lg:pb-24">
             <div className="mx-auto max-w-4xl">
-                {/* Badge */}
-                <div className="mb-8 flex justify-center">
-                    <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-sm font-medium">
-                        <Sparkles className="h-4 w-4 text-yellow-500"/>
-                        Новое поколение цифровых визиток
-                    </Badge>
-                </div>
-
                 {/* Заголовок */}
                 <h1 className="mb-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl">
                     Создавай{" "}
