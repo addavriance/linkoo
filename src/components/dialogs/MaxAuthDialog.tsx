@@ -109,16 +109,16 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
 
     const startAuth = async () => {
         setAuthStatus({ status: 'connecting', message: 'Подключение к серверу...' });
-        const cancelStream = await api.startMaxAuth(
-            (event, data) => {
-                handleSSEEvent(event, data);
-            }
-        ).catch(() => {
+        try {
+            cancelStreamRef.current = await api.startMaxAuth(
+                (event, data) => {
+                    handleSSEEvent(event, data);
+                }
+            );
+        } catch (error) {
             toast.error('Ошибка соединения с сервером');
             onOpenChange(false);
-        });
-
-        cancelStreamRef.current = cancelStream;
+        }
     };
 
     const handleDialogClose = (open: boolean) => {
