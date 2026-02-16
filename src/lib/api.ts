@@ -376,7 +376,7 @@ class ApiClient {
         return response.data.data;
     }
 
-    /* fetch потому что axios не может в readable stream при POST запросе */
+    /* WebSocket для MAX auth */
     async startMaxAuth(onEvent: (event: string, data: any) => void): Promise<() => void> {
         const userAgent = {
             deviceType: 'WEB',
@@ -390,85 +390,43 @@ class ApiClient {
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
         };
 
-        const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
+        const wsUrl = API_URL.replace(/^http/, 'ws') + '/auth/max';
+        console.log('[MAX Auth] Подключение к WebSocket:', wsUrl);
+
+        const ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+            console.log('[MAX Auth] WebSocket соединение установлено');
+            ws.send(JSON.stringify({ userAgent }));
         };
 
-        if (this.accessToken) {
-            headers['Authorization'] = `Bearer ${this.accessToken}`;
-        }
-
-        const controller = new AbortController();
-
-        const response = await fetch(`${API_URL}/auth/max`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ userAgent }),
-            signal: controller.signal,
-        });
-
-        if (!response.ok) {
-            throw new Error('Ошибка подключения к серверу');
-        }
-
-        const reader = response.body?.getReader();
-        if (!reader) throw new Error('Не удалось получить поток данных');
-
-        const decoder = new TextDecoder();
-        let buffer = '';
-        let isReading = true;
-
-        const readStream = async () => {
+        ws.onmessage = (event) => {
             try {
-                while (isReading) {
-                    const { done, value } = await reader.read();
-                    if (done) {
-                        console.log('SSE stream closed');
-                        onEvent('close', { message: 'Соединение закрыто' });
-                        break;
-                    }
-
-                    buffer += decoder.decode(value, { stream: true });
-
-                    let match;
-                    const separatorRegex = /\r?\n\r?\n/;
-                    while ((match = buffer.match(separatorRegex)) !== null) {
-                        const rawEvent = buffer.slice(0, match.index);
-                        buffer = buffer.slice(match.index! + match[0].length);
-
-                        const eventMatch = rawEvent.match(/^event:\s*(.+)$/m);
-                        const dataMatches = [...rawEvent.matchAll(/^data:\s*(.+)$/gm)];
-
-                        if (eventMatch && dataMatches.length) {
-                            const event = eventMatch[1].trim();
-                            const dataStr = dataMatches.map(m => m[1]).join('');
-                            try {
-                                const data = JSON.parse(dataStr);
-                                onEvent(event, data);
-                            } catch (err) {
-                                console.error('SSE parse error:', err, 'data:', dataStr);
-                            }
-                        }
-                    }
-                }
-            } catch (error: any) {
-                if (error.name === 'AbortError') {
-                    console.log('SSE stream aborted');
-                    return;
-                }
-                console.error('SSE stream error:', error);
-                onEvent('error', { message: 'Ошибка соединения' });
-            } finally {
-                reader.releaseLock();
+                const message = JSON.parse(event.data);
+                console.log('[MAX Auth] Получено сообщение:', message);
+                onEvent(message.event, message.data);
+            } catch (err) {
+                console.error('[MAX Auth] Ошибка парсинга сообщения:', err);
             }
         };
 
-        readStream();
+        ws.onerror = (error) => {
+            console.error('[MAX Auth] WebSocket ошибка:', error);
+            onEvent('error', { message: 'Ошибка соединения' });
+        };
+
+        ws.onclose = (event) => {
+            console.log('[MAX Auth] WebSocket соединение закрыто:', event.code, event.reason);
+            if (event.code !== 1000) { // 1000 = normal closure
+                onEvent('close', { message: 'Соединение закрыто' });
+            }
+        };
 
         return () => {
-            isReading = false;
-            controller.abort();
-            reader.cancel().catch(() => {});
+            console.log('[MAX Auth] Закрытие WebSocket соединения');
+            if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+                ws.close(1000, 'Client closed');
+            }
         };
     }
 }
