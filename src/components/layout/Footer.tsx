@@ -8,7 +8,7 @@ const Footer = () => {
         product: [
             {name: 'Создать визитку', href: '/editor'},
             {name: 'Темы', href: '/themes'},
-            {name: 'Примеры', href: '#'},
+            {name: 'Примеры', href: '#examples'},
         ],
         resources: [
             {name: 'Документация', href: '/api'},
@@ -77,12 +77,31 @@ const Footer = () => {
                                 <ul className="mt-4 space-y-3">
                                     {links.product.map((item) => (
                                         <li key={item.name}>
-                                            <Link
-                                                to={item.href}
-                                                className="text-gray-600 hover:text-gray-900 transition-colors"
-                                            >
-                                                {item.name}
-                                            </Link>
+                                            {item.href.startsWith('#') ? (
+                                                <a
+                                                    href={`/${item.href}`}
+                                                    onClick={(e) => {
+                                                        if (window.location.pathname === '/') {
+                                                            e.preventDefault();
+                                                            const target = document.querySelector(item.href);
+                                                            if (target) {
+                                                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                                                window.history.pushState(null, '', `/${item.href}`);
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                                                >
+                                                    {item.name}
+                                                </a>
+                                            ) : (
+                                                <Link
+                                                    to={item.href}
+                                                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
