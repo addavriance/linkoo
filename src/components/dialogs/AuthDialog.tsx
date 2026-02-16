@@ -31,7 +31,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onOpenChange, open
                     </div>
 
                     {/* OAuth Buttons */}
-                    <OAuthButtons openMaxDialog={openMaxDialog}/>
+                    <OAuthButtons openMaxDialog={openMaxDialog} className="px-10"/>
 
                     {/* Footer note */}
                     <p className="text-sm text-center text-gray-500 px-4">
