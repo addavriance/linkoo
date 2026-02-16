@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDialog } from '@/contexts/DialogContext';
 import {
-    Menu,
+    Menu, Plus,
     User,
 } from 'lucide-react';
 import './Header.css';
@@ -141,6 +141,12 @@ const Header = () => {
                     {/* Right side - Auth & Mobile Menu */}
                     <div className="flex flex-1 justify-end items-center">
                         {/* Desktop Auth Section */}
+                        <Link
+                            to="/editor"
+                            className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-all duration-200 hover:bg-gray-100 hover:scale-105 hover:shadow-sm mr-2">
+                            <Plus className="h-4 w-4 transition-transform duration-200 nav-icon"/>
+                        </Link>
+
                         <div className="flex gap-x-4 items-center">
                             {isAuthenticated && user ? (
                                 <div className="relative">
