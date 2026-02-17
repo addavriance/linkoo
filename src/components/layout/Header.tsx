@@ -183,7 +183,7 @@ const Header = () => {
                         </div>
 
                         {/* Mobile - User Avatar & Menu Button */}
-                        <div className="flex sm:hidden items-center gap-2">
+                        <div className="flex sm:hidden items-center gap-2 ml-2">
                             {/* Mobile Menu Button */}
                             <button
                                 type="button"
