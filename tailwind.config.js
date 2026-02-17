@@ -222,8 +222,16 @@ export default {
                 }, '.bg-animate': {
                     'background-size': '200% 200%', 'animation': 'gradientShift 3s ease-in-out infinite',
                 },
+                '.scrollbar-hide': {
+                    '-ms-overflow-style': 'none',
+                    'scrollbar-width': 'none',
+                    '&::-webkit-scrollbar': {
+                        'display': 'none',
+                    },
+                },
             })
         },
-        require("tailwindcss-animate")
+        require("tailwindcss-animate"),
+        require("@tailwindcss/typography")
     ],
 }
