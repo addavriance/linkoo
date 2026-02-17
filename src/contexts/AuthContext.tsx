@@ -1,12 +1,13 @@
 import React, {createContext, useContext, useState, useEffect, ReactNode} from 'react';
 import {api} from '@/lib/api';
 import type {User, OAuthProvider} from '@/types';
+import {toast} from '@/lib/toast';
 
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (provider: OAuthProvider) => void;
+    login: (provider: OAuthProvider) => Promise<void>;
     loginWithTokens: (accessToken: string, refreshToken: string, expiresIn: string) => Promise<void>;
     logout: () => Promise<void>;
     refreshUser: () => Promise<void>;
@@ -58,7 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         setUser(userData);
     };
 
-    const login = (provider: OAuthProvider) => {
+    const login = async (provider: OAuthProvider) => {
         let authUrl: string;
         switch (provider) {
             case 'google':
@@ -76,7 +77,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
             default:
                 throw new Error(`Unknown provider: ${provider}`);
         }
-        window.location.href = authUrl;
+
+        try {
+            const response = await fetch(authUrl, {
+                method: 'GET',
+                redirect: 'manual',
+            });
+
+            if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400)) {
+                window.location.href = authUrl;
+                return;
+            }
+
+            const errorData = await response.json().catch(() => null);
+            const errorMessage = errorData?.error?.message || `${provider.toUpperCase()} OAuth не настроен на сервере`;;
+
+            toast.error(errorMessage);
+        } catch (error) {
+            console.error('OAuth error:', error);
+            toast.error('Не удалось подключиться к сервису авторизации');
+        }
     };
 
     const loginWithTokens = async (
