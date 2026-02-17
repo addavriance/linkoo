@@ -164,7 +164,7 @@ export const HOW_IT_WORKS = [
     {
         step: 1,
         title: 'Регистрация',
-        text: 'Войдите через удобный OAuth-провайдер (Google, VK, Discord, GitHub)',
+        text: 'Войдите через удобный OAuth-провайдер (Google, VK, Discord, GitHub, MAX)',
     },
     {
         step: 2,
@@ -179,7 +179,7 @@ export const HOW_IT_WORKS = [
     {
         step: 4,
         title: 'Делитесь',
-        text: 'Отправляйте ссылку, показывайте QR-код или используйте NFC',
+        text: 'Отправляйте ссылку или показывайте QR-код',
     },
 ]
 
