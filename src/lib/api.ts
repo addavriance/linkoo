@@ -8,7 +8,7 @@ import type {
     PaymentStatus,
     PaymentCreation,
     PaymentResponse,
-    PaymentMethod,
+    PaymentMethod, SessionResponse,
 } from '@/types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -373,6 +373,26 @@ class ApiClient {
         if (!response.data.success || !response.data.data) {
             throw new Error('Failed to link card');
         }
+        return response.data.data;
+    }
+
+    // ============= Sessions API =============
+    async getSessions(): Promise<SessionResponse[]> {
+        const response = await this.client.get<ApiResponse<SessionResponse[]>>('/auth/sessions');
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to active sessions');
+        }
+
+        return response.data.data;
+    }
+
+    async revokeSession(sessionId: string): Promise<void> {
+        const response = await this.client.delete<ApiResponse>(`/auth/session/${sessionId}`);
+
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to revoke session');
+        }
+
         return response.data.data;
     }
 

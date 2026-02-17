@@ -6,39 +6,8 @@ import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {useNavigate} from 'react-router-dom';
 import {Monitor, Smartphone} from 'lucide-react';
-
-// TODO: подключить к беку — GET /api/auth/sessions (модель RefreshToken)
-interface Session {
-    id: string;
-    deviceInfo: string;
-    ipAddress: string;
-    createdAt: string;
-    isCurrentSession: boolean;
-}
-
-const MOCK_SESSIONS: Session[] = [
-    {
-        id: 'session-1',
-        deviceInfo: 'Chrome — macOS',
-        ipAddress: '192.168.1.1',
-        createdAt: new Date().toISOString(),
-        isCurrentSession: true,
-    },
-    {
-        id: 'session-2',
-        deviceInfo: 'Safari — iPhone',
-        ipAddress: '10.0.0.45',
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        isCurrentSession: false,
-    },
-    {
-        id: 'session-3',
-        deviceInfo: 'Firefox — Windows',
-        ipAddress: '172.16.0.12',
-        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        isCurrentSession: false,
-    },
-];
+import {SessionResponse} from "@/types";
+import {ProfileLayout} from '@/components/layout/ProfileLayout';
 
 function getSessionIcon(deviceInfo: string) {
     if (deviceInfo.includes('iPhone') || deviceInfo.includes('Android')) {
@@ -55,20 +24,111 @@ function formatSessionDate(dateStr: string): string {
     return date.toLocaleDateString('ru-RU', {day: 'numeric', month: 'long'});
 }
 
+function SessionSkeleton() {
+    return (
+        <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 animate-pulse">
+            <div className="flex items-center gap-3">
+                <div className="h-4 w-4 bg-gray-300 rounded"/>
+                <div>
+                    <div className="flex items-center gap-2">
+                        <div className="h-4 w-48 bg-gray-300 rounded"/>
+                    </div>
+                    <div className="h-3 w-32 bg-gray-300 rounded mt-1"/>
+                </div>
+            </div>
+            <div className="h-8 w-20 bg-gray-300 rounded"/>
+        </div>
+    );
+}
+
+function getDeviceInfo(userAgent: string) {
+    const ua = userAgent.toLowerCase();
+
+    let platform = 'Неизвестно';
+    let osVersion = '';
+
+    if (ua.includes('iphone')) {
+        platform = 'iPhone';
+        const iosMatch = ua.match(/os (\d+)_(\d+)(?:_(\d+))?/);
+        if (iosMatch) {
+            osVersion = ` ${iosMatch[1]}.${iosMatch[2]}`;
+        }
+    } else if (ua.includes('ipad')) {
+        platform = 'iPad';
+        const iosMatch = ua.match(/os (\d+)_(\d+)(?:_(\d+))?/);
+        if (iosMatch) {
+            osVersion = ` ${iosMatch[1]}.${iosMatch[2]}`;
+        }
+    } else if (ua.includes('android')) {
+        platform = 'Android';
+        const androidMatch = ua.match(/android (\d+(?:\.\d+)?)/);
+        if (androidMatch) {
+            osVersion = ` ${androidMatch[1]}`;
+        }
+    } else if (ua.includes('windows')) {
+        platform = 'Windows';
+        if (ua.includes('windows nt 10.0')) osVersion = ' 10/11';
+        else if (ua.includes('windows nt 6.3')) osVersion = ' 8.1';
+        else if (ua.includes('windows nt 6.2')) osVersion = ' 8';
+        else if (ua.includes('windows nt 6.1')) osVersion = ' 7';
+    } else if (ua.includes('macintosh') || ua.includes('mac os x')) {
+        platform = 'macOS';
+        const macMatch = ua.match(/mac os x (\d+)_(\d+)(?:_(\d+))?/);
+        if (macMatch) {
+            osVersion = ` ${macMatch[1]}.${macMatch[2]}`;
+        }
+    } else if (ua.includes('linux')) {
+        platform = 'Linux';
+    }
+
+    let browser = 'Неизвестно';
+    if (ua.includes('edg/') || ua.includes('edge/')) {
+        const edgeMatch = ua.match(/edg?e?\/(\d+)/);
+        browser = edgeMatch ? `Edge ${edgeMatch[1]}` : 'Edge';
+    } else if (ua.includes('chrome/') && !ua.includes('edg/')) {
+        const chromeMatch = ua.match(/chrome\/(\d+)/);
+        browser = chromeMatch ? `Chrome ${chromeMatch[1]}` : 'Chrome';
+    } else if (ua.includes('firefox/')) {
+        const firefoxMatch = ua.match(/firefox\/(\d+)/);
+        browser = firefoxMatch ? `Firefox ${firefoxMatch[1]}` : 'Firefox';
+    } else if (ua.includes('safari/') && !ua.includes('chrome/') && !ua.includes('edg/')) {
+        const safariMatch = ua.match(/version\/(\d+)/);
+        browser = safariMatch ? `Safari ${safariMatch[1]}` : 'Safari';
+    } else if (ua.includes('opera/') || ua.includes('opr/')) {
+        const operaMatch = ua.match(/(?:opera|opr)\/(\d+)/);
+        browser = operaMatch ? `Opera ${operaMatch[1]}` : 'Opera';
+    }
+
+    return `${platform}${osVersion} • ${browser}`;
+}
+
 export default function SecurityPage() {
     const {user, isLoading: authLoading, logout} = useAuth();
-    const [sessions, setSessions] = useState<Session[]>(MOCK_SESSIONS);
+    const [sessions, setSessions] = useState<SessionResponse[]>([]);
+    const [isLoadingSessions, setIsLoadingSessions] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!authLoading && !user) {
             navigate('/');
         }
+
+        if (!authLoading && user) {
+            setIsLoadingSessions(true);
+            api.getSessions().then(sessions => {
+                setSessions(sessions);
+                setIsLoadingSessions(false);
+            }).catch(() => {
+                setIsLoadingSessions(false);
+            });
+        }
     }, [user, authLoading, navigate]);
 
-    // TODO: подключить к беку — отозвать конкретный refresh token
-    const handleRevokeSession = (sessionId: string) => {
-        setSessions(prev => prev.filter(s => s.id !== sessionId));
+    const handleRevokeSession = async (sessionId: string) => {
+        await api.revokeSession(sessionId).then(() => {
+            setSessions(prev => prev.filter(s => s._id !== sessionId));
+        });
+
         toast.success('Сессия отозвана');
     };
 
@@ -87,22 +147,18 @@ export default function SecurityPage() {
         return null;
     }
 
-    return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="mb-6">
-                    <div className="flex items-center gap-3 mb-2">
-                        {/*<Shield className="h-8 w-8 text-blue-600"/>*/}
-                        <h1 className="text-3xl font-bold">Безопасность</h1>
-                    </div>
-                    <p className="text-gray-600">
-                        Управляйте активными сессиями и настройками безопасности вашего аккаунта
-                    </p>
-                </div>
+    const isCurrentSession = (token: string) => {
+        const refreshToken = localStorage.getItem('refreshToken');
+        return token == refreshToken;
+    }
 
-                {/* Active Sessions */}
-                <Card className="p-6 mb-6">
+    return (
+        <ProfileLayout
+            title="Безопасность"
+            description="Управляйте настройками безопасности вашего аккаунта"
+        >
+            {/* Active Sessions */}
+            <Card className="p-6 mb-6">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold">Активные сессии</h2>
                         <Button variant="outline" size="sm" onClick={handleLogoutAll}>
@@ -116,47 +172,54 @@ export default function SecurityPage() {
                     </p>
 
                     <div className="space-y-2">
-                        {sessions.map((session) => (
-                            <div
-                                key={session.id}
-                                className={`flex items-center justify-between p-4 rounded-lg transition-colors ${
-                                    session.isCurrentSession
-                                        ? 'bg-blue-50 border-2 border-blue-200'
-                                        : 'bg-gray-50 hover:bg-gray-100'
-                                }`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    {getSessionIcon(session.deviceInfo)}
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-medium">{session.deviceInfo}</span>
-                                            {session.isCurrentSession && (
-                                                <span
-                                                    className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
-                                                    Текущая сессия
-                                                </span>
-                                            )}
+                        {isLoadingSessions ? (
+                            <>
+                                <SessionSkeleton />
+                                <SessionSkeleton />
+                                <SessionSkeleton />
+                            </>
+                        ) : (
+                            sessions.map((session) => (
+                                <div
+                                    key={session._id}
+                                    className={`flex items-center justify-between p-4 rounded-lg transition-colors ${
+                                        isCurrentSession(session.token)
+                                            ? 'bg-blue-50 border-2 border-blue-200'
+                                            : 'bg-gray-50 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        {getSessionIcon(session.deviceInfo)}
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-medium">{getDeviceInfo(session.deviceInfo)}</span>
+                                                {isCurrentSession(session.token) && (
+                                                    <span
+                                                        className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+                                                        Текущая сессия
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-0.5">
+                                                {session.ipAddress} · {formatSessionDate(session.createdAt)}
+                                            </p>
                                         </div>
-                                        <p className="text-xs text-gray-500 mt-0.5">
-                                            {session.ipAddress} · {formatSessionDate(session.createdAt)}
-                                        </p>
                                     </div>
+                                    {!isCurrentSession(session.token) && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleRevokeSession(session._id)}
+                                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                        >
+                                            Отозвать
+                                        </Button>
+                                    )}
                                 </div>
-                                {!session.isCurrentSession && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleRevokeSession(session.id)}
-                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    >
-                                        Отозвать
-                                    </Button>
-                                )}
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
                 </Card>
-            </div>
-        </div>
+        </ProfileLayout>
     );
 }

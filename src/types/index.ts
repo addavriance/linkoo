@@ -181,6 +181,15 @@ export interface PaymentResponse {
     confirmation_url: string;
 }
 
+export interface SessionResponse {
+    _id: string;
+    userId: string;
+    token: string;
+    deviceInfo: string;
+    ipAddress: string;
+    createdAt: string;
+}
+
 // ============= Local Card Data (for guest mode, по факту пока не используется) =============
 export interface LocalCardData extends Omit<Card, '_id' | 'userId' | 'createdAt' | 'updatedAt' | 'viewCount' | 'lastViewedAt'> {
     // Card data stored in URL for guest users
