@@ -3,6 +3,7 @@ import {useAuth} from '@/contexts/AuthContext';
 import {Card} from '@/components/ui/card';
 import {useNavigate} from 'react-router-dom';
 import {Settings, Moon, Globe, Bell, Palette} from 'lucide-react';
+import {ProfileLayout} from '@/components/layout/ProfileLayout';
 
 export default function SettingsPage() {
     const {user, isLoading: authLoading} = useAuth();
@@ -19,21 +20,12 @@ export default function SettingsPage() {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="mb-6">
-                    <div className="flex items-center gap-3 mb-2">
-                        {/*<Settings className="h-8 w-8 text-blue-600"/>*/}
-                        <h1 className="text-3xl font-bold">Настройки</h1>
-                    </div>
-                    <p className="text-gray-600">
-                        Персонализируйте работу с Linkoo под себя
-                    </p>
-                </div>
-
-                {/* Coming Soon */}
-                <Card className="p-12 text-center">
+        <ProfileLayout
+            title="Настройки"
+            description="Персонализируйте работу с Linkoo под себя"
+        >
+            {/* Coming Soon */}
+            <Card className="p-12 text-center">
                     <div className="flex flex-col items-center">
                         <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center mb-6">
                             <Settings className="h-10 w-10 text-blue-600"/>
@@ -65,7 +57,6 @@ export default function SettingsPage() {
                         </div>
                     </div>
                 </Card>
-            </div>
-        </div>
+        </ProfileLayout>
     );
 }

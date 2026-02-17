@@ -27,7 +27,15 @@ export default function PremiumPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-            <div className="container mx-auto px-4 py-16">
+            <div className="absolute inset-0 z-1 h-[150vh]">
+                <div
+                    className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 blur-3xl"/>
+                <div
+                    className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-pink-400/20 to-orange-400/20 blur-3xl"/>
+                <div
+                    className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-green-400/20 to-blue-400/20 blur-3xl"/>
+            </div>
+            <div className="container mx-auto px-4 py-16 z-[2] relative">
                 <div className="max-w-6xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-16">
@@ -35,7 +43,7 @@ export default function PremiumPage() {
                             <Crown className="h-5 w-5"/>
                             <span className="font-semibold">Linkoo Premium</span>
                         </div>
-                        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <h1 className="text-6xl font-bold mb-4">
                             Раскройте весь потенциал
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">

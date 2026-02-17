@@ -7,6 +7,7 @@ import {Card} from '@/components/ui/card';
 import {useNavigate} from 'react-router-dom';
 import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink, Phone} from 'lucide-react';
 import {AccountBadge} from '@/components/common/AccountBadge';
+import {ProfileLayout} from '@/components/layout/ProfileLayout';
 
 export default function ProfilePage() {
     const {user, isLoading: authLoading, refreshUser} = useAuth();
@@ -96,18 +97,12 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold">Профиль</h1>
-                    <p className="text-gray-600 mt-2">
-                        Управляйте настройками своего аккаунта
-                    </p>
-                </div>
-
-                {/* Profile Card */}
-                <Card className="p-8 mb-6">
+        <ProfileLayout
+            title="Профиль"
+            description="Управляйте настройками своего аккаунта"
+        >
+            {/* Profile Card */}
+            <Card className="p-8 mb-6">
                     <div className="flex flex-col md:flex-row gap-8">
                         {/* Avatar Section */}
                         <div className="flex flex-col items-center">
@@ -285,32 +280,6 @@ export default function ProfilePage() {
                         </div>
                     </Card>
                 )}
-
-                {/* Quick Links */}
-                <div className="grid md:grid-cols-3 gap-4">
-                    <Card
-                        className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                        onClick={() => navigate('/cards')}
-                    >
-                        <h3 className="font-semibold mb-1">Мои карточки</h3>
-                        <p className="text-sm text-gray-600">Управление визитками</p>
-                    </Card>
-                    <Card
-                        className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                        onClick={() => navigate('/security')}
-                    >
-                        <h3 className="font-semibold mb-1">Безопасность</h3>
-                        <p className="text-sm text-gray-600">Активные сессии</p>
-                    </Card>
-                    <Card
-                        className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                        onClick={() => navigate('/settings')}
-                    >
-                        <h3 className="font-semibold mb-1">Настройки</h3>
-                        <p className="text-sm text-gray-600">Персонализация</p>
-                    </Card>
-                </div>
-            </div>
-        </div>
+        </ProfileLayout>
     );
 }
