@@ -379,14 +379,14 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                                         </p>
                                         <p className="text-xs text-gray-400">{formatTime(event.timestamp)}</p>
                                     </div>
-                                    {event.country && (
-                                        <span className="text-xs text-gray-500 shrink-0">
-                                            {countryName(event.country)}
-                                        </span>
-                                    )}
                                     {count > 1 && (
                                         <span className="text-xs font-semibold text-gray-400 shrink-0">
                                             ×{count}
+                                        </span>
+                                    )}
+                                    {event.country && (
+                                        <span className="text-xs text-gray-500 shrink-0">
+                                            {countryName(event.country)}
                                         </span>
                                     )}
                                 </div>
