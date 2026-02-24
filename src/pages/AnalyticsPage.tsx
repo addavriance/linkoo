@@ -6,7 +6,7 @@ import {toast} from '@/lib/toast';
 import {ProfileLayout} from '@/components/layout/ProfileLayout';
 import {Card, CardContent} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
-import type {PremiumAnalytics} from '@/types';
+import type {PremiumAnalytics, RecentActivityItem} from '@/types';
 import {
     AreaChart,
     Area,
@@ -63,6 +63,25 @@ function num(n: number) {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
     if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
     return String(n);
+}
+
+function groupEvents(events: RecentActivityItem[]): Array<{event: RecentActivityItem; count: number}> {
+    const grouped: Array<{event: RecentActivityItem; count: number}> = [];
+    for (const event of events) {
+        const minute = event.timestamp.slice(0, 16);
+        const last = grouped[grouped.length - 1];
+        if (
+            last &&
+            last.event.type === event.type &&
+            last.event.platform === event.platform &&
+            last.event.timestamp.slice(0, 16) === minute
+        ) {
+            last.count++;
+        } else {
+            grouped.push({event, count: 1});
+        }
+    }
+    return grouped;
 }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
@@ -339,14 +358,14 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
             {data.recentActivity.length > 0 && (
                 <SectionCard title="Последние события" icon={Activity}>
                     <div className="space-y-2 max-h-72 overflow-y-auto">
-                        {data.recentActivity.map((event, i) => {
+                        {groupEvents(data.recentActivity).map(({event, count}, i) => {
                             const DevIcon = DEVICE_ICONS[event.device || 'desktop'] || Monitor;
                             return (
                                 <div
                                     key={i}
                                     className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0"
                                 >
-                                    <div className="p-1.5 bg-gray-100 rounded-lg">
+                                    <div className="p-1.5 bg-gray-100 rounded-lg shrink-0">
                                         <DevIcon className="h-3.5 w-3.5 text-gray-500"/>
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -363,6 +382,11 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                                     {event.country && (
                                         <span className="text-xs text-gray-500 shrink-0">
                                             {countryName(event.country)}
+                                        </span>
+                                    )}
+                                    {count > 1 && (
+                                        <span className="text-xs font-semibold text-gray-400 shrink-0">
+                                            ×{count}
                                         </span>
                                     )}
                                 </div>
