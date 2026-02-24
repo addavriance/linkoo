@@ -1,6 +1,6 @@
 import {Infinity, BarChart3, Globe, Home, Info, Palette, Star, Zap} from "lucide-react";
 import {Card, OAuthProvider} from "@/types";
-import {SiGoogle, SiVk, SiDiscord, SiGithub} from 'react-icons/si';
+import {SiGoogle, SiVk, SiGithub} from 'react-icons/si';
 import {SiMessengerMax} from "@/constants/icons.ts";
 
 import {IconType} from 'react-icons';
@@ -164,7 +164,7 @@ export const HOW_IT_WORKS = [
     {
         step: 1,
         title: 'Регистрация',
-        text: 'Войдите через удобный OAuth-провайдер (Google, VK, Discord, GitHub, MAX)',
+        text: 'Войдите через удобный OAuth-провайдер (Google, VK, GitHub, MAX)',
     },
     {
         step: 2,
@@ -278,13 +278,13 @@ export const PROVIDERS: Array<{
         color: 'bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-200 hover:border-gray-300 hover:shadow-md',
         description: 'Быстрый вход через Gmail'
     },
-    {
-        id: 'discord',
-        name: 'Discord',
-        icon: SiDiscord,
-        color: 'bg-[#5865F2] hover:bg-[#4752C4] text-white hover:shadow-lg hover:shadow-indigo-500/30',
-        description: 'Вход через Discord'
-    },
+    // {
+    //     id: 'discord',
+    //     name: 'Discord',
+    //     icon: SiDiscord,
+    //     color: 'bg-[#5865F2] hover:bg-[#4752C4] text-white hover:shadow-lg hover:shadow-indigo-500/30',
+    //     description: 'Вход через Discord'
+    // },
     {
         id: 'github',
         name: 'GitHub',

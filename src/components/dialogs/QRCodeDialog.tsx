@@ -12,8 +12,12 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {toast} from '@/lib/toast';
 import QRCodeStyling from 'qr-code-styling';
-import {Download, QrCode as QrCodeIcon, Palette, Upload, X} from 'lucide-react';
+import {Download, QrCode as QrCodeIcon, Palette, Lock, Sparkles} from 'lucide-react';
 import {CORNER_DOT_TYPES, CORNER_SQUARE_TYPES, DOT_TYPES, QR_SIZES} from "@/constants";
+import {useAuth} from '@/contexts/AuthContext';
+import {useNavigate} from 'react-router-dom';
+
+const LINKOO_LOGO_URL = '/icon.png';
 
 interface QRCodeDialogProps {
     open: boolean;
@@ -23,11 +27,34 @@ interface QRCodeDialogProps {
     avatar?: string;
 }
 
+function PremiumLock({children, onUpgrade}: { children: React.ReactNode; onUpgrade: () => void }) {
+    return (
+        <div className="relative">
+            <div className="opacity-40 pointer-events-none select-none">
+                {children}
+            </div>
+            <div
+                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-lg bg-white/60 backdrop-blur-[1px] border border-amber-200"
+                onClick={onUpgrade}
+            >
+                <div className="flex items-center gap-1.5 text-amber-700">
+                    <Lock className="h-4 w-4"/>
+                    <span className="text-sm font-medium">Premium</span>
+                </div>
+                <span className="text-xs text-amber-600">Нажмите, чтобы открыть</span>
+            </div>
+        </div>
+    );
+}
+
 export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCodeDialogProps) {
+    const {user} = useAuth();
+    const navigate = useNavigate();
+    const isPremium = user?.accountType === 'paid';
+
     const containerRef = useRef<HTMLDivElement>(null);
     const qrCodeRef = useRef<QRCodeStyling | null>(null);
     const currentElementRef = useRef<HTMLDivElement | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [foregroundColor, setForegroundColor] = useState('#000000');
     const [backgroundColor, setBackgroundColor] = useState('#ffffff');
@@ -36,14 +63,16 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
     const [cornerSquareType, setCornerSquareType] = useState<'square' | 'dot' | 'extra-rounded'>('extra-rounded');
     const [cornerDotType, setCornerDotType] = useState<'square' | 'dot'>('dot');
     const [margin, setMargin] = useState(10);
-    const [logoImage, setLogoImage] = useState<string | undefined>(avatar);
+    const [logoImage, setLogoImage] = useState<string | undefined>(
+        isPremium ? avatar : LINKOO_LOGO_URL
+    );
     const [logoSize, setLogoSize] = useState(0.2);
 
     useEffect(() => {
-        if (avatar) {
+        if (isPremium && avatar) {
             setLogoImage(avatar);
         }
-    }, [avatar]);
+    }, [avatar, isPremium]);
 
     useEffect(() => {
         if (!open) {
@@ -54,6 +83,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                 containerRef.current.innerHTML = '';
             }
             currentElementRef.current = null;
+            setLogoImage(isPremium ? avatar : LINKOO_LOGO_URL);
             return;
         }
 
@@ -107,7 +137,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
             },
             image: logoImage,
         });
-    }
+    };
 
     const generateQRCode = () => {
         if (!containerRef.current) return;
@@ -144,23 +174,21 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
             tempContainer.style.transition = 'opacity 150ms ease-in-out';
             tempContainer.style.opacity = '1';
 
-            // Удаляем старый элемент после завершения анимации
             setTimeout(() => {
                 if (oldElement && oldElement.parentNode) {
                     oldElement.parentNode.removeChild(oldElement);
                 }
 
-                // Убираем позиционирование у нового элемента
                 tempContainer.style.position = 'static';
             }, 150);
         });
 
-        // Обновляем ссылки
         currentElementRef.current = tempContainer;
         qrCodeRef.current = newQR;
     };
 
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!isPremium) return;
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -177,10 +205,8 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
     };
 
     const removeLogo = () => {
+        if (!isPremium) return;
         setLogoImage(undefined);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
     };
 
     const downloadQRCode = async (format: 'png' | 'svg') => {
@@ -223,6 +249,11 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
         }
     };
 
+    const goToPremium = () => {
+        onOpenChange(false);
+        navigate('/premium');
+    };
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
@@ -243,14 +274,14 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                             ref={containerRef}
                             className="bg-white p-4 rounded-lg shadow-md relative"
                         />
-                        <p className="text-xs text-gray-500 mt-3 text-center break-all max-w-[300px]">
+                        <p className="text-xs text-gray-500 mt-1 text-center break-all max-w-[300px]">
                             {url}
                         </p>
                     </div>
 
                     {/* Settings */}
                     <div className="lg:col-span-3 space-y-4">
-                        {/* Цвета */}
+                        {/* Цвета — доступно всем */}
                         <div className="space-y-2">
                             <Label className="flex items-center gap-2">
                                 <Palette className="h-4 w-4"/>
@@ -300,7 +331,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                             </div>
                         </div>
 
-                        {/* Размер для скачивания */}
+                        {/* Размер для скачивания — доступно всем */}
                         <div className="space-y-2">
                             <Label>Размер для скачивания</Label>
                             <div className="grid grid-cols-3 gap-2">
@@ -318,109 +349,205 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                             <p className="text-xs text-gray-500">{size} × {size} px</p>
                         </div>
 
-                        {/* Форма точек */}
-                        <div className="space-y-2">
-                            <Label>Форма точек</Label>
-                            <div className="grid grid-cols-3 gap-2">
-                                {DOT_TYPES.map((type) => (
-                                    <Button
-                                        key={type.value}
-                                        variant={dotType === type.value ? 'default' : 'outline'}
-                                        size="sm"
-                                        onClick={() => setDotType(type.value)}
-                                    >
-                                        {type.label}
-                                    </Button>
-                                ))}
+                        {/* Форма точек — только Premium */}
+                        {isPremium ? (
+                            <div className="space-y-2">
+                                <Label>Форма точек</Label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {DOT_TYPES.map((type) => (
+                                        <Button
+                                            key={type.value}
+                                            variant={dotType === type.value ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setDotType(type.value)}
+                                        >
+                                            {type.label}
+                                        </Button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <PremiumLock onUpgrade={goToPremium}>
+                                <div className="space-y-2">
+                                    <Label>Форма точек</Label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {DOT_TYPES.slice(0, 3).map((type) => (
+                                            <Button key={type.value} variant="outline" size="sm">
+                                                {type.label}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </PremiumLock>
+                        )}
 
-                        {/* Форма углов */}
-                        <div className="space-y-2">
-                            <Label>Форма углов</Label>
-                            <div className="grid grid-cols-3 gap-2">
-                                {CORNER_SQUARE_TYPES.map((type) => (
-                                    <Button
-                                        key={type.value}
-                                        variant={cornerSquareType === type.value ? 'default' : 'outline'}
-                                        size="sm"
-                                        onClick={() => setCornerSquareType(type.value)}
-                                    >
-                                        {type.label}
-                                    </Button>
-                                ))}
+                        {/* Форма углов — только Premium */}
+                        {isPremium ? (
+                            <div className="space-y-2">
+                                <Label>Форма углов</Label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {CORNER_SQUARE_TYPES.map((type) => (
+                                        <Button
+                                            key={type.value}
+                                            variant={cornerSquareType === type.value ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setCornerSquareType(type.value)}
+                                        >
+                                            {type.label}
+                                        </Button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <PremiumLock onUpgrade={goToPremium}>
+                                <div className="space-y-2">
+                                    <Label>Форма углов</Label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {CORNER_SQUARE_TYPES.map((type) => (
+                                            <Button key={type.value} variant="outline" size="sm">
+                                                {type.label}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </PremiumLock>
+                        )}
 
-                        {/* Форма точек углов */}
-                        <div className="space-y-2">
-                            <Label>Форма точек углов</Label>
-                            <div className="grid grid-cols-3 gap-2">
-                                {CORNER_DOT_TYPES.map((type) => (
-                                    <Button
-                                        key={type.value}
-                                        variant={cornerDotType === type.value ? 'default' : 'outline'}
-                                        size="sm"
-                                        onClick={() => setCornerDotType(type.value)}
-                                    >
-                                        {type.label}
-                                    </Button>
-                                ))}
+                        {/* Форма точек углов — только Premium */}
+                        {isPremium && (
+                            <div className="space-y-2">
+                                <Label>Форма точек углов</Label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {CORNER_DOT_TYPES.map((type) => (
+                                        <Button
+                                            key={type.value}
+                                            variant={cornerDotType === type.value ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setCornerDotType(type.value)}
+                                        >
+                                            {type.label}
+                                        </Button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Логотип */}
                         <div className="space-y-2">
                             <Label className="flex items-center gap-2">
-                                <Upload className="h-4 w-4"/>
                                 Логотип в центре
+                                {!isPremium && <Lock className="h-3.5 w-3.5 text-amber-500"/>}
                             </Label>
-                            {logoImage ? (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                                        <img src={logoImage} alt="Logo" className="h-10 w-10 object-contain"/>
-                                        <span className="flex-1 text-sm text-gray-600">Логотип загружен</span>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={removeLogo}
-                                        >
-                                            <X className="h-4 w-4"/>
-                                        </Button>
+
+                            {isPremium ? (
+                                /* Premium: полный контроль над логотипом */
+                                logoImage ? (
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                                            <img src={logoImage} alt="Logo" className="h-10 w-10 object-contain"/>
+                                            <span className="flex-1 text-sm text-gray-600">Логотип загружен</span>
+                                            <Button variant="ghost" size="sm" onClick={removeLogo}>
+                                                Удалить
+                                            </Button>
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="logo-size">Размер: {Math.round(logoSize * 100)}%</Label>
+                                            <Input
+                                                id="logo-size"
+                                                type="range"
+                                                min="0.1"
+                                                max="0.4"
+                                                step="0.05"
+                                                value={logoSize}
+                                                onChange={(e) => setLogoSize(parseFloat(e.target.value))}
+                                            />
+                                        </div>
                                     </div>
+                                ) : (
                                     <div>
-                                        <Label htmlFor="logo-size">Размер логотипа: {Math.round(logoSize * 100)}%</Label>
-                                        <Input id="logo-size" type="range" min="0.1" max="0.4" step="0.05" value={logoSize}
-                                            onChange={(e) => setLogoSize(parseFloat(e.target.value))}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleLogoUpload}
+                                            className="hidden"
+                                            id="logo-upload"
                                         />
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => document.getElementById('logo-upload')?.click()}
+                                            className="w-full"
+                                        >
+                                            Загрузить логотип
+                                        </Button>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            PNG, JPG, SVG (рекомендуется квадратное изображение)
+                                        </p>
+                                        <p className="text-xs text-gray-400 mt-0.5">
+                                            Без логотипа — чистый QR код
+                                        </p>
                                     </div>
-                                </div>
+                                )
                             ) : (
-                                <div>
-                                    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden"/>
+                                /* Free: логотип Linkoo всегда, нельзя изменить */
+                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <img src={LINKOO_LOGO_URL} alt="Linkoo" className="h-8 w-8 object-contain"/>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-medium text-gray-700">Логотип Linkoo</p>
+                                        <p className="text-xs text-gray-500">Всегда отображается в центре QR</p>
+                                    </div>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="w-full"
+                                        onClick={goToPremium}
+                                        className="text-amber-600 border-amber-200 hover:bg-amber-50 shrink-0"
                                     >
-                                        <Upload className="h-4 w-4 mr-2"/>
-                                        Загрузить логотип
+                                        <Sparkles className="h-3.5 w-3.5 mr-1"/>
+                                        Убрать
                                     </Button>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        PNG, JPG, SVG (рекомендуется квадратное изображение)
-                                    </p>
                                 </div>
                             )}
                         </div>
 
-                        {/* Отступ */}
-                        <div className="space-y-2">
-                            <Label htmlFor="margin">Отступ: {margin} пикселей</Label>
-                            <Input id="margin" type="range" min="0" max="50" value={margin}
-                                onChange={(e) => setMargin(parseInt(e.target.value))}
-                            />
-                        </div>
+                        {/* Отступ — только Premium */}
+                        {isPremium ? (
+                            <div className="space-y-2">
+                                <Label htmlFor="margin">Отступ: {margin} пикселей</Label>
+                                <Input
+                                    id="margin"
+                                    type="range"
+                                    min="0"
+                                    max="50"
+                                    value={margin}
+                                    onChange={(e) => setMargin(parseInt(e.target.value))}
+                                />
+                            </div>
+                        ) : (
+                            <PremiumLock onUpgrade={goToPremium}>
+                                <div className="space-y-2">
+                                    <Label>Отступ: {margin} пикселей</Label>
+                                    <Input type="range" min="0" max="50" value={margin} readOnly/>
+                                </div>
+                            </PremiumLock>
+                        )}
+
+                        {/* Плашка о Premium для бесплатников */}
+                        {!isPremium && (
+                            <div
+                                className="flex items-center gap-3 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg cursor-pointer"
+                                onClick={goToPremium}
+                            >
+                                <Sparkles className="h-5 w-5 text-amber-600 shrink-0"/>
+                                <div>
+                                    <p className="text-sm font-medium text-amber-800">
+                                        Полная кастомизация с Premium
+                                    </p>
+                                    <p className="text-xs text-amber-600">
+                                        Форма, отступы, свой логотип или чистый QR — от 299 ₽/мес
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 

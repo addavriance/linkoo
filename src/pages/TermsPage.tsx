@@ -54,7 +54,7 @@ export default function TermsPage() {
                             <h2 className="text-xl font-semibold mb-3">3. Регистрация и учетная запись</h2>
                             <p className="text-gray-700 mb-2">
                                 3.1. Для использования функций Сервиса необходимо пройти регистрацию через
-                                одного из поддерживаемых OAuth-провайдеров (Google, VK, Discord, GitHub).
+                                одного из поддерживаемых OAuth-провайдеров (Google, VK, GitHub, MAX).
                             </p>
                             <p className="text-gray-700 mb-2">
                                 3.2. Вы обязуетесь предоставлять достоверную и актуальную информацию при регистрации.
