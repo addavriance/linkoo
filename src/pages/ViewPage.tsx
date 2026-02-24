@@ -20,7 +20,6 @@ import {
 import {getThemeById, applyThemeStyles} from '@/lib/themes';
 import {extractCardDataFromUrl} from '@/lib/compression';
 import {useToast} from '@/components/ui/use-toast';
-import {openInNewTab} from "@/lib/navigation.js";
 import {socialPlatforms, openSocialLink, processSocialLink, formatSocialLink} from "@/lib/socialLinks.js";
 import {api} from '@/lib/api';
 import type {Card as CardType} from '@/types';
@@ -41,6 +40,16 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'instant' });
     }, []);
+
+    const goToHome = () => {
+        if (subdomain) {
+            const baseDomain = import.meta.env.VITE_BASE_DOMAIN || 'linkoo.dev';
+            window.location.href = `https://${baseDomain}`;
+        } else {
+            navigate('/');
+        }
+    };
+
 
     useEffect(() => {
         const loadCardData = async () => {
@@ -130,7 +139,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                             {error || 'Ссылка повреждена или визитка не существует'}
                         </p>
                         <Button
-                            onClick={() => subdomain ? openInNewTab('/') : navigate("/")}
+                            onClick={goToHome}
                             className="w-full"
                         >
                             Создать свою визитку
@@ -439,7 +448,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
 
                         <Button
                             variant="outline"
-                            onClick={() => openInNewTab('/')}
+                            onClick={goToHome}
                             className="w-full sm:w-auto"
                         >
                             <Plus className="h-4 w-4 mr-2"/>
