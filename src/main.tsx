@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './animations.css'
 import App from './App'
-import SubdomainApp from './SubdomainApp'
 
 const hostname = window.location.hostname;
 const baseDomain = import.meta.env.VITE_BASE_DOMAIN || 'linkoo.dev';
@@ -20,6 +19,6 @@ if (!rootElement) throw new Error('Root element not found');
 
 createRoot(rootElement).render(
     <StrictMode>
-        {subdomain ? <SubdomainApp subdomain={subdomain} /> : <App />}
+        <App subdomain={subdomain}/>
     </StrictMode>,
 )

@@ -26,7 +26,22 @@ import { Toaster } from 'sonner';
 import {ScrollToTop} from "@/components/common/ScrollToTop.tsx";
 import {CookieConsent} from "@/components/common/CookieConsent.tsx";
 
-function App() {
+interface AppProps {
+    subdomain?: string | null;
+}
+
+function App({subdomain}: AppProps = {}) {
+    if (subdomain) {
+        return (
+            <Router>
+                <Routes>
+                    <Route path="*" element={<ViewPage subdomain={subdomain}/>}/>
+                </Routes>
+                <Toaster position="top-right" richColors closeButton/>
+            </Router>
+        );
+    }
+
     return (
         <AuthProvider>
             <DialogProvider>

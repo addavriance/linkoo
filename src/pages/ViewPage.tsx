@@ -25,7 +25,11 @@ import {socialPlatforms, openSocialLink, processSocialLink, formatSocialLink} fr
 import {api} from '@/lib/api';
 import type {Card as CardType} from '@/types';
 
-const ViewPage = () => {
+interface ViewPageProps {
+    subdomain?: string;
+}
+
+const ViewPage = ({subdomain}: ViewPageProps = {}) => {
     const navigate = useNavigate();
     const {slug} = useParams<{slug?: string}>();
     const {toast} = useToast();
@@ -40,7 +44,19 @@ const ViewPage = () => {
 
     useEffect(() => {
         const loadCardData = async () => {
-            if (slug) {
+            if (subdomain) {
+                try {
+                    setLoading(true);
+                    setError(null);
+                    const card = await api.getCardBySubdomain(subdomain);
+                    setCardData(card);
+                } catch (err: any) {
+                    setError(err.response?.data?.message || 'Карточка не найдена');
+                    setCardData(null);
+                } finally {
+                    setLoading(false);
+                }
+            } else if (slug) {
                 try {
                     setLoading(true);
                     setError(null);
@@ -87,7 +103,7 @@ const ViewPage = () => {
         };
 
         loadCardData();
-    }, [slug]);
+    }, [slug, subdomain]);
 
     if (loading) {
         return (
@@ -114,7 +130,7 @@ const ViewPage = () => {
                             {error || 'Ссылка повреждена или визитка не существует'}
                         </p>
                         <Button
-                            onClick={() => navigate("/")}
+                            onClick={() => subdomain ? openInNewTab('/') : navigate("/")}
                             className="w-full"
                         >
                             Создать свою визитку
