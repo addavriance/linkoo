@@ -7,8 +7,8 @@ import {
     MapPin,
     User as UserIcon
 } from 'lucide-react';
-import { applyThemeStyles, Theme } from '@/lib/themes';
-import { socialPlatforms } from '@/lib/socialLinks';
+import { applyThemeStyles, Theme } from '@/lib/themes.ts';
+import { socialPlatforms } from '@/lib/socialLinks.ts';
 import { FaGlobe } from 'react-icons/fa';
 import { Card } from "@/types";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip.tsx";

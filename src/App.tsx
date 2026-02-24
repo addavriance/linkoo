@@ -8,6 +8,7 @@ import ViewPage from '@/pages/ViewPage.jsx';
 import ThemesPage from '@/pages/ThemesPage';
 import ProfilePage from '@/pages/ProfilePage';
 import CardsPage from '@/pages/CardsPage';
+import AnalyticsPage from '@/pages/AnalyticsPage';
 import SecurityPage from '@/pages/SecurityPage';
 import SettingsPage from '@/pages/SettingsPage';
 import PremiumPage from '@/pages/PremiumPage';
@@ -61,6 +62,7 @@ function App({subdomain}: AppProps = {}) {
                                 <Route path="/view" element={<ViewPage/>}/>
                                 <Route path="/profile" element={<ProfilePage/>}/>
                                 <Route path="/cards" element={<CardsPage/>}/>
+                                <Route path="/analytics/:cardId" element={<AnalyticsPage/>}/>
                                 <Route path="/security" element={<SecurityPage/>}/>
                                 <Route path="/settings" element={<SettingsPage/>}/>
                                 <Route path="/premium" element={<PremiumPage/>}/>

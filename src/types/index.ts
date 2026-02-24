@@ -105,7 +105,6 @@ export interface ShortenedLink {
     cardId?: string;
     slug: string;
     subdomain?: string;
-    clickCount?: number;
     isActive?: boolean;
     expiresAt?: string;
     createdAt?: string;
@@ -194,6 +193,63 @@ export interface SessionResponse {
 // ============= Local Card Data (for guest mode, по факту пока не используется) =============
 export interface LocalCardData extends Omit<Card, '_id' | 'userId' | 'createdAt' | 'updatedAt' | 'viewCount' | 'lastViewedAt'> {
     // Card data stored in URL for guest users
+}
+
+// ============= Analytics Types =============
+
+export type InteractionType =
+    | 'social_click'
+    | 'contact_save'
+    | 'share'
+    | 'website_click'
+    | 'email_click'
+    | 'phone_click';
+
+export interface TimeSeriesPoint {
+    date: string;
+    count: number;
+}
+
+export interface CountryPoint {
+    country: string;
+    count: number;
+}
+
+export interface BreakdownPoint {
+    name: string;
+    value: number;
+}
+
+export interface SocialClickPoint {
+    platform: string;
+    count: number;
+}
+
+export interface RecentActivityItem {
+    type: InteractionType;
+    platform?: string;
+    timestamp: string;
+    country?: string;
+    device?: string;
+}
+
+export interface PremiumAnalytics {
+    viewCount: number;
+    uniqueCountries: number;
+    contactSaves: number;
+    viewsTimeSeries: TimeSeriesPoint[];
+    topCountries: CountryPoint[];
+    deviceBreakdown: BreakdownPoint[];
+    browserBreakdown: BreakdownPoint[];
+    interactionSummary: {
+        contactSaves: number;
+        shares: number;
+        websiteClicks: number;
+        emailClicks: number;
+        phoneClicks: number;
+        socialClicks: SocialClickPoint[];
+    };
+    recentActivity: RecentActivityItem[];
 }
 
 // ============= Theme Types =============

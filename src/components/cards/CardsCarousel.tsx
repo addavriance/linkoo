@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
-import { CardPreview } from './CardPreview';
-import {cardThemes, Theme} from '@/lib/themes';
+import { CardPreview } from './CardPreview.tsx';
+import {cardThemes, Theme} from '@/lib/themes.ts';
 import { Card } from "@/types";
 import {CARD_SAMPLES} from "@/constants";
 

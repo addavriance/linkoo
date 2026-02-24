@@ -1,194 +1,84 @@
 import {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {useAuth} from '@/contexts/AuthContext';
 import {api} from '@/lib/api';
 import {toast} from '@/lib/toast';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
-import type {Card as CardType} from '@/types';
-import {useNavigate} from 'react-router-dom';
-import {
-    Eye,
-    Globe,
-    Lock,
-    Edit,
-    Trash2,
-    Plus,
-    Copy,
-    QrCode,
-} from 'lucide-react';
-import {ManageLinkDialog} from '@/components/dialogs/ManageLinkDialog';
+import {ProfileLayout} from '@/components/layout/ProfileLayout';
+import {CardSkeleton} from '@/components/cards/CardSkeleton';
+import {CardLinkSection} from '@/components/cards/CardLinkSection';
+import {CardSubdomainSection} from '@/components/cards/CardSubdomainSection';
 import {QRCodeDialog} from '@/components/dialogs/QRCodeDialog';
 import {CardDeleteDialog} from '@/components/dialogs/CardDeleteDialog';
-import {ProfileLayout} from '@/components/layout/ProfileLayout';
+import type {Card as CardType} from '@/types';
+import {Eye, Globe, Lock, Edit, Trash2, Plus, BarChart2} from 'lucide-react';
 
-function Skeleton({className = ''}: { className?: string }) {
-    return <div className={`animate-pulse bg-gray-200 rounded ${className}`}/>;
-}
 
-function CardSkeleton() {
-    return (
-        <Card className="p-4 space-y-3">
-            <div className="flex items-start gap-3">
-                <Skeleton className="w-12 h-12 rounded-full shrink-0"/>
-                <div className="flex-1 space-y-2">
-                    <Skeleton className="h-5 w-32"/>
-                    <Skeleton className="h-4 w-24"/>
-                </div>
-            </div>
-            <Skeleton className="h-3 w-3/4"/>
-            <Skeleton className="h-10 w-full"/>
-            <div className="flex gap-2">
-                <Skeleton className="h-8 flex-1"/>
-                <Skeleton className="h-8 w-8"/>
-            </div>
-        </Card>
-    );
-}
 
 export default function CardsPage() {
     const {user, isLoading: authLoading} = useAuth();
     const [cards, setCards] = useState<CardType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [manageLinkDialogOpen, setManageLinkDialogOpen] = useState(false);
-    const [qrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-    const [selectedCardId, setSelectedCardId] = useState<string | undefined>();
-    const [selectedCardSlug, setSelectedCardSlug] = useState<string | undefined>();
-    const [selectedCardSubdomain, setSelectedCardSubdomain] = useState<string | undefined>();
-    const [selectedCardName, setSelectedCardName] = useState<string>('');
-    const [selectedCardAvatar, setSelectedCardAvatar] = useState<string | undefined>();
+    const [qrTarget, setQrTarget] = useState<{slug: string; name: string; avatar?: string} | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<{id: string; name: string} | null>(null);
 
     const navigate = useNavigate();
+    const isPaid = user?.accountType === 'paid';
 
     useEffect(() => {
-        if (!authLoading && !user) {
-            navigate('/');
-        } else if (user) {
-            loadCards();
-        }
+        if (!authLoading && !user) navigate('/');
+        else if (user) loadCards();
     }, [user, authLoading, navigate]);
 
     const loadCards = async () => {
         try {
             setIsLoading(true);
-            const userCards = await api.getMyCards();
-            setCards(userCards);
-        } catch (error) {
-            console.error('Failed to load cards:', error);
+            setCards(await api.getMyCards());
+        } catch {
             toast.error('Не удалось загрузить карточки');
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleDeleteConfirm = (cardId: string, cardName: string) => {
-        setSelectedCardId(cardId);
-        setSelectedCardName(cardName);
-        setDeleteDialogOpen(true);
-    };
-
     const handleDeleteCard = async (cardId: string) => {
         try {
             await api.deleteCard(cardId);
-            setCards(cards.filter(c => c._id !== cardId));
+            setCards(prev => prev.filter(c => c._id !== cardId));
             toast.success('Карточка удалена');
-        } catch (error) {
-            console.error('Failed to delete card:', error);
+        } catch {
             toast.error('Не удалось удалить карточку');
         }
     };
 
-    const getCardUrl = (slug?: string) => {
-        if (!slug) return null;
-        return `${window.location.origin}/${slug}`;
-    };
+    const handleLinkUpdated = (cardId: string, newSlug?: string) =>
+        setCards(prev => prev.map(c => c._id === cardId ? {...c, slug: newSlug} : c));
 
-    const getSubdomainUrl = (subdomain: string) => `https://${subdomain}.linkoo.dev`;
+    const handleSubdomainUpdated = (cardId: string, newSubdomain?: string) =>
+        setCards(prev => prev.map(c => c._id === cardId ? {...c, subdomain: newSubdomain} : c));
 
-    const handleCopyLink = async (slug?: string) => {
-        const url = getCardUrl(slug);
-        if (!url) {
-            toast.error('Ссылка недоступна');
-            return;
-        }
+    const canCreateMore = isPaid || (cards.length === 0 && user?.accountType === 'free');
 
-        try {
-            await navigator.clipboard.writeText(url);
-            toast.success('Ссылка скопирована');
-        } catch (error) {
-            toast.error('Не удалось скопировать ссылку');
-        }
-    };
-
-    const handleCopySubdomain = async (subdomain: string) => {
-        try {
-            await navigator.clipboard.writeText(getSubdomainUrl(subdomain));
-            toast.success('Ссылка скопирована');
-        } catch {
-            toast.error('Не удалось скопировать ссылку');
-        }
-    };
-
-    const handleManageLink = (cardId: string, currentSlug?: string, currentSubdomain?: string) => {
-        setSelectedCardId(cardId);
-        setSelectedCardSlug(currentSlug);
-        setSelectedCardSubdomain(currentSubdomain);
-        setManageLinkDialogOpen(true);
-    };
-
-    const handleLinkUpdated = (cardId: string, newSlug?: string) => {
-        setCards(cards.map(card =>
-            card._id === cardId ? {...card, slug: newSlug} : card
-        ));
-    };
-
-    const handleSubdomainUpdated = (cardId: string, newSubdomain?: string) => {
-        setCards(cards.map(card =>
-            card._id === cardId ? {...card, subdomain: newSubdomain} : card
-        ));
-    };
-
-    const handleShowQRCode = (slug: string, cardName: string, avatar?: string) => {
-        setSelectedCardSlug(slug);
-        setSelectedCardName(cardName);
-        setSelectedCardAvatar(avatar);
-        setQrCodeDialogOpen(true);
-    };
-
-    if (!authLoading && !user) {
-        return null;
-    }
-
-    const canCreateMore = user?.accountType === 'paid' || (cards.length === 0 && user?.accountType === 'free');
+    if (!authLoading && !user) return null;
 
     return (
-        <ProfileLayout
-            title="Мои карточки"
-            description="Управляйте своими цифровыми визитками"
-        >
-            {/* Premium Notice for Free Users */}
+        <ProfileLayout title="Мои карточки" description="Управляйте своими цифровыми визитками">
             {user?.accountType === 'free' && cards.length >= 1 && (
                 <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-                    <div className="flex items-start gap-4">
-                        <div className="flex-1">
-                            <h3 className="font-semibold text-lg mb-2">Лимит карточек достигнут</h3>
-                            <p className="text-sm text-gray-700 mb-3">
-                                Обновитесь до Premium для создания неограниченного количества карточек и получения
-                                custom доменов.
-                            </p>
-                            <Button
-                                onClick={() => navigate('/premium')}
-                                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                            >
-                                Перейти на Premium
-                            </Button>
-                        </div>
-                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Лимит карточек достигнут</h3>
+                    <p className="text-sm text-gray-700 mb-3">
+                        Обновитесь до Premium для создания неограниченного количества карточек и получения custom доменов.
+                    </p>
+                    <Button
+                        onClick={() => navigate('/premium')}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    >
+                        Перейти на Premium
+                    </Button>
                 </Card>
             )}
 
-            {/* Create Button */}
             {canCreateMore && (
                 <div className="mb-6">
                     <Button onClick={() => navigate('/editor')} size="lg">
@@ -198,7 +88,6 @@ export default function CardsPage() {
                 </div>
             )}
 
-            {/* Cards Grid */}
             {isLoading && cards.length === 0 ? (
                 <div className="grid gap-4 md:grid-cols-2">
                     <CardSkeleton/>
@@ -218,8 +107,7 @@ export default function CardsPage() {
                     </div>
                 </Card>
             ) : (
-                <div
-                    className={`grid gap-4 md:grid-cols-2 transition-opacity duration-300 ${isLoading ? 'opacity-60' : ''}`}>
+                <div className={`grid gap-4 md:grid-cols-2 transition-opacity duration-300 ${isLoading ? 'opacity-60' : ''}`}>
                     {cards.map((card) => (
                         <Card key={card._id} className="p-4 hover:shadow-lg transition-shadow">
                             <div className="flex items-start gap-3 mb-3">
@@ -227,125 +115,45 @@ export default function CardsPage() {
                                     <img
                                         src={card.avatar}
                                         alt={card.name}
-                                        className="w-12 h-12 rounded-full object-cover"
+                                        className="w-12 h-12 rounded-full object-cover shrink-0"
                                     />
                                 )}
                                 <div className="flex-1 min-w-0">
                                     <h3 className="font-semibold truncate">{card.name}</h3>
-                                    {card.title && (
-                                        <p className="text-sm text-gray-600 truncate">{card.title}</p>
-                                    )}
+                                    {card.title && <p className="text-sm text-gray-600 truncate">{card.title}</p>}
                                     {card.description && (
-                                        <p className="text-xs text-gray-500 line-clamp-2 mt-1">
-                                            {card.description}
-                                        </p>
+                                        <p className="text-xs text-gray-500 line-clamp-2 mt-1">{card.description}</p>
                                     )}
                                 </div>
                             </div>
 
                             <div className="flex gap-2 text-xs text-gray-600 mb-3">
-                                    <span className="flex items-center gap-1">
-                                        <Eye className="h-3 w-3"/>
-                                        {card.viewCount || 0} просмотров
-                                    </span>
+                                <span className="flex items-center gap-1">
+                                    <Eye className="h-3 w-3"/>
+                                    {card.viewCount || 0} просмотров
+                                </span>
                                 <span>•</span>
                                 <span className="flex items-center gap-1">
-                                        {card.isPublic ? (
-                                            <>
-                                                <Globe className="h-3 w-3"/>
-                                                Публичная
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Lock className="h-3 w-3"/>
-                                                Приватная
-                                            </>
-                                        )}
-                                    </span>
+                                    {card.isPublic
+                                        ? <><Globe className="h-3 w-3"/>Публичная</>
+                                        : <><Lock className="h-3 w-3"/>Приватная</>
+                                    }
+                                </span>
                             </div>
 
-                            {/* Short Link */}
-                            {card.slug ? (
-                                <div className="mb-3 p-2 bg-gray-50 rounded-lg">
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            value={getCardUrl(card.slug) || ''}
-                                            readOnly
-                                            className="flex-1 px-2 py-1 bg-white border border-gray-200 rounded text-xs font-mono truncate"
-                                        />
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={() => handleCopyLink(card.slug)}
-                                            className="h-7 w-7 p-0"
-                                            title="Копировать ссылку"
-                                        >
-                                            <Copy className="h-3 w-3"/>
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={() => handleManageLink(card._id!, card.slug, card.subdomain)}
-                                            className="h-7 w-7 p-0"
-                                            title="Управление ссылкой"
-                                        >
-                                            <Edit className="h-3 w-3"/>
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={() => handleShowQRCode(card.slug!, card.name, card.avatar)}
-                                            className="h-7 w-7 p-0"
-                                            title="QR код"
-                                        >
-                                            <QrCode className="h-3 w-3"/>
-                                        </Button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="mb-3">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => handleManageLink(card._id!, undefined, card.subdomain)}
-                                        className="w-full"
-                                    >
-                                        Создать ссылку
-                                    </Button>
-                                </div>
-                            )}
+                            <CardLinkSection
+                                cardId={card._id!}
+                                slug={card.slug}
+                                onUpdated={(slug) => handleLinkUpdated(card._id!, slug)}
+                                onQRCode={() => setQrTarget({slug: card.slug!, name: card.name, avatar: card.avatar})}
+                            />
 
-                            {/* Subdomain */}
-                            {card.subdomain && (
-                                <div className="mb-3 p-2 bg-purple-50 rounded-lg border border-purple-100">
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            value={getSubdomainUrl(card.subdomain)}
-                                            readOnly
-                                            className="flex-1 px-2 py-1 bg-white border border-purple-200 rounded text-xs font-mono truncate"
-                                        />
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={() => handleCopySubdomain(card.subdomain!)}
-                                            className="h-7 w-7 p-0"
-                                            title="Копировать поддомен"
-                                        >
-                                            <Copy className="h-3 w-3"/>
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={() => handleManageLink(card._id!, card.slug, card.subdomain)}
-                                            className="h-7 w-7 p-0"
-                                            title="Управление поддоменом"
-                                        >
-                                            <Edit className="h-3 w-3"/>
-                                        </Button>
-                                    </div>
-                                </div>
+                            {isPaid && (
+                                <CardSubdomainSection
+                                    cardId={card._id!}
+                                    subdomain={card.subdomain}
+                                    onUpdated={(sub) => handleSubdomainUpdated(card._id!, sub)}
+                                />
                             )}
 
                             <div className="flex gap-2">
@@ -358,10 +166,20 @@ export default function CardsPage() {
                                     <Edit className="h-4 w-4 mr-2"/>
                                     Редактировать
                                 </Button>
+                                {isPaid && (
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => navigate(`/analytics/${card._id}`)}
+                                        title="Аналитика"
+                                    >
+                                        <BarChart2 className="h-4 w-4"/>
+                                    </Button>
+                                )}
                                 <Button
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => handleDeleteConfirm(card._id!, card.name)}
+                                    onClick={() => setDeleteTarget({id: card._id!, name: card.name})}
                                     className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
                                     <Trash2 className="h-4 w-4"/>
@@ -371,40 +189,23 @@ export default function CardsPage() {
                     ))}
                 </div>
             )}
-            {/* Dialogs */}
-            {
-                selectedCardId && (
-                    <ManageLinkDialog
-                        open={manageLinkDialogOpen}
-                        onOpenChange={setManageLinkDialogOpen}
-                        cardId={selectedCardId}
-                        currentSlug={selectedCardSlug}
-                        currentSubdomain={selectedCardSubdomain}
-                        isPaid={user?.accountType === 'paid'}
-                        onLinkUpdated={(newSlug) => handleLinkUpdated(selectedCardId, newSlug)}
-                        onSubdomainUpdated={(newSubdomain) => handleSubdomainUpdated(selectedCardId, newSubdomain)}
-                    />
-                )
-            }
 
-            {
-                selectedCardSlug && (
-                    <QRCodeDialog
-                        open={qrCodeDialogOpen}
-                        onOpenChange={setQrCodeDialogOpen}
-                        url={getCardUrl(selectedCardSlug) || ''}
-                        cardName={selectedCardName}
-                        avatar={selectedCardAvatar}
-                    />
-                )
-            }
+            {qrTarget && (
+                <QRCodeDialog
+                    open={!!qrTarget}
+                    onOpenChange={(open) => !open && setQrTarget(null)}
+                    url={`${window.location.origin}/${qrTarget.slug}`}
+                    cardName={qrTarget.name}
+                    avatar={qrTarget.avatar}
+                />
+            )}
 
             <CardDeleteDialog
-                open={deleteDialogOpen}
-                cardName={selectedCardName}
-                cardId={selectedCardId}
+                open={!!deleteTarget}
+                onOpenChange={(open) => !open && setDeleteTarget(null)}
+                cardName={deleteTarget?.name ?? ''}
+                cardId={deleteTarget?.id}
                 onDelete={handleDeleteCard}
-                onOpenChange={setDeleteDialogOpen}
             />
         </ProfileLayout>
     );

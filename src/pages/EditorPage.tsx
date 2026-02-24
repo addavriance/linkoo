@@ -20,7 +20,7 @@ import {ThemeSection} from '@/components/editor/ThemeSection';
 import {getThemeById} from '@/lib/themes';
 import {shortenGuestCardUrl} from '@/lib/compression';
 import {toast} from '@/lib/toast';
-import {CardPreview} from '@/components/CardPreview';
+import {CardPreview} from '@/components/cards/CardPreview.tsx';
 import {useAuth} from "@/contexts/AuthContext.tsx";
 import {useDialog} from "@/contexts/DialogContext.tsx";
 

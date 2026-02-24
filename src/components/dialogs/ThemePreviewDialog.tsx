@@ -13,7 +13,7 @@ import {
     Star,
     Plus,
 } from 'lucide-react';
-import {CardPreview} from "@/components/CardPreview.tsx";
+import {CardPreview} from "@/components/cards/CardPreview.tsx";
 import {CARD_SAMPLES} from "@/constants";
 import {randInt} from "@/lib/utils.ts";
 

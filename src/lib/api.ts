@@ -263,8 +263,8 @@ class ApiClient {
         return response.data.data;
     }
 
-    async getLinkByCardId(cardId: string): Promise<{ slug: string; createdAt: string; clickCount: number } | null> {
-        const response = await this.client.get<ApiResponse<{ link: { slug: string; createdAt: string; clickCount: number } | null }>>(`/links/card/${cardId}`);
+    async getLinkByCardId(cardId: string): Promise<{ slug: string; createdAt: string } | null> {
+        const response = await this.client.get<ApiResponse<{ link: { slug: string; createdAt: string } | null }>>(`/links/card/${cardId}`);
         if (!response.data.success || !response.data.data) {
             return null;
         }
@@ -297,6 +297,23 @@ class ApiClient {
 
     async deleteCardLink(slug: string): Promise<void> {
         await this.client.delete(`/links/${slug}`);
+    }
+
+    trackCardView(cardId: string): void {
+        this.client.post(`/cards/${cardId}/view`).catch(() => {});
+    }
+
+    // ============= Analytics API =============
+    async getCardAnalytics(cardId: string, period: '7d' | '30d' = '30d'): Promise<any> {
+        const response = await this.client.get<ApiResponse<any>>(`/analytics/${cardId}`, {params: {period}});
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to get analytics');
+        }
+        return response.data.data;
+    }
+
+    async trackCardEvent(cardId: string, type: string, platform?: string): Promise<void> {
+        await this.client.post(`/analytics/${cardId}/event`, {type, platform}).catch(() => {});
     }
 
     async setCardSubdomain(cardId: string, subdomain: string): Promise<Card> {

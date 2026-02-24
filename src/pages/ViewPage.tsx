@@ -59,6 +59,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                     setError(null);
                     const card = await api.getCardBySubdomain(subdomain);
                     setCardData(card);
+                    if (card._id) api.trackCardView(card._id);
                 } catch (err: any) {
                     setError(err.response?.data?.message || 'Карточка не найдена');
                     setCardData(null);
@@ -77,6 +78,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                         // Загружаем карточку
                         const card = await api.getCard(linkInfo.cardId);
                         setCardData(card);
+                        api.trackCardView(linkInfo.cardId);
 
                         window.scrollTo({ top: 0, behavior: 'instant' });
                     } else if (linkInfo.targetType === 'url' && linkInfo.rawData) {
@@ -152,6 +154,12 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
 
     const theme = getThemeById(cardData.theme || 'light_minimal');
 
+    const track = (type: string, platform?: string) => {
+        if (cardData._id) {
+            api.trackCardEvent(cardData._id, type, platform);
+        }
+    };
+
     // Сохранить контакт
     const saveContact = () => {
         const vCard = generateVCard(cardData);
@@ -166,6 +174,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
         URL.revokeObjectURL(url);
 
         setSaved(true);
+        track('contact_save');
         toast({
             title: "Контакт сохранён",
             description: "Визитка добавлена в ваши контакты",
@@ -175,6 +184,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
     // Поделиться визиткой
     const shareCard = async () => {
         const url = window.location.href;
+        track('share');
 
         if (navigator.share) {
             try {
@@ -306,7 +316,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                             <Card className="card-hover transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                                 <CardContent className="p-4">
                                     <button
-                                        onClick={() => window.location.href = `mailto:${cardData?.email}`}
+                                        onClick={() => { track('email_click'); window.location.href = `mailto:${cardData?.email}`; }}
                                         className="flex items-center space-x-3 w-full text-left hover:text-blue-600 transition-colors duration-200"
                                     >
                                         <div className="p-3 bg-blue-100 rounded-xl transition-colors duration-200 group-hover:bg-blue-200">
@@ -326,7 +336,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                             <Card className="card-hover transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                                 <CardContent className="p-4">
                                     <button
-                                        onClick={() => window.location.href = `tel:${cardData?.phone}`}
+                                        onClick={() => { track('phone_click'); window.location.href = `tel:${cardData?.phone}`; }}
                                         className="flex items-center space-x-3 w-full text-left hover:text-green-600 transition-colors duration-200"
                                     >
                                         <div className="p-3 bg-green-100 rounded-xl transition-colors duration-200 group-hover:bg-green-200">
@@ -346,7 +356,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                             <Card className="card-hover transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                                 <CardContent className="p-4">
                                     <button
-                                        onClick={() => openLink(cardData?.website || '')}
+                                        onClick={() => { track('website_click'); openLink(cardData?.website || ''); }}
                                         className="flex items-center space-x-3 w-full text-left hover:text-purple-600 transition-colors duration-200"
                                     >
                                         <div className="p-3 bg-purple-100 rounded-xl transition-colors duration-200 group-hover:bg-purple-200">
@@ -416,7 +426,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                         return (
                                             <button
                                                 key={index}
-                                                onClick={() => openSocialLink(social.platform, processedUrl)}
+                                                onClick={() => { track('social_click', social.platform); openSocialLink(social.platform, processedUrl); }}
                                                 className="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors text-left w-full group"
                                             >
                                                 <div className={`p-2 rounded-lg text-white transition-transform group-hover:scale-110`}>

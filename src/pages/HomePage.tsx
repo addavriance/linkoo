@@ -4,7 +4,7 @@ import {Card, CardContent} from '@/components/ui/card';
 import {
     Sparkles, Share2, Palette, Zap, ArrowRight, Smartphone
 } from 'lucide-react';
-import {CardsCarousel} from '@/components/CardsCarousel';
+import {CardsCarousel} from '@/components/cards/CardsCarousel.tsx';
 
 const HomePage = () => {
     const navigate = useNavigate();
