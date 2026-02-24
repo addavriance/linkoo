@@ -299,6 +299,26 @@ class ApiClient {
         await this.client.delete(`/links/${slug}`);
     }
 
+    async setCardSubdomain(cardId: string, subdomain: string): Promise<Card> {
+        const response = await this.client.patch<ApiResponse<Card>>(`/cards/${cardId}/subdomain`, {subdomain});
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to set subdomain');
+        }
+        return response.data.data;
+    }
+
+    async deleteCardSubdomain(cardId: string): Promise<void> {
+        await this.client.delete(`/cards/${cardId}/subdomain`);
+    }
+
+    async getCardBySubdomain(subdomain: string): Promise<Card> {
+        const response = await this.client.get<ApiResponse<Card>>(`/subdomain/${subdomain}`);
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Card not found');
+        }
+        return response.data.data;
+    }
+
     // ============= Payment API =============
     async createPayment(data: PaymentCreation): Promise<PaymentResponse> {
         // Защита от дубликатов запросов

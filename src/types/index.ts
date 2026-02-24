@@ -84,6 +84,7 @@ export interface Card {
     theme: string;
     customTheme?: CustomTheme;
     visibility: VisibilitySettings;
+    subdomain?: string;
     isActive?: boolean;
     isPublic?: boolean;
     viewCount?: number;

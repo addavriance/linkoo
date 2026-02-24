@@ -55,6 +55,7 @@ export default function CardsPage() {
 
     const [selectedCardId, setSelectedCardId] = useState<string | undefined>();
     const [selectedCardSlug, setSelectedCardSlug] = useState<string | undefined>();
+    const [selectedCardSubdomain, setSelectedCardSubdomain] = useState<string | undefined>();
     const [selectedCardName, setSelectedCardName] = useState<string>('');
     const [selectedCardAvatar, setSelectedCardAvatar] = useState<string | undefined>();
 
@@ -103,6 +104,8 @@ export default function CardsPage() {
         return `${window.location.origin}/${slug}`;
     };
 
+    const getSubdomainUrl = (subdomain: string) => `https://${subdomain}.linkoo.dev`;
+
     const handleCopyLink = async (slug?: string) => {
         const url = getCardUrl(slug);
         if (!url) {
@@ -118,15 +121,31 @@ export default function CardsPage() {
         }
     };
 
-    const handleManageLink = (cardId: string, currentSlug?: string) => {
+    const handleCopySubdomain = async (subdomain: string) => {
+        try {
+            await navigator.clipboard.writeText(getSubdomainUrl(subdomain));
+            toast.success('Ссылка скопирована');
+        } catch {
+            toast.error('Не удалось скопировать ссылку');
+        }
+    };
+
+    const handleManageLink = (cardId: string, currentSlug?: string, currentSubdomain?: string) => {
         setSelectedCardId(cardId);
         setSelectedCardSlug(currentSlug);
+        setSelectedCardSubdomain(currentSubdomain);
         setManageLinkDialogOpen(true);
     };
 
     const handleLinkUpdated = (cardId: string, newSlug?: string) => {
         setCards(cards.map(card =>
             card._id === cardId ? {...card, slug: newSlug} : card
+        ));
+    };
+
+    const handleSubdomainUpdated = (cardId: string, newSubdomain?: string) => {
+        setCards(cards.map(card =>
+            card._id === cardId ? {...card, subdomain: newSubdomain} : card
         ));
     };
 
@@ -267,7 +286,7 @@ export default function CardsPage() {
                                         <Button
                                             size="sm"
                                             variant="ghost"
-                                            onClick={() => handleManageLink(card._id!, card.slug)}
+                                            onClick={() => handleManageLink(card._id!, card.slug, card.subdomain)}
                                             className="h-7 w-7 p-0"
                                             title="Управление ссылкой"
                                         >
@@ -289,11 +308,43 @@ export default function CardsPage() {
                                     <Button
                                         size="sm"
                                         variant="outline"
-                                        onClick={() => handleManageLink(card._id!)}
+                                        onClick={() => handleManageLink(card._id!, undefined, card.subdomain)}
                                         className="w-full"
                                     >
                                         Создать ссылку
                                     </Button>
+                                </div>
+                            )}
+
+                            {/* Subdomain */}
+                            {card.subdomain && (
+                                <div className="mb-3 p-2 bg-purple-50 rounded-lg border border-purple-100">
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="text"
+                                            value={getSubdomainUrl(card.subdomain)}
+                                            readOnly
+                                            className="flex-1 px-2 py-1 bg-white border border-purple-200 rounded text-xs font-mono truncate"
+                                        />
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => handleCopySubdomain(card.subdomain!)}
+                                            className="h-7 w-7 p-0"
+                                            title="Копировать поддомен"
+                                        >
+                                            <Copy className="h-3 w-3"/>
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => handleManageLink(card._id!, card.slug, card.subdomain)}
+                                            className="h-7 w-7 p-0"
+                                            title="Управление поддоменом"
+                                        >
+                                            <Edit className="h-3 w-3"/>
+                                        </Button>
+                                    </div>
                                 </div>
                             )}
 
@@ -328,7 +379,10 @@ export default function CardsPage() {
                         onOpenChange={setManageLinkDialogOpen}
                         cardId={selectedCardId}
                         currentSlug={selectedCardSlug}
+                        currentSubdomain={selectedCardSubdomain}
+                        isPaid={user?.accountType === 'paid'}
                         onLinkUpdated={(newSlug) => handleLinkUpdated(selectedCardId, newSlug)}
+                        onSubdomainUpdated={(newSubdomain) => handleSubdomainUpdated(selectedCardId, newSubdomain)}
                     />
                 )
             }
