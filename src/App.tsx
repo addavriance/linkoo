@@ -1,6 +1,7 @@
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { DialogProvider } from '@/contexts/DialogContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 import HomePage from '@/pages/HomePage';
 import EditorPage from '@/pages/EditorPage';
@@ -44,11 +45,12 @@ function App({subdomain}: AppProps = {}) {
     }
 
     return (
-        <AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
             <DialogProvider>
                 <Router>
                     <ScrollToTop/>
-                    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+                    <div className="min-h-screen bg-background">
                         {/* Header */}
                         <Header/>
 
@@ -91,7 +93,8 @@ function App({subdomain}: AppProps = {}) {
                     </div>
                 </Router>
             </DialogProvider>
-        </AuthProvider>
+            </AuthProvider>
+        </ThemeProvider>
     );
 }
 

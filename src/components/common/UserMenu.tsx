@@ -30,10 +30,10 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                 className="fixed inset-0 z-30 h-screen"
                 onClick={() => setUserMenuOpen(false)}
             />
-            <div className="absolute right-0 mt-2 w-64 rounded-lg bg-white shadow-lg border border-gray-200 z-40">
-                <div className="p-4 border-b border-gray-100">
-                    <p className="font-medium text-gray-900 truncate">{user.profile.name}</p>
-                    <p className="text-sm text-gray-500 truncate">{user.email}</p>
+            <div className="absolute right-0 mt-2 w-64 rounded-lg bg-background shadow-lg border border-border z-40">
+                <div className="p-4 border-b border-border">
+                    <p className="font-medium text-foreground truncate">{user.profile.name}</p>
+                    <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                 </div>
                 <div className="p-2">
                     <button
@@ -41,7 +41,7 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                             setUserMenuOpen(false);
                             navigate('/profile');
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-md transition-colors"
                     >
                         <User className="h-4 w-4" />
                         <span>Профиль</span>
@@ -51,7 +51,7 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                             setUserMenuOpen(false);
                             navigate('/cards');
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-md transition-colors"
                     >
                         <IdCard className="h-4 w-4" />
                         <span>Мои карточки</span>
@@ -61,7 +61,7 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                             setUserMenuOpen(false);
                             navigate('/security');
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-md transition-colors"
                     >
                         <Shield className="h-4 w-4" />
                         <span>Безопасность</span>
@@ -71,7 +71,7 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                             setUserMenuOpen(false);
                             navigate('/subscription');
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-md transition-colors"
                     >
                         <CreditCard className="h-4 w-4" />
                         <span>Платежи и подписки</span>
@@ -81,7 +81,7 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                             setUserMenuOpen(false);
                             navigate('/settings');
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-md transition-colors"
                     >
                         <Settings className="h-4 w-4" />
                         <span>Настройки</span>
@@ -89,7 +89,7 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
 
                     {user.accountType === 'free' && (
                         <>
-                            <div className="my-2 border-t border-gray-200"></div>
+                            <div className="my-2 border-t border-border"></div>
                             <button
                                 onClick={() => {
                                     setUserMenuOpen(false);
@@ -103,13 +103,13 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                         </>
                     )}
 
-                    <div className="my-2 border-t border-gray-200"></div>
+                    <div className="my-2 border-t border-border"></div>
                     <button
                         onClick={() => {
                             setUserMenuOpen(false);
                             logout();
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-destructive hover:bg-destructive/15 rounded-md transition-colors"
                     >
                         <LogOut className="h-4 w-4" />
                         <span>Выйти</span>

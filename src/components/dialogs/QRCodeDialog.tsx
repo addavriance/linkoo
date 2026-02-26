@@ -34,7 +34,7 @@ function PremiumLock({children, onUpgrade}: { children: React.ReactNode; onUpgra
                 {children}
             </div>
             <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-lg bg-white/60 backdrop-blur-[1px] border border-amber-200"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-lg bg-background/60 backdrop-blur-[1px] border border-amber-200"
                 onClick={onUpgrade}
             >
                 <div className="flex items-center gap-1.5 text-amber-700">
@@ -269,12 +269,12 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
 
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                     {/* Preview */}
-                    <div className="lg:col-span-2 flex flex-col items-center justify-center bg-gray-50 rounded-lg p-6">
+                    <div className="lg:col-span-2 flex flex-col items-center justify-center bg-muted rounded-lg p-6">
                         <div
                             ref={containerRef}
-                            className="bg-white p-4 rounded-lg shadow-md relative"
+                            className="bg-background p-4 rounded-lg shadow-md relative"
                         />
-                        <p className="text-xs text-gray-500 mt-1 text-center break-all max-w-[300px]">
+                        <p className="text-xs text-muted-foreground mt-1 text-center break-all max-w-[300px]">
                             {url}
                         </p>
                     </div>
@@ -346,7 +346,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                                     </Button>
                                 ))}
                             </div>
-                            <p className="text-xs text-gray-500">{size} × {size} px</p>
+                            <p className="text-xs text-muted-foreground">{size} × {size} px</p>
                         </div>
 
                         {/* Форма точек — только Premium */}
@@ -443,9 +443,9 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                                 /* Premium: полный контроль над логотипом */
                                 logoImage ? (
                                     <div className="space-y-2">
-                                        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                                        <div className="flex items-center gap-2 p-2 bg-muted rounded">
                                             <img src={logoImage} alt="Logo" className="h-10 w-10 object-contain"/>
-                                            <span className="flex-1 text-sm text-gray-600">Логотип загружен</span>
+                                            <span className="flex-1 text-sm text-muted-foreground">Логотип загружен</span>
                                             <Button variant="ghost" size="sm" onClick={removeLogo}>
                                                 Удалить
                                             </Button>
@@ -480,21 +480,21 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                                         >
                                             Загрузить логотип
                                         </Button>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="text-xs text-muted-foreground mt-1">
                                             PNG, JPG, SVG (рекомендуется квадратное изображение)
                                         </p>
-                                        <p className="text-xs text-gray-400 mt-0.5">
+                                        <p className="text-xs text-muted-foreground mt-0.5">
                                             Без логотипа — чистый QR код
                                         </p>
                                     </div>
                                 )
                             ) : (
                                 /* Free: логотип Linkoo всегда, нельзя изменить */
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg border border-border">
                                     <img src={LINKOO_LOGO_URL} alt="Linkoo" className="h-8 w-8 object-contain"/>
                                     <div className="flex-1">
-                                        <p className="text-sm font-medium text-gray-700">Логотип Linkoo</p>
-                                        <p className="text-xs text-gray-500">Всегда отображается в центре QR</p>
+                                        <p className="text-sm font-medium text-muted-foreground">Логотип Linkoo</p>
+                                        <p className="text-xs text-muted-foreground">Всегда отображается в центре QR</p>
                                     </div>
                                     <Button
                                         variant="outline"

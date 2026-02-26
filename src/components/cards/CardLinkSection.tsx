@@ -80,8 +80,8 @@ export function CardLinkSection({cardId, slug, onUpdated, onQRCode}: CardLinkSec
 
     if (!slug) {
         return (
-            <div className="mb-3 p-2 bg-gray-50 rounded-lg flex items-center gap-1.5">
-                <span className="text-xs text-gray-400 shrink-0 font-mono">{origin}/</span>
+            <div className="mb-3 p-2 bg-muted rounded-lg flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground shrink-0 font-mono">{origin}/</span>
                 <input
                     value={input}
                     onChange={e => setInput(sanitize(e.target.value))}
@@ -106,7 +106,7 @@ export function CardLinkSection({cardId, slug, onUpdated, onQRCode}: CardLinkSec
                     <input
                         value={deleteInput}
                         onChange={e => setDeleteInput(e.target.value)}
-                        className="flex-1 text-xs font-mono border border-red-200 rounded px-2 py-1 outline-none bg-white min-w-0"
+                        className="flex-1 text-xs font-mono border border-red-200 rounded px-2 py-1 outline-none bg-background min-w-0"
                         placeholder={slug}
                         autoFocus
                     />
@@ -125,8 +125,8 @@ export function CardLinkSection({cardId, slug, onUpdated, onQRCode}: CardLinkSec
 
     if (mode === 'edit') {
         return (
-            <div className="mb-3 p-2 bg-gray-50 rounded-lg flex items-center gap-1.5">
-                <span className="text-xs text-gray-400 shrink-0 font-mono">{origin}/</span>
+            <div className="mb-3 p-2 bg-muted rounded-lg flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground shrink-0 font-mono">{origin}/</span>
                 <input
                     value={input}
                     onChange={e => setInput(sanitize(e.target.value))}
@@ -150,7 +150,7 @@ export function CardLinkSection({cardId, slug, onUpdated, onQRCode}: CardLinkSec
     }
 
     return (
-        <div className="mb-3 p-2 bg-gray-50 rounded-lg flex items-center gap-1.5">
+        <div className="mb-3 p-2 bg-muted rounded-lg flex items-center gap-1.5">
             <input
                 value={`${origin}/${slug}`}
                 readOnly

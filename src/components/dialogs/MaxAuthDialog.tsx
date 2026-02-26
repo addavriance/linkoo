@@ -210,7 +210,7 @@ export const MaxAuthDialog: React.FC<MaxAuthDialogProps> = ({ open, onOpenChange
                         <div className="flex flex-col items-center space-y-4">
                             <div
                                 ref={qrRef}
-                                className="bg-white p-4 rounded-xl shadow-md"
+                                className="bg-background p-4 rounded-xl shadow-md"
                             />
                             <div className="text-center space-y-2">
                                 <p className="text-sm font-medium text-foreground">

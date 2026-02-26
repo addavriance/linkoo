@@ -38,14 +38,14 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
             {/* Mobile menu panel */}
             <div
                 id="mobile-menu"
-                className="mobile-menu-panel mobile-menu-panel-animated fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl lg:hidden overflow-y-auto select-none"
+                className="mobile-menu-panel mobile-menu-panel-animated fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-background shadow-2xl lg:hidden overflow-y-auto select-none"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="mobile-menu-title"
             >
                 <div className="flex h-full flex-col">
                     {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                    <div className="flex items-center justify-between p-6 border-b border-border">
                         <Link
                             to="/"
                             className="-m-1.5 p-1.5 flex items-center space-x-2 group"
@@ -55,11 +55,11 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold transition-all duration-200 group-hover:scale-110">
                                 L
                             </div>
-                            <span className="text-lg font-bold text-gray-900">Linkoo</span>
+                            <span className="text-lg font-bold text-foreground">Linkoo</span>
                         </Link>
                         <button
                             type="button"
-                            className="close-button -m-2.5 rounded-md p-2.5 text-gray-700 hover:bg-red-50 transition-all duration-200 hover:scale-105 active:scale-95"
+                            className="close-button -m-2.5 rounded-md p-2.5 text-muted-foreground hover:bg-red-50 transition-all duration-200 hover:scale-105 active:scale-95"
                             onClick={handleCloseMenu}
                             disabled={isAnimating}
                         >
@@ -81,7 +81,7 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                                         className={`nav-item-mobile w-full flex items-center space-x-3 rounded-xl px-4 py-3 text-left text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
                                             active
                                                 ? 'nav-item-active bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
-                                                : 'text-gray-900 hover:bg-gray-50 hover:text-blue-600'
+                                                : 'text-foreground hover:bg-muted hover:text-blue-600'
                                         }`}
                                         style={{
                                             animation: `slideInItem 0.4s ease-out ${0.1 + index * 0.05}s forwards`
@@ -99,7 +99,7 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                     </div>
 
                     {/* Footer actions */}
-                    <div className="border-t border-gray-100 p-6 space-y-4">
+                    <div className="border-t border-border p-6 space-y-4">
                         {/* Auth button for mobile menu */}
                         {!isAuthenticated && (
                             <Button
@@ -117,7 +117,7 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
 
                         {/* User info for mobile menu */}
                         {isAuthenticated && user && (
-                            <div className="footer-button footer-button-animated-1 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4">
+                            <div className="footer-button footer-button-animated-1 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-xl p-4">
                                 <div className="flex items-center gap-3 mb-3">
                                     {user.profile.avatar ? (
                                         <img
@@ -131,8 +131,8 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                                         </div>
                                     )}
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-medium text-gray-900 text-sm truncate">{user.profile.name}</p>
-                                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                                        <p className="font-medium text-foreground text-sm truncate">{user.profile.name}</p>
+                                        <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                                     </div>
                                 </div>
                                 <div className="space-y-2">

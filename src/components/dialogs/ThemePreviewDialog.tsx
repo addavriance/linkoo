@@ -45,7 +45,7 @@ export default function ThemePreviewDialog({
                 {/* Информация о теме */}
                 <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Категория:</span>
+                        <span className="text-sm text-muted-foreground">Категория:</span>
                         <Badge variant="outline" className="flex items-center gap-1">
                             <ThemeIcon name={themeCategories[theme.category]?.icon} className="h-3 w-3" />
                             {themeCategories[theme.category]?.name}
@@ -53,7 +53,7 @@ export default function ThemePreviewDialog({
                     </div>
                     {theme.popular && (
                         <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Статус:</span>
+                            <span className="text-sm text-muted-foreground">Статус:</span>
                             <Badge variant="secondary">
                                 <Star className="h-3 w-3 mr-1" />
                                 Популярная тема

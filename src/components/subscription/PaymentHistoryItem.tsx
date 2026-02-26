@@ -61,7 +61,7 @@ export const PaymentHistoryItem = ({payment}: PaymentHistoryProps) => {
     };
 
     return (
-        <Card key={payment._id} className="p-4 hover:bg-gray-50 transition-colors">
+        <Card key={payment._id} className="p-4 hover:bg-muted transition-colors">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 flex-1">
                     <div className="mt-1">
@@ -75,20 +75,20 @@ export const PaymentHistoryItem = ({payment}: PaymentHistoryProps) => {
                             <span
                                 className={`text-xs px-2 py-0.5 rounded-full ${
                                     payment.status === 'succeeded' || (payment.status === 'waiting_for_capture' && payment.amount === 1)
-                                        ? 'bg-green-100 text-green-700'
+                                        ? 'bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100'
                                         : payment.status === 'canceled'
-                                            ? 'bg-red-100 text-red-700'
-                                            : 'bg-yellow-100 text-yellow-700'
+                                            ? 'bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100'
+                                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100'
                                 }`}
                             >
-                                                                    {getStatusText(payment.status, payment)}
-                                                                </span>
+                                {getStatusText(payment.status, payment)}
+                            </span>
                         </div>
-                        <p className="text-sm text-gray-500 mb-2">
+                        <p className="text-sm text-muted-foreground mb-2">
                             {formatDate(payment.createdAt)}
                         </p>
                         {payment.paymentMethod?.card && (
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-muted-foreground">
                                 {payment.paymentMethod.card.card_type} •••• {payment.paymentMethod.card.last4}
                             </div>
                         )}

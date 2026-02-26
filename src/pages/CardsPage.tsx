@@ -65,9 +65,9 @@ export default function CardsPage() {
     return (
         <ProfileLayout title="Мои карточки" description="Управляйте своими цифровыми визитками">
             {user?.accountType === 'free' && cards.length >= 1 && (
-                <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+                <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200">
                     <h3 className="font-semibold text-lg mb-2">Лимит карточек достигнут</h3>
-                    <p className="text-sm text-gray-700 mb-3">
+                    <p className="text-sm text-muted-foreground mb-3">
                         Обновитесь до Premium для создания неограниченного количества карточек и получения custom доменов.
                     </p>
                     <Button
@@ -96,11 +96,11 @@ export default function CardsPage() {
             ) : cards.length === 0 ? (
                 <Card className="p-12 text-center">
                     <div className="flex flex-col items-center">
-                        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                            <Plus className="h-8 w-8 text-gray-400"/>
+                        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                            <Plus className="h-8 w-8 text-muted-foreground"/>
                         </div>
                         <h3 className="text-xl font-semibold mb-2">У вас пока нет карточек</h3>
-                        <p className="text-gray-600 mb-6">Создайте свою первую цифровую визитку</p>
+                        <p className="text-muted-foreground mb-6">Создайте свою первую цифровую визитку</p>
                         <Button onClick={() => navigate('/editor')} size="lg">
                             Создать первую карточку
                         </Button>
@@ -120,14 +120,14 @@ export default function CardsPage() {
                                 )}
                                 <div className="flex-1 min-w-0">
                                     <h3 className="font-semibold truncate">{card.name}</h3>
-                                    {card.title && <p className="text-sm text-gray-600 truncate">{card.title}</p>}
+                                    {card.title && <p className="text-sm text-muted-foreground truncate">{card.title}</p>}
                                     {card.description && (
-                                        <p className="text-xs text-gray-500 line-clamp-2 mt-1">{card.description}</p>
+                                        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{card.description}</p>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="flex gap-2 text-xs text-gray-600 mb-3">
+                            <div className="flex gap-2 text-xs text-muted-foreground mb-3">
                                 <span className="flex items-center gap-1">
                                     <Eye className="h-3 w-3"/>
                                     {card.viewCount || 0} просмотров

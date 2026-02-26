@@ -46,12 +46,12 @@ export function ProfileLayout({children, title, description}: ProfileLayoutProps
                 {/* Mobile/Tablet Header */}
                 <div className="lg:hidden mb-6">
                     <h1 className="text-3xl font-bold">{title}</h1>
-                    {description && <p className="text-gray-600 mt-1">{description}</p>}
+                    {description && <p className="text-muted-foreground mt-1">{description}</p>}
                 </div>
 
                 {/* Mobile/Tablet Navigation Tabs */}
                 <div className="lg:hidden mb-6">
-                    <nav className="flex gap-1 sm:gap-2 border-b border-gray-200 overflow-x-auto scrollbar-hide">
+                    <nav className="flex gap-1 sm:gap-2 border-b border-border overflow-x-auto scrollbar-hide">
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             const isActive = location.pathname === item.path;
@@ -64,11 +64,11 @@ export function ProfileLayout({children, title, description}: ProfileLayoutProps
                                         flex items-center justify-center gap-2 px-3 sm:px-4 py-3 border-b-2 font-medium transition-colors whitespace-nowrap
                                         ${isActive
                                             ? 'border-blue-500 text-blue-600'
-                                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                            : 'border-transparent text-muted-foreground hover:text-muted-foreground hover:border-border'
                                         }
                                     `}
                                 >
-                                    <Icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`}/>
+                                    <Icon className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-muted-foreground'}`}/>
                                     <span className="hidden sm:inline text-sm">{item.label}</span>
                                 </Link>
                             );
@@ -83,12 +83,12 @@ export function ProfileLayout({children, title, description}: ProfileLayoutProps
                             {/* Desktop Title */}
                             <div className="mb-8">
                                 <h1 className="text-3xl font-bold">{title}</h1>
-                                {description && <p className="text-gray-600 mt-2">{description}</p>}
+                                {description && <p className="text-muted-foreground mt-2">{description}</p>}
                             </div>
 
                             {/* Navigation */}
                             <nav className="space-y-1">
-                                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                                     Аккаунт
                                 </div>
                                 {navItems.map((item) => {
@@ -102,12 +102,12 @@ export function ProfileLayout({children, title, description}: ProfileLayoutProps
                                             className={`
                                                 flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors
                                                 ${isActive
-                                                    ? 'bg-blue-50 text-blue-700'
-                                                    : 'text-gray-700 hover:bg-gray-100'
+                                                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20'
+                                                    : 'text-muted-foreground hover:bg-muted'
                                                 }
                                             `}
                                         >
-                                            <Icon className={`h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-500'}`}/>
+                                            <Icon className={`h-5 w-5 ${isActive ? 'text-blue-700' : 'text-muted-foreground'}`}/>
                                             {item.label}
                                         </Link>
                                     );

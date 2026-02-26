@@ -30,7 +30,7 @@ export function PaymentMethodCard({method, onDelete, isDefault}: PaymentMethodCa
 
     const getCardIcon = (_cardType?: string) => {
         // Можно добавить разные иконки для Visa, MasterCard и т.д.
-        return <CreditCard className="h-6 w-6 text-blue-600"/>;
+        return <CreditCard className="h-6 w-6 text-blue-600 dark:text-blue-100" />;
     };
 
     const formatExpiryDate = () => {
@@ -39,10 +39,10 @@ export function PaymentMethodCard({method, onDelete, isDefault}: PaymentMethodCa
     };
 
     return (
-        <Card className="p-4 hover:bg-gray-50 transition-colors">
+        <Card className="p-4 hover:bg-muted transition-colors">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center text-white">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-600 dark:to-purple-600 flex items-center justify-center text-white">
                         {getCardIcon(method.card?.card_type)}
                     </div>
                     <div>
@@ -51,13 +51,13 @@ export function PaymentMethodCard({method, onDelete, isDefault}: PaymentMethodCa
                                 {method.title || `${method.card?.card_type} •••• ${method.card?.last4}`}
                             </p>
                             {isDefault && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-700 dark:text-blue-100">
                                     По умолчанию
                                 </span>
                             )}
                         </div>
                         {method.card && (
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                                 Истекает {formatExpiryDate()}
                             </p>
                         )}
@@ -68,7 +68,7 @@ export function PaymentMethodCard({method, onDelete, isDefault}: PaymentMethodCa
                     size="sm"
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-red-600 hover:text-destructive-foreground hover:bg-destructive"
                 >
                     {isDeleting ? (
                         <Loader2 className="h-4 w-4 animate-spin"/>

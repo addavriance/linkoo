@@ -26,7 +26,7 @@ export default function PremiumPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30">
             <div className="absolute inset-0 z-1 h-[150vh]">
                 <div
                     className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 blur-3xl"/>
@@ -46,7 +46,7 @@ export default function PremiumPage() {
                         <h1 className="text-6xl font-bold mb-4">
                             Раскройте весь потенциал
                         </h1>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                             Получите неограниченные возможности для создания и управления вашими цифровыми визитками
                         </p>
                     </div>
@@ -59,9 +59,9 @@ export default function PremiumPage() {
                                 <h3 className="text-2xl font-bold mb-2">Free</h3>
                                 <div className="flex items-baseline gap-2 mb-4">
                                     <span className="text-4xl font-bold">0₽</span>
-                                    <span className="text-gray-600">/месяц</span>
+                                    <span className="text-muted-foreground">/месяц</span>
                                 </div>
-                                <p className="text-gray-600">
+                                <p className="text-muted-foreground">
                                     Базовый функционал для старта
                                 </p>
                             </div>
@@ -69,8 +69,8 @@ export default function PremiumPage() {
                             <div className="space-y-3 mb-8">
                                 {FREE_FEATURES.map((feature, index) => (
                                     <div key={index} className="flex items-center gap-3">
-                                        <Check className="h-5 w-5 text-gray-400 shrink-0"/>
-                                        <span className="text-gray-600">{feature.text}</span>
+                                        <Check className="h-5 w-5 text-muted-foreground shrink-0"/>
+                                        <span className="text-muted-foreground">{feature.text}</span>
                                     </div>
                                 ))}
                             </div>
@@ -103,9 +103,9 @@ export default function PremiumPage() {
                                     <span className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                                         299₽
                                     </span>
-                                    <span className="text-gray-600">/месяц</span>
+                                    <span className="text-muted-foreground">/месяц</span>
                                 </div>
-                                <p className="text-gray-600">
+                                <p className="text-muted-foreground">
                                     Все возможности без ограничений
                                 </p>
                             </div>
@@ -119,7 +119,7 @@ export default function PremiumPage() {
                                             </div>
                                             <div className="flex-1">
                                                 <p className="font-medium mb-1">{feature.title}</p>
-                                                <p className="text-sm text-gray-600">{feature.description}</p>
+                                                <p className="text-sm text-muted-foreground">{feature.description}</p>
                                             </div>
                                         </div>
                                     );
@@ -127,7 +127,7 @@ export default function PremiumPage() {
                             </div>
 
                             {isPremium ? (
-                                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 text-center">
+                                <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg p-4 text-center">
                                     <div className="flex items-center justify-center gap-2 text-blue-700 font-semibold">
                                         <Crown className="h-5 w-5"/>
                                         <span>У вас уже Premium</span>
@@ -160,7 +160,7 @@ export default function PremiumPage() {
                     {/*                        <Icon className="h-6 w-6 text-blue-600"/>*/}
                     {/*                    </div>*/}
                     {/*                    <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>*/}
-                    {/*                    <p className="text-gray-600 text-sm">{feature.description}</p>*/}
+                    {/*                    <p className="text-muted-foreground text-sm">{feature.description}</p>*/}
                     {/*                </Card>*/}
                     {/*            );*/}
                     {/*        })}*/}
@@ -173,7 +173,7 @@ export default function PremiumPage() {
                         <div className="space-y-6 max-w-3xl mx-auto">
                             <div>
                                 <h3 className="font-semibold mb-2">Можно ли отменить подписку?</h3>
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-muted-foreground text-sm">
                                     Да, вы можете отменить подписку в любой момент. После отмены доступ к Premium
                                     функциям сохранится до конца оплаченного периода.
                                 </p>
@@ -181,14 +181,14 @@ export default function PremiumPage() {
                             <div>
                                 <h3 className="font-semibold mb-2">Что происходит с моими карточками после
                                     отмены?</h3>
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-muted-foreground text-sm">
                                     Все ваши карточки сохранятся, но вы сможете редактировать только одну (остальные
                                     будут в режиме просмотра). Custom домены перестанут работать.
                                 </p>
                             </div>
                             <div>
                                 <h3 className="font-semibold mb-2">Есть ли годовая подписка?</h3>
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-muted-foreground text-sm">
                                     Да, годовая подписка доступна со скидкой 20%. Свяжитесь с нами для подробностей.
                                 </p>
                             </div>

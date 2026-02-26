@@ -73,7 +73,7 @@ export default function PaymentResultPage() {
                     <Card className="max-w-md mx-auto p-8 text-center">
                         <Loader2 className="h-16 w-16 mx-auto mb-4 text-blue-600 animate-spin"/>
                         <h2 className="text-2xl font-bold mb-2">Проверяем платеж...</h2>
-                        <p className="text-gray-600">
+                        <p className="text-muted-foreground">
                             Пожалуйста, подождите, это займет несколько секунд
                         </p>
                     </Card>
@@ -86,15 +86,15 @@ export default function PaymentResultPage() {
                             <CheckCircle2 className="h-10 w-10 text-green-600"/>
                         </div>
                         <h2 className="text-2xl font-bold mb-2 text-green-700">Оплата успешна!</h2>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-muted-foreground mb-6">
                             Поздравляем! Ваша подписка на Linkoo Premium активирована.
                         </p>
-                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6">
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg p-4 mb-6">
                             <div className="flex items-center justify-center gap-2 text-blue-700 font-semibold mb-2">
                                 <Crown className="h-5 w-5"/>
                                 <span>Теперь у вас есть Premium</span>
                             </div>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-muted-foreground">
                                 Все функции уже доступны в вашем аккаунте
                             </p>
                         </div>
@@ -123,7 +123,7 @@ export default function PaymentResultPage() {
                             <CheckCircle2 className="h-10 w-10 text-green-600"/>
                         </div>
                         <h2 className="text-2xl font-bold mb-2 text-green-700">Карта привязана!</h2>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-muted-foreground mb-6">
                             Способ оплаты успешно добавлен в ваш аккаунт.
                         </p>
                         <div className="flex gap-3">
@@ -142,7 +142,7 @@ export default function PaymentResultPage() {
                     <Card className="max-w-md mx-auto p-8 text-center">
                         <Loader2 className="h-16 w-16 mx-auto mb-4 text-yellow-600 animate-spin"/>
                         <h2 className="text-2xl font-bold mb-2 text-yellow-700">Ожидает подтверждения</h2>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-muted-foreground mb-6">
                             Платеж успешно авторизован и ожидает финального подтверждения. Обычно это занимает несколько минут.
                         </p>
                         <div className="flex gap-3">
@@ -168,7 +168,7 @@ export default function PaymentResultPage() {
                     <Card className="max-w-md mx-auto p-8 text-center">
                         <Loader2 className="h-16 w-16 mx-auto mb-4 text-yellow-600 animate-spin"/>
                         <h2 className="text-2xl font-bold mb-2 text-yellow-700">Платеж обрабатывается</h2>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-muted-foreground mb-6">
                             Ваш платеж находится в обработке. Это может занять несколько минут.
                         </p>
                         <Button
@@ -183,11 +183,11 @@ export default function PaymentResultPage() {
             case 'canceled':
                 return (
                     <Card className="max-w-md mx-auto p-8 text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                            <XCircle className="h-10 w-10 text-gray-600"/>
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                            <XCircle className="h-10 w-10 text-muted-foreground"/>
                         </div>
                         <h2 className="text-2xl font-bold mb-2">Платеж отменен</h2>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-muted-foreground mb-6">
                             Оплата была отменена. Вы можете попробовать еще раз.
                         </p>
                         <div className="flex gap-3">
@@ -215,7 +215,7 @@ export default function PaymentResultPage() {
                             <XCircle className="h-10 w-10 text-red-600"/>
                         </div>
                         <h2 className="text-2xl font-bold mb-2 text-red-700">Ошибка</h2>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-muted-foreground mb-6">
                             {error || 'Произошла ошибка при обработке платежа'}
                         </p>
                         <div className="flex gap-3">
@@ -242,7 +242,7 @@ export default function PaymentResultPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30 flex items-center justify-center p-4">
             {renderContent()}
         </div>
     );

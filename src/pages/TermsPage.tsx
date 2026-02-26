@@ -9,21 +9,21 @@ export default function TermsPage() {
                     <h1 className="text-3xl font-bold mb-6">Условия использования</h1>
 
                     <div className="space-y-6 text-sm leading-relaxed">
-                        <p className="text-gray-600">
+                        <p className="text-muted-foreground">
                             <strong>Дата последнего обновления:</strong> {new Date().toLocaleDateString('ru-RU')}
                         </p>
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">1. Общие положения</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 Настоящие Условия использования (далее — «Условия») регулируют порядок использования
                                 веб-сервиса Linkoo (далее — «Сервис»), доступного по адресу linkoo.dev.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 Сервис предоставляет возможность создания электронных визитных карточек (визиток)
                                 и коротких ссылок для обмена контактной информацией.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 Используя Сервис, вы подтверждаете, что прочитали, поняли и согласны соблюдать
                                 настоящие Условия. Если вы не согласны с Условиями, пожалуйста, не используйте Сервис.
                             </p>
@@ -31,7 +31,7 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">2. Определения</h2>
-                            <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                            <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
                                 <li>
                                     <strong>Пользователь</strong> — физическое лицо, использующее Сервис
                                 </li>
@@ -52,21 +52,21 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">3. Регистрация и учетная запись</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 3.1. Для использования функций Сервиса необходимо пройти регистрацию через
                                 одного из поддерживаемых OAuth-провайдеров (Google, VK, GitHub, MAX).
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 3.2. Вы обязуетесь предоставлять достоверную и актуальную информацию при регистрации.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 3.3. Вы несете ответственность за сохранность данных своей учетной записи
                                 и всех действий, совершенных от её имени.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 3.4. Запрещается передавать доступ к учетной записи третьим лицам.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 3.5. Каждый пользователь может иметь только одну учетную запись.
                             </p>
                         </section>
@@ -75,8 +75,8 @@ export default function TermsPage() {
                             <h2 className="text-xl font-semibold mb-3">4. Типы учетных записей</h2>
 
                             <h3 className="text-lg font-semibold mb-2 mt-4">4.1. Free-аккаунт</h3>
-                            <p className="text-gray-700 mb-2">Бесплатная учетная запись включает:</p>
-                            <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                            <p className="text-muted-foreground mb-2">Бесплатная учетная запись включает:</p>
+                            <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
                                 <li>Создание 1 (одной) визитки</li>
                                 <li>Базовые настройки визитки</li>
                                 <li>Одна короткая ссылка на визитку</li>
@@ -84,15 +84,15 @@ export default function TermsPage() {
                             </ul>
 
                             <h3 className="text-lg font-semibold mb-2 mt-4">4.2. Premium-аккаунт</h3>
-                            <p className="text-gray-700 mb-2">Платная подписка включает:</p>
-                            <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                            <p className="text-muted-foreground mb-2">Платная подписка включает:</p>
+                            <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
                                 <li>Неограниченное количество визиток</li>
                                 <li>Расширенные настройки оформления</li>
                                 <li>Пользовательские короткие ссылки (custom slug)</li>
                                 <li>Расширенная статистика</li>
                                 <li>Приоритетная техническая поддержка</li>
                             </ul>
-                            <p className="text-gray-700 mt-2">
+                            <p className="text-muted-foreground mt-2">
                                 Стоимость Premium-подписки указана на сайте и может быть изменена с уведомлением
                                 за 30 дней.
                             </p>
@@ -100,28 +100,28 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">5. Оплата и возврат средств</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 5.1. Оплата Premium-подписки осуществляется через интегрированные платежные системы.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 5.2. Подписка активируется автоматически после подтверждения оплаты.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 5.3. Возврат средств возможен в течение 14 дней с момента оплаты при условии
                                 отсутствия нарушений настоящих Условий.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 5.4. Для запроса возврата обратитесь в службу поддержки.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 5.5. Возврат осуществляется на тот же платежный инструмент, с которого была произведена оплата.
                             </p>
                         </section>
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">6. Правила использования</h2>
-                            <p className="text-gray-700 mb-2">При использовании Сервиса запрещается:</p>
-                            <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                            <p className="text-muted-foreground mb-2">При использовании Сервиса запрещается:</p>
+                            <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
                                 <li>Размещать незаконный, мошеннический, клеветнический или оскорбительный контент</li>
                                 <li>Нарушать права интеллектуальной собственности третьих лиц</li>
                                 <li>Распространять вредоносное программное обеспечение</li>
@@ -135,17 +135,17 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">7. Контент пользователя</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 7.1. Вы сохраняете все права на контент, размещаемый в ваших визитках.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 7.2. Размещая контент в Сервисе, вы предоставляете нам неисключительную лицензию
                                 на его использование для обеспечения работы Сервиса.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 7.3. Вы несете полную ответственность за контент, размещаемый в визитках.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 7.4. Мы оставляем за собой право удалить контент, нарушающий настоящие Условия
                                 или законодательство РФ.
                             </p>
@@ -153,15 +153,15 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">8. Интеллектуальная собственность</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 8.1. Все права на Сервис, включая его дизайн, программный код, базы данных,
                                 товарные знаки и другие элементы, принадлежат администрации Сервиса.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 8.2. Запрещается копировать, модифицировать или распространять элементы Сервиса
                                 без письменного разрешения.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 8.3. Использование Сервиса не предоставляет вам никаких прав на интеллектуальную
                                 собственность, кроме прав, явно указанных в настоящих Условиях.
                             </p>
@@ -169,19 +169,19 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">9. Ограничение ответственности</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 9.1. Сервис предоставляется «как есть», без каких-либо гарантий.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 9.2. Мы не несем ответственности за:
                             </p>
-                            <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                            <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
                                 <li>Временную недоступность Сервиса</li>
                                 <li>Потерю данных вследствие технических сбоев</li>
                                 <li>Убытки, связанные с использованием или невозможностью использования Сервиса</li>
                                 <li>Действия третьих лиц, включая OAuth-провайдеров</li>
                             </ul>
-                            <p className="text-gray-700 mt-2">
+                            <p className="text-muted-foreground mt-2">
                                 9.3. Максимальный размер нашей ответственности ограничен суммой, уплаченной вами
                                 за Premium-подписку за последние 12 месяцев.
                             </p>
@@ -189,19 +189,19 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">10. Приостановление и прекращение доступа</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 10.1. Мы можем приостановить или прекратить ваш доступ к Сервису в случае:
                             </p>
-                            <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                            <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
                                 <li>Нарушения настоящих Условий</li>
                                 <li>Неоплаты Premium-подписки</li>
                                 <li>Незаконной деятельности</li>
                                 <li>По требованию государственных органов</li>
                             </ul>
-                            <p className="text-gray-700 mt-2">
+                            <p className="text-muted-foreground mt-2">
                                 10.2. Вы можете удалить свою учетную запись в любое время через настройки профиля.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 10.3. При удалении учетной записи ваши данные будут удалены в соответствии
                                 с Политикой конфиденциальности.
                             </p>
@@ -209,14 +209,14 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">11. Изменение Условий</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 11.1. Мы оставляем за собой право изменять настоящие Условия в любое время.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 11.2. О существенных изменениях мы уведомим пользователей по электронной почте
                                 или через уведомления в Сервисе за 30 дней до вступления изменений в силу.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 11.3. Продолжение использования Сервиса после вступления изменений в силу означает
                                 ваше согласие с новой редакцией Условий.
                             </p>
@@ -224,24 +224,24 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">12. Применимое право и разрешение споров</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 12.1. Настоящие Условия регулируются законодательством Российской Федерации.
                             </p>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 12.2. Все споры разрешаются путем переговоров. При недостижении согласия споры
                                 подлежат рассмотрению в судебном порядке по месту нахождения администрации Сервиса.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 12.3. Претензионный порядок разрешения споров обязателен. Срок ответа на претензию — 30 дней.
                             </p>
                         </section>
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">13. Контактная информация</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 По вопросам, связанным с использованием Сервиса, обращайтесь:
                             </p>
-                            <ul className="list-none space-y-1 text-gray-700 ml-4">
+                            <ul className="list-none space-y-1 text-muted-foreground ml-4">
                                 <li><strong>Email:</strong> support@linkoo.dev</li>
                                 <li><strong>Сайт:</strong> linkoo.dev</li>
                             </ul>
@@ -249,11 +249,11 @@ export default function TermsPage() {
 
                         <section>
                             <h2 className="text-xl font-semibold mb-3">14. Прочие условия</h2>
-                            <p className="text-gray-700 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 14.1. Если какое-либо положение настоящих Условий будет признано недействительным,
                                 остальные положения сохраняют свою силу.
                             </p>
-                            <p className="text-gray-700">
+                            <p className="text-muted-foreground">
                                 14.2. Настоящие Условия составляют полное соглашение между вами и администрацией
                                 Сервиса относительно использования Сервиса.
                             </p>

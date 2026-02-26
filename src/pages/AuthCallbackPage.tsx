@@ -51,16 +51,16 @@ export default function AuthCallbackPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30 p-6">
       <Card className="max-w-md w-full">
         <CardContent className="p-8 text-center">
           {status === 'loading' && (
             <>
               <Loader2 className="h-16 w-16 mx-auto mb-4 text-blue-600 animate-spin" />
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl font-bold text-foreground mb-2">
                 Авторизация...
               </h1>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Пожалуйста, подождите
               </p>
             </>
@@ -69,10 +69,10 @@ export default function AuthCallbackPage() {
           {status === 'success' && (
             <>
               <CheckCircle className="h-16 w-16 mx-auto mb-4 text-green-600" />
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl font-bold text-foreground mb-2">
                 Успешно!
               </h1>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Перенаправляем в профиль...
               </p>
             </>
@@ -81,10 +81,10 @@ export default function AuthCallbackPage() {
           {status === 'error' && (
             <>
               <XCircle className="h-16 w-16 mx-auto mb-4 text-red-600" />
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl font-bold text-foreground mb-2">
                 Ошибка авторизации
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 {errorMessage}
               </p>
               <Button onClick={() => navigate('/')} className="w-full">

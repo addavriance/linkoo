@@ -95,7 +95,7 @@ const ThemesPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted">
             <div className="container mx-auto px-6 py-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
@@ -103,7 +103,7 @@ const ThemesPage = () => {
                         <h1 className="text-3xl font-bold">
                             Галерея Тем
                         </h1>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                             Выберите идеальный стиль для своей цифровой визитки из нашей коллекции
                             профессионально разработанных тем
                         </p>
@@ -114,7 +114,7 @@ const ThemesPage = () => {
                         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                             <div className="relative w-full sm:w-96">
                                 <Search
-                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"/>
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                                 <Input
                                     placeholder="Поиск тем..."
                                     value={searchQuery}
@@ -124,8 +124,8 @@ const ThemesPage = () => {
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <Filter className="h-4 w-4 text-gray-500"/>
-                                <span className="text-sm text-gray-600">
+                                <Filter className="h-4 w-4 text-muted-foreground"/>
+                                <span className="text-sm text-muted-foreground">
                                     {filteredThemes.length} тем найдено
                                 </span>
                             </div>
@@ -173,14 +173,14 @@ const ThemesPage = () => {
                                                         style={applyThemeStyles(theme)}
                                                     >
                                                         {/* Мини-карточка */}
-                                                        <div className="bg-white/20 backdrop-blur rounded-lg p-3 w-full max-w-32">
-                                                            <div className="w-8 h-8 rounded-full bg-white/30 mx-auto mb-2"/>
-                                                            <div className="h-2 bg-white/40 rounded mb-1"/>
-                                                            <div className="h-1.5 bg-white/30 rounded w-3/4 mx-auto mb-2"/>
+                                                        <div className="bg-background/20 backdrop-blur rounded-lg p-3 w-full max-w-32">
+                                                            <div className="w-8 h-8 rounded-full bg-background/30 mx-auto mb-2"/>
+                                                            <div className="h-2 bg-background/40 rounded mb-1"/>
+                                                            <div className="h-1.5 bg-background/30 rounded w-3/4 mx-auto mb-2"/>
                                                             <div className="flex gap-1 justify-center">
-                                                                <div className="w-3 h-3 bg-white/30 rounded"/>
-                                                                <div className="w-3 h-3 bg-white/30 rounded"/>
-                                                                <div className="w-3 h-3 bg-white/30 rounded"/>
+                                                                <div className="w-3 h-3 bg-background/30 rounded"/>
+                                                                <div className="w-3 h-3 bg-background/30 rounded"/>
+                                                                <div className="w-3 h-3 bg-background/30 rounded"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -194,7 +194,7 @@ const ThemesPage = () => {
                                                             </Badge>
                                                         )}
                                                         {theme.category && (
-                                                            <Badge className="text-xs flex items-center gap-1 bg-white/90 text-gray-900 hover:bg-white">
+                                                            <Badge className="text-xs flex items-center gap-1 bg-background/90 text-foreground hover:bg-background">
                                                                 <ThemeIcon name={themeCategories[theme.category]?.icon} className="h-3 w-3"/>
                                                                 {themeCategories[theme.category]?.name}
                                                             </Badge>
@@ -207,7 +207,7 @@ const ThemesPage = () => {
                                                             className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-1 cursor-pointer"
                                                             onClick={() => navigate('/premium')}
                                                         >
-                                                            <div className="bg-white/20 backdrop-blur rounded-full p-2">
+                                                            <div className="bg-background/20 backdrop-blur rounded-full p-2">
                                                                 <Lock className="h-5 w-5 text-white"/>
                                                             </div>
                                                             <span className="text-white text-xs font-medium">
@@ -242,10 +242,10 @@ const ThemesPage = () => {
                                                 <div className="p-4">
                                                     <div className="flex items-center justify-between">
                                                         <div>
-                                                            <h3 className="font-semibold text-gray-900 mb-1">
+                                                            <h3 className="font-semibold text-foreground mb-1">
                                                                 {theme.name}
                                                             </h3>
-                                                            <p className="text-sm text-gray-500 flex items-center gap-1">
+                                                            <p className="text-sm text-muted-foreground flex items-center gap-1">
                                                                 <ThemeIcon name={theme.icon} className="h-4 w-4"/>
                                                                 {themeCategories[theme.category]?.name}
                                                             </p>
@@ -279,22 +279,22 @@ const ThemesPage = () => {
 
                         {/* Фейд-оверлей для гостей — показывает что больше тем заблокировано */}
                         {!isAuthenticated && filteredThemes.length > 1 && (
-                            <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-gray-50 via-gray-50/80 to-transparent pointer-events-none"/>
+                            <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none"/>
                         )}
                     </div>
 
                     {/* Призыв зарегистрироваться (для гостей) */}
                     {!isAuthenticated && (
-                        <div className="text-center py-10 mb-8 bg-white border border-gray-200 rounded-2xl shadow-sm">
+                        <div className="text-center py-10 mb-8 bg-background border border-border rounded-2xl shadow-sm">
                             <div className="flex items-center justify-center mb-4">
                                 <div className="bg-blue-100 p-3 rounded-full">
                                     <Palette className="h-6 w-6 text-blue-600"/>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            <h3 className="text-xl font-bold text-foreground mb-2">
                                 Зарегистрируйтесь в 1 клик, чтобы открыть больше тем
                             </h3>
-                            <p className="text-gray-500 mb-6 max-w-sm mx-auto text-sm">
+                            <p className="text-muted-foreground mb-6 max-w-sm mx-auto text-sm">
                                 Бесплатно откройте 5 тем и создайте свою первую визитку
                             </p>
                             <Button
@@ -331,11 +331,11 @@ const ThemesPage = () => {
                     {/* Пустое состояние */}
                     {filteredThemes.length === 0 && (
                         <div className="text-center py-12">
-                            <Palette className="h-16 w-16 text-gray-400 mx-auto mb-4"/>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            <Palette className="h-16 w-16 text-muted-foreground mx-auto mb-4"/>
+                            <h3 className="text-xl font-semibold text-foreground mb-2">
                                 Темы не найдены
                             </h3>
-                            <p className="text-gray-600 mb-6">
+                            <p className="text-muted-foreground mb-6">
                                 Попробуйте изменить поисковый запрос или выбрать другую категорию
                             </p>
                             <Button
@@ -351,16 +351,16 @@ const ThemesPage = () => {
                     )}
 
                     {/* CTA секция */}
-                    <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-2xl">
+                        <h2 className="text-2xl font-bold text-foreground mb-4">
                             Не нашли подходящую тему?
                         </h2>
-                        <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                             Создайте свою уникальную визитку в редакторе и настройте её под свой стиль
                         </p>
                         <Button
                             onClick={() => navigate('/editor')}
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                         >
                             <Plus className="h-4 w-4 mr-2"/>
                             Создать визитку

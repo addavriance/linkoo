@@ -81,13 +81,13 @@ export default function SubscriptionPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30">
             <div className="container mx-auto px-4 py-16">
                 <div className="max-w-4xl mx-auto space-y-8">
                     {/* Header */}
                     <div>
                         <h1 className="text-4xl font-bold mb-2">Подписки</h1>
-                        <p className="text-gray-600">Управляйте своими подписками на Linkoo Premium</p>
+                        <p className="text-muted-foreground">Управляйте своими подписками на Linkoo Premium</p>
                     </div>
 
                     {/* Current Subscription */}
@@ -115,7 +115,7 @@ export default function SubscriptionPage() {
                                     <div className="text-right">
                                         <p className="text-3xl font-bold">299₽</p>
                                         <p className="text-sm text-gray-300">месяц</p>
-                                        <p className="text-xs text-gray-400 mt-1">
+                                        <p className="text-xs text-muted-foreground mt-1">
                                             Или 2870₽ / год (экономия 20%)
                                         </p>
                                     </div>
@@ -168,7 +168,7 @@ export default function SubscriptionPage() {
                         <TabsContent value="methods" className="mt-6">
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-muted-foreground">
                                         Управляйте способами оплаты для подписки
                                     </p>
                                     <Button
@@ -184,14 +184,14 @@ export default function SubscriptionPage() {
                                 {isLoadingMethods ? (
                                     <Card className="p-8">
                                         <div className="flex items-center justify-center">
-                                            <Loader2 className="h-8 w-8 animate-spin text-gray-400"/>
+                                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/>
                                         </div>
                                     </Card>
                                 ) : paymentMethods.length === 0 ? (
-                                    <Card className="p-8 bg-gray-50 border-dashed">
+                                    <Card className="p-8 bg-muted border-dashed">
                                         <div className="text-center">
-                                            <CreditCard className="h-12 w-12 mx-auto mb-3 text-gray-400"/>
-                                            <p className="text-gray-500 mb-4">
+                                            <CreditCard className="h-12 w-12 mx-auto mb-3 text-muted-foreground"/>
+                                            <p className="text-muted-foreground mb-4">
                                                 У вас нет добавленных способов оплаты.
                                             </p>
                                             <Button
@@ -221,21 +221,21 @@ export default function SubscriptionPage() {
                         {/* Payment History Tab */}
                         <TabsContent value="history" className="mt-6">
                             <div className="space-y-4">
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-muted-foreground">
                                     Все ваши платежи и транзакции
                                 </p>
 
                                 {isLoadingHistory ? (
                                     <Card className="p-8">
                                         <div className="flex items-center justify-center">
-                                            <Loader2 className="h-8 w-8 animate-spin text-gray-400"/>
+                                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/>
                                         </div>
                                     </Card>
                                 ) : paymentHistory.length === 0 ? (
-                                    <Card className="p-8 bg-gray-50 border-dashed">
+                                    <Card className="p-8 bg-muted border-dashed">
                                         <div className="text-center">
-                                            <History className="h-12 w-12 mx-auto mb-3 text-gray-400"/>
-                                            <p className="text-gray-500">
+                                            <History className="h-12 w-12 mx-auto mb-3 text-muted-foreground"/>
+                                            <p className="text-muted-foreground">
                                                 Нет истории платежей
                                             </p>
                                         </div>

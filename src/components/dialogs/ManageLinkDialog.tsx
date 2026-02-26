@@ -145,8 +145,8 @@ export function ManageLinkDialog({
                     <TabsContent value="slug" className="space-y-4 mt-4">
                         {currentSlug ? (
                             <>
-                                <div className="p-3 bg-gray-50 rounded-lg">
-                                    <p className="text-sm text-gray-600 mb-1">Текущая ссылка:</p>
+                                <div className="p-3 bg-muted rounded-lg">
+                                    <p className="text-sm text-muted-foreground mb-1">Текущая ссылка:</p>
                                     <p className="font-mono text-sm font-medium">
                                         {window.location.origin}/{currentSlug}
                                     </p>
@@ -177,7 +177,7 @@ export function ManageLinkDialog({
                             <>
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm text-gray-500 whitespace-nowrap">
+                                        <span className="text-sm text-muted-foreground whitespace-nowrap">
                                             {window.location.origin}/
                                         </span>
                                         <Input
@@ -188,7 +188,7 @@ export function ManageLinkDialog({
                                             maxLength={50}
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-muted-foreground mt-1">
                                         Разрешены только буквы (a-z), цифры (0-9) и дефис (-)
                                     </p>
                                 </div>
@@ -221,14 +221,14 @@ export function ManageLinkDialog({
                             {currentSubdomain ? (
                                 <>
                                     <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                                        <p className="text-sm text-gray-600 mb-1">Текущий поддомен:</p>
+                                        <p className="text-sm text-muted-foreground mb-1">Текущий поддомен:</p>
                                         <p className="font-mono text-sm font-medium text-purple-700">
                                             https://{currentSubdomain}.linkoo.dev
                                         </p>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <p className="text-sm text-gray-600">Изменить поддомен:</p>
+                                        <p className="text-sm text-muted-foreground">Изменить поддомен:</p>
                                         <div className="flex items-center gap-2">
                                             <Input
                                                 placeholder="new-subdomain"
@@ -237,9 +237,9 @@ export function ManageLinkDialog({
                                                 className="flex-1"
                                                 maxLength={32}
                                             />
-                                            <span className="text-sm text-gray-500 whitespace-nowrap">.linkoo.dev</span>
+                                            <span className="text-sm text-muted-foreground whitespace-nowrap">.linkoo.dev</span>
                                         </div>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-xs text-muted-foreground">
                                             3–32 символа: строчные буквы, цифры и дефис
                                         </p>
                                     </div>
@@ -285,9 +285,9 @@ export function ManageLinkDialog({
                                                 className="flex-1"
                                                 maxLength={32}
                                             />
-                                            <span className="text-sm text-gray-500 whitespace-nowrap">.linkoo.dev</span>
+                                            <span className="text-sm text-muted-foreground whitespace-nowrap">.linkoo.dev</span>
                                         </div>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="text-xs text-muted-foreground mt-1">
                                             3–32 символа: строчные буквы, цифры и дефис
                                         </p>
                                     </div>
@@ -311,10 +311,10 @@ export function ManageLinkDialog({
                 </Tabs>
 
                 {!isPaid && (
-                    <div className="mt-2 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+                    <div className="mt-2 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border border-blue-200 rounded-lg">
                         <div className="flex items-center gap-2">
                             <Crown className="h-4 w-4 text-purple-600 flex-shrink-0"/>
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-muted-foreground">
                                 Поддомен{' '}
                                 <span className="font-mono font-medium">name.linkoo.dev</span>{' '}
                                 доступен на Premium

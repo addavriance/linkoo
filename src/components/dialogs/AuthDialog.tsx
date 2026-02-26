@@ -25,7 +25,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onOpenChange, open
                 </DialogHeader>
                 <div className="py-6 space-y-6">
                     <div className="text-center space-y-2">
-                        <p className="text-gray-600">
+                        <p className="text-muted-foreground">
                             Выберите удобный способ входа
                         </p>
                     </div>
@@ -34,7 +34,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onOpenChange, open
                     <OAuthButtons openMaxDialog={openMaxDialog} className="px-10"/>
 
                     {/* Footer note */}
-                    <p className="text-sm text-center text-gray-500 px-4">
+                    <p className="text-sm text-center text-muted-foreground px-4">
                         Продолжая, вы соглашаетесь с{' '}
                         <Link to="/terms" onClick={() => onOpenChange(false)} className="text-blue-600 hover:text-blue-800 underline">
                             условиями использования

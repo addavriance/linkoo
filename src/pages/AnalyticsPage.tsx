@@ -113,9 +113,9 @@ function StatCard({
                         <Icon className="h-5 w-5"/>
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-500 mb-0.5">{label}</p>
-                        <p className="text-2xl font-bold text-gray-900">{num(Number(value))}</p>
-                        {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+                        <p className="text-sm text-muted-foreground mb-0.5">{label}</p>
+                        <p className="text-2xl font-bold text-foreground">{num(Number(value))}</p>
+                        {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
                     </div>
                 </div>
             </CardContent>
@@ -132,8 +132,8 @@ function SectionCard({title, icon: Icon, children, className = ''}: {
     return (
         <Card className={className}>
             <CardContent className="p-5">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    {Icon && <Icon className="h-4 w-4 text-gray-500"/>}
+                <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                    {Icon && <Icon className="h-4 w-4 text-muted-foreground"/>}
                     {title}
                 </h3>
                 {children}
@@ -147,13 +147,13 @@ function LoadingSkeleton() {
         <div className="space-y-6 animate-pulse">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-28 bg-gray-200 rounded-xl"/>
+                    <div key={i} className="h-28 bg-muted rounded-xl"/>
                 ))}
             </div>
-            <div className="h-64 bg-gray-200 rounded-xl"/>
+            <div className="h-64 bg-muted rounded-xl"/>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="h-56 bg-gray-200 rounded-xl"/>
-                <div className="h-56 bg-gray-200 rounded-xl"/>
+                <div className="h-56 bg-muted rounded-xl"/>
+                <div className="h-56 bg-muted rounded-xl"/>
             </div>
         </div>
     );
@@ -164,8 +164,8 @@ function LoadingSkeleton() {
 function ChartTooltip({active, payload, label}: any) {
     if (!active || !payload?.length) return null;
     return (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
-            <p className="text-gray-600 mb-1">{formatDate(label)}</p>
+        <div className="bg-background border border-border rounded-lg shadow-lg p-3 text-sm">
+            <p className="text-muted-foreground mb-1">{formatDate(label)}</p>
             {payload.map((p: any, i: number) => (
                 <p key={i} style={{color: p.color}} className="font-medium">
                     {p.name}: {p.value}
@@ -216,7 +216,7 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                 {/* Top countries */}
                 <SectionCard title="Топ стран" icon={Globe}>
                     {data.topCountries.length === 0 ? (
-                        <p className="text-sm text-gray-400 text-center py-8">Нет данных</p>
+                        <p className="text-sm text-muted-foreground text-center py-8">Нет данных</p>
                     ) : (
                         <div className="space-y-2">
                             {data.topCountries.map((c, i) => {
@@ -224,17 +224,17 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                                 const pct = Math.round((c.count / max) * 100);
                                 return (
                                     <div key={c.country} className="flex items-center gap-3">
-                                        <span className="text-xs text-gray-400 w-4 text-right">{i + 1}</span>
-                                        <span className="text-sm font-medium text-gray-700 w-24 truncate">
+                                        <span className="text-xs text-muted-foreground w-4 text-right">{i + 1}</span>
+                                        <span className="text-sm font-medium text-muted-foreground w-24 truncate">
                                             {countryName(c.country)}
                                         </span>
-                                        <div className="flex-1 bg-gray-100 rounded-full h-2">
+                                        <div className="flex-1 bg-muted rounded-full h-2">
                                             <div
                                                 className="h-2 rounded-full bg-indigo-500 transition-all"
                                                 style={{width: `${pct}%`}}
                                             />
                                         </div>
-                                        <span className="text-xs text-gray-500 w-8 text-right">{c.count}</span>
+                                        <span className="text-xs text-muted-foreground w-8 text-right">{c.count}</span>
                                     </div>
                                 );
                             })}
@@ -245,7 +245,7 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                 {/* Device breakdown */}
                 <SectionCard title="Устройства" icon={Monitor}>
                     {data.deviceBreakdown.every((d) => d.value === 0) ? (
-                        <p className="text-sm text-gray-400 text-center py-8">Нет данных</p>
+                        <p className="text-sm text-muted-foreground text-center py-8">Нет данных</p>
                     ) : (
                         <div className="flex items-center gap-4">
                             <ResponsiveContainer width={140} height={140}>
@@ -277,10 +277,10 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                                     return (
                                         <div key={d.name} className="flex items-center gap-2">
                                             <DevIcon className="h-4 w-4" style={{color: DEVICE_COLORS[d.name]}}/>
-                                            <span className="text-sm text-gray-700 flex-1">
+                                            <span className="text-sm text-muted-foreground flex-1">
                                                 {DEVICE_LABELS[d.name] || d.name}
                                             </span>
-                                            <span className="text-sm font-semibold text-gray-900">{pct}%</span>
+                                            <span className="text-sm font-semibold text-foreground">{pct}%</span>
                                         </div>
                                     );
                                 })}
@@ -295,7 +295,7 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                 {/* Browser */}
                 <SectionCard title="Браузеры" icon={ArrowUpLeftFromSquareIcon}>
                     {data.browserBreakdown.length === 0 ? (
-                        <p className="text-sm text-gray-400 text-center py-8">Нет данных</p>
+                        <p className="text-sm text-muted-foreground text-center py-8">Нет данных</p>
                     ) : (
                         <ResponsiveContainer width="100%" height={180}>
                             <BarChart
@@ -320,7 +320,7 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                 {/* Social clicks */}
                 <SectionCard title="Клики по соцсетям" icon={Share2}>
                     {data.interactionSummary.socialClicks.length === 0 ? (
-                        <p className="text-sm text-gray-400 text-center py-8">Нет данных</p>
+                        <p className="text-sm text-muted-foreground text-center py-8">Нет данных</p>
                     ) : (
                         <ResponsiveContainer width="100%" height={180}>
                             <BarChart
@@ -343,12 +343,12 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
             <SectionCard title="Общая статистика" icon={BarChartIcon}>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                     {INTERACTION_STATS.map(({label, key, icon: Icon, color}) => (
-                        <div key={label} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50">
+                        <div key={label} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted">
                             <div className={`py-2 px-8 rounded-lg ${color}`}>
                                 <Icon className="h-4 w-4"/>
                             </div>
-                            <span className="text-xl font-bold text-gray-900">{num(data.interactionSummary[key])}</span>
-                            <span className="text-xs text-gray-500 text-center">{label}</span>
+                            <span className="text-xl font-bold text-foreground">{num(data.interactionSummary[key])}</span>
+                            <span className="text-xs text-muted-foreground text-center">{label}</span>
                         </div>
                     ))}
                 </div>
@@ -363,29 +363,29 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                             return (
                                 <div
                                     key={i}
-                                    className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0"
+                                    className="flex items-center gap-3 py-2 border-b border-border last:border-0"
                                 >
-                                    <div className="p-1.5 bg-gray-100 rounded-lg shrink-0">
-                                        <DevIcon className="h-3.5 w-3.5 text-gray-500"/>
+                                    <div className="p-1.5 bg-muted rounded-lg shrink-0">
+                                        <DevIcon className="h-3.5 w-3.5 text-muted-foreground"/>
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-gray-800">
+                                        <p className="text-sm font-medium text-foreground">
                                             {INTERACTION_LABELS[event.type] || event.type}
                                             {event.platform && (
-                                                <span className="ml-1 text-gray-500 font-normal">
+                                                <span className="ml-1 text-muted-foreground font-normal">
                                                     · {event.platform}
                                                 </span>
                                             )}
                                         </p>
-                                        <p className="text-xs text-gray-400">{formatTime(event.timestamp)}</p>
+                                        <p className="text-xs text-muted-foreground">{formatTime(event.timestamp)}</p>
                                     </div>
                                     {count > 1 && (
-                                        <span className="text-xs font-semibold text-gray-400 shrink-0">
+                                        <span className="text-xs font-semibold text-muted-foreground shrink-0">
                                             ×{count}
                                         </span>
                                     )}
                                     {event.country && (
-                                        <span className="text-xs text-gray-500 shrink-0">
+                                        <span className="text-xs text-muted-foreground shrink-0">
                                             {countryName(event.country)}
                                         </span>
                                     )}

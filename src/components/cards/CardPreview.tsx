@@ -50,7 +50,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
                     />
                 </div>
             ) : (
-                <div className="w-32 h-32 rounded-full mx-auto mb-6 bg-white/20 flex items-center justify-center border-4 border-white/20 shadow-lg">
+                <div className="w-32 h-32 rounded-full mx-auto mb-6 bg-background/20 flex items-center justify-center border-4 border-white/20 shadow-lg">
                     <UserIcon className="h-16 w-16" />
                 </div>
             )}

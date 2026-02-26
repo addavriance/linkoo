@@ -247,7 +247,7 @@ export default function ApiDocsPage() {
             DELETE: 'bg-red-100 text-red-800',
         };
         return (
-            <span className={`px-2 py-1 rounded text-xs font-semibold ${colors[method] || 'bg-gray-100'}`}>
+            <span className={`px-2 py-1 rounded text-xs font-semibold ${colors[method] || 'bg-muted'}`}>
                 {method}
             </span>
         );
@@ -262,7 +262,7 @@ export default function ApiDocsPage() {
                         <Code className="h-10 w-10 text-blue-600"/>
                         API Документация
                     </h1>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                         Полное руководство по использованию Linkoo API для интеграции с вашими приложениями
                     </p>
                 </div>
@@ -282,7 +282,7 @@ export default function ApiDocsPage() {
                         </div>
                         <div>
                             <h3 className="font-semibold mb-2">Аутентификация</h3>
-                            <p className="text-gray-600 mb-2">
+                            <p className="text-muted-foreground mb-2">
                                 API использует JWT токены. Включите access token в заголовок Authorization:
                             </p>
                             <code className="block bg-gray-900 text-green-400 p-3 rounded font-mono text-sm">
@@ -291,7 +291,7 @@ export default function ApiDocsPage() {
                         </div>
                         <div>
                             <h3 className="font-semibold mb-2">Rate Limiting</h3>
-                            <ul className="list-disc list-inside text-gray-600 space-y-1">
+                            <ul className="list-disc list-inside text-muted-foreground space-y-1">
                                 <li>Общие endpoints: 100 запросов / 15 минут</li>
                                 <li>Auth endpoints: 30 запросов / 15 минут</li>
                                 <li>Auth check (/me, /refresh): 30 запросов / минуту</li>
@@ -324,7 +324,7 @@ export default function ApiDocsPage() {
                                                         isExpanded ? null : `${idx}-${endpointIdx}`
                                                     )
                                                 }
-                                                className="w-full p-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors"
+                                                className="w-full p-4 flex items-center justify-between bg-muted hover:bg-muted transition-colors"
                                             >
                                                 <div className="flex items-center gap-3 flex-1">
                                                     {renderMethodBadge(endpoint.method)}
@@ -336,15 +336,15 @@ export default function ApiDocsPage() {
                                                     )}
                                                 </div>
                                                 <ArrowRight
-                                                    className={`h-4 w-4 text-gray-400 transition-transform ${
+                                                    className={`h-4 w-4 text-muted-foreground transition-transform ${
                                                         isExpanded ? 'rotate-90' : ''
                                                     }`}
                                                 />
                                             </button>
 
                                             {isExpanded && (
-                                                <div className="p-4 bg-white border-t space-y-4">
-                                                    <p className="text-gray-700">{endpoint.description}</p>
+                                                <div className="p-4 bg-background border-t space-y-4">
+                                                    <p className="text-muted-foreground">{endpoint.description}</p>
 
                                                     {endpoint.params && (
                                                         <div>

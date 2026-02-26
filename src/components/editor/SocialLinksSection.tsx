@@ -40,7 +40,7 @@ export const SocialLinksSection: React.FC<SocialLinksSectionProps> = ({
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-muted-foreground">
                     Социальные сети ({(cardData.socials || []).length}/12)
                 </label>
                 <Button
@@ -55,7 +55,7 @@ export const SocialLinksSection: React.FC<SocialLinksSectionProps> = ({
             </div>
 
             {(cardData.socials || []).length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                     <p>Нет добавленных социальных сетей</p>
                     <p className="text-sm mt-2">Нажмите "Добавить" чтобы начать</p>
                 </div>
@@ -64,7 +64,7 @@ export const SocialLinksSection: React.FC<SocialLinksSectionProps> = ({
                     {(cardData.socials || []).map((social, index) => (
                         <div
                             key={index}
-                            className="flex gap-2 items-start p-3 bg-gray-50 rounded-lg"
+                            className="flex gap-2 items-start p-3 bg-muted rounded-lg"
                         >
                             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <Select

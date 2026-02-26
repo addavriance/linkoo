@@ -80,13 +80,13 @@ export default function ProfilePage() {
                 <div className="max-w-3xl mx-auto">
                     <Card className="p-6 animate-pulse">
                         <div className="flex items-start gap-4">
-                            <div className="w-32 h-32 rounded-full bg-gray-200"/>
+                            <div className="w-32 h-32 rounded-full bg-muted"/>
                             <div className="flex-1 space-y-3 pt-1">
-                                <div className="h-8 bg-gray-200 rounded w-48"/>
-                                <div className="h-4 bg-gray-200 rounded w-32"/>
+                                <div className="h-8 bg-muted rounded w-48"/>
+                                <div className="h-4 bg-muted rounded w-32"/>
                                 <div className="flex gap-2 pt-1">
-                                    <div className="h-6 bg-gray-200 rounded w-20"/>
-                                    <div className="h-6 bg-gray-200 rounded w-16"/>
+                                    <div className="h-6 bg-muted rounded w-20"/>
+                                    <div className="h-6 bg-muted rounded w-16"/>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ export default function ProfilePage() {
                         <div className="flex flex-col items-center">
                             <div className="relative group">
                                 <div
-                                    className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 cursor-pointer ring-4 ring-offset-2 ring-transparent hover:ring-blue-300 transition-all"
+                                    className="w-32 h-32 rounded-full overflow-hidden bg-muted cursor-pointer ring-4 ring-offset-2 ring-transparent ring-offset-accent transition-all"
                                     onClick={() => avatarInputRef.current?.click()}
                                 >
                                     {profileAvatar ? (
@@ -119,14 +119,14 @@ export default function ProfilePage() {
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
-                                            <span className="text-5xl text-gray-400 font-semibold">
+                                            <span className="text-5xl text-muted-foreground font-semibold">
                                                 {profileName[0]?.toUpperCase()}
                                             </span>
                                         </div>
                                     )}
                                 </div>
                                 <div
-                                    className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                    className="absolute inset-0 rounded-full bg-accent/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                     onClick={() => avatarInputRef.current?.click()}
                                 >
                                     {isUploadingAvatar ? (
@@ -143,7 +143,7 @@ export default function ProfilePage() {
                                     className="hidden"
                                 />
                             </div>
-                            <p className="text-xs text-gray-500 mt-3 text-center">
+                            <p className="text-xs text-muted-foreground mt-3 text-center">
                                 Нажмите на фото<br/>чтобы изменить
                             </p>
                         </div>
@@ -152,11 +152,11 @@ export default function ProfilePage() {
                         <div className="flex-1 space-y-6">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">
                                     Имя
                                 </label>
                                 <div className="relative">
-                                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10"/>
                                     <input
                                         type="text"
                                         value={profileName}
@@ -165,7 +165,7 @@ export default function ProfilePage() {
                                             setProfileName(e.target.value);
                                             setProfileDirty(true);
                                         }}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-accent/10"
                                         placeholder="Ваше имя"
                                     />
                                 </div>
@@ -173,19 +173,19 @@ export default function ProfilePage() {
                             {/* Email / Phone (read-only) */}
                             {user.email && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                                         Email
                                     </label>
                                     <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10"/>
                                         <input
                                             type="email"
                                             value={user.email}
                                             readOnly
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                                            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-muted text-muted-foreground cursor-not-allowed"
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-muted-foreground mt-1">
                                         Email связан с {user.provider.toUpperCase()} аккаунтом
                                     </p>
                                 </div>
@@ -193,19 +193,19 @@ export default function ProfilePage() {
 
                             {user.phone && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                                         Номер телефона
                                     </label>
                                     <div className="relative">
-                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10"/>
                                         <input
                                             type="phone"
                                             value={user.phone}
                                             readOnly
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                                            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-muted text-muted-foreground cursor-not-allowed"
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-muted-foreground mt-1">
                                         Номер телефона связан с {user.provider.toUpperCase()} аккаунтом
                                     </p>
                                 </div>
@@ -213,7 +213,7 @@ export default function ProfilePage() {
 
                             {/* Account Type */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">
                                     Тип аккаунта
                                 </label>
                                 <div className="flex items-center gap-3">
@@ -226,11 +226,11 @@ export default function ProfilePage() {
 
                             {/* Created At */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">
                                     Регистрация
                                 </label>
                                 <div className="relative">
-                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
+                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10"/>
                                     <input
                                         type="text"
                                         value={new Date(user.createdAt).toLocaleDateString('ru-RU', {
@@ -239,7 +239,7 @@ export default function ProfilePage() {
                                             day: 'numeric'
                                         })}
                                         readOnly
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                                        className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-muted text-muted-foreground cursor-not-allowed"
                                     />
                                 </div>
                             </div>
@@ -261,11 +261,11 @@ export default function ProfilePage() {
 
                 {/* Premium Upsell for Free Users */}
                 {user.accountType === 'free' && (
-                    <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mb-6">
+                    <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200 mb-6">
                         <div className="flex items-start gap-4">
                             <div className="flex-1">
                                 <h3 className="font-semibold text-lg mb-2">Обновитесь до Premium</h3>
-                                <p className="text-sm text-gray-700 mb-4">
+                                <p className="text-sm text-muted-foreground mb-4">
                                     Получите неограниченное количество карточек, custom домены, расширенную аналитику и
                                     приоритетную поддержку.
                                 </p>

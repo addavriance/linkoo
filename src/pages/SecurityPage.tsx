@@ -11,9 +11,9 @@ import {ProfileLayout} from '@/components/layout/ProfileLayout';
 
 function getSessionIcon(deviceInfo: string) {
     if (deviceInfo.includes('iPhone') || deviceInfo.includes('Android')) {
-        return <Smartphone className="h-4 w-4 text-gray-500"/>;
+        return <Smartphone className="h-4 w-4 text-muted-foreground"/>;
     }
-    return <Monitor className="h-4 w-4 text-gray-500"/>;
+    return <Monitor className="h-4 w-4 text-muted-foreground"/>;
 }
 
 function formatSessionDate(dateStr: string): string {
@@ -26,17 +26,17 @@ function formatSessionDate(dateStr: string): string {
 
 function SessionSkeleton() {
     return (
-        <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 animate-pulse">
+        <div className="flex items-center justify-between p-4 rounded-lg bg-muted animate-pulse">
             <div className="flex items-center gap-3">
-                <div className="h-4 w-4 bg-gray-300 rounded"/>
+                <div className="h-4 w-4 bg-muted rounded"/>
                 <div>
                     <div className="flex items-center gap-2">
-                        <div className="h-4 w-48 bg-gray-300 rounded"/>
+                        <div className="h-4 w-48 bg-muted rounded"/>
                     </div>
-                    <div className="h-3 w-32 bg-gray-300 rounded mt-1"/>
+                    <div className="h-3 w-32 bg-muted rounded mt-1"/>
                 </div>
             </div>
-            <div className="h-8 w-20 bg-gray-300 rounded"/>
+            <div className="h-8 w-20 bg-muted rounded"/>
         </div>
     );
 }
@@ -166,7 +166,7 @@ export default function SecurityPage() {
                         </Button>
                     </div>
 
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-muted-foreground mb-4">
                         Управляйте устройствами, на которых выполнен вход в ваш аккаунт.
                         Если вы заметили подозрительную активность, отзовите доступ и смените пароль.
                     </p>
@@ -184,8 +184,8 @@ export default function SecurityPage() {
                                     key={session._id}
                                     className={`flex items-center justify-between p-4 rounded-lg transition-colors ${
                                         isCurrentSession(session.token)
-                                            ? 'bg-blue-50 border-2 border-blue-200'
-                                            : 'bg-gray-50 hover:bg-gray-100'
+                                            ? 'bg-accent border-2 border-accent/50'
+                                            : 'bg-muted hover:bg-muted'
                                     }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -195,12 +195,12 @@ export default function SecurityPage() {
                                                 <span className="text-sm font-medium">{getDeviceInfo(session.deviceInfo)}</span>
                                                 {isCurrentSession(session.token) && (
                                                     <span
-                                                        className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+                                                        className="text-xs bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 px-2 py-0.5 rounded-full font-medium">
                                                         Текущая сессия
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-xs text-gray-500 mt-0.5">
+                                            <p className="text-xs text-muted-foreground mt-0.5">
                                                 {session.ipAddress} · {formatSessionDate(session.createdAt)}
                                             </p>
                                         </div>
@@ -210,7 +210,7 @@ export default function SecurityPage() {
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => handleRevokeSession(session._id)}
-                                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
                                         >
                                             Отозвать
                                         </Button>

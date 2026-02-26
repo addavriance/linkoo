@@ -37,7 +37,7 @@ const HomePage = () => {
             <section className="relative px-6 pt-20 pb-16 text-center lg:px-8 lg:pt-32 lg:pb-24">
                 <div className="mx-auto max-w-4xl">
                     {/* Заголовок */}
-                    <h1 className="mb-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl">
+                    <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
                         Создавай{" "}
                         <span className="relative">
                             <span className="bg-gradient-to-r from-linkoo-600 to-accent-600 bg-clip-text text-transparent">визитки</span>
@@ -60,7 +60,7 @@ const HomePage = () => {
                     </h1>
 
                     {/* Подзаголовок */}
-                    <p className="mx-auto mb-10 max-w-2xl text-lg leading-8 text-gray-600 sm:text-xl">
+                    <p className="mx-auto mb-10 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
                         Linkoo — это современная платформа для создания интерактивных цифровых визиток.
                         Делись контактами одним тапом, создавай впечатление и строй связи.
                     </p>
@@ -104,10 +104,10 @@ const HomePage = () => {
             <section className="px-6 py-16 lg:px-8">
                 <div className="mx-auto max-w-7xl">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+                        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
                             Почему выбирают Linkoo?
                         </h2>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                             Мы создали самую современную платформу для цифровых визиток с фокусом на скорость и удобство
                         </p>
                     </div>
@@ -116,17 +116,17 @@ const HomePage = () => {
                         {features.map((feature, index) => (
                             <Card
                                 key={index}
-                                className="feature-card group relative overflow-hidden border-0 bg-white/80 backdrop-blur-sm shadow-soft hover:shadow-strong"
+                                className="feature-card group relative overflow-hidden border-0 bg-background/80 backdrop-blur-sm shadow-soft hover:shadow-strong"
                             >
                                 <CardContent className="p-6">
                                     <div
                                         className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl ${feature.color} text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                                         {feature.icon}
                                     </div>
-                                    <h3 className="mb-2 text-lg font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600">
+                                    <h3 className="mb-2 text-lg font-semibold text-foreground transition-colors duration-200 group-hover:text-blue-600">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-gray-600 transition-colors duration-200">
+                                    <p className="text-muted-foreground transition-colors duration-200">
                                         {feature.description}
                                     </p>
                                 </CardContent>
@@ -137,12 +137,12 @@ const HomePage = () => {
             </section>
 
             {/* Demo Section */}
-            <section className="px-6 py-16 lg:px-8 bg-gray-50" id="examples">
+            <section className="px-6 py-16 lg:px-8 bg-muted" id="examples">
                 <div className="mx-auto max-w-7xl text-center">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-12">
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-12">
                         Посмотрите как это работает
                     </h2>
-                    <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                    <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
                         Реальные примеры визиток с разными темами оформления
                     </p>
 
@@ -153,10 +153,10 @@ const HomePage = () => {
             {/* CTA Section */}
             <section className="px-6 py-16 lg:px-8">
                 <div className="mx-auto max-w-4xl text-center">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
                         Готовы произвести впечатление?
                     </h2>
-                    <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                         Начните использовать Linkoo для эффективного нетворкинга и обмена контактами
                     </p>
 
@@ -171,7 +171,7 @@ const HomePage = () => {
                                 className="ml-2 h-5 w-5 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110"/>
                         </Button>
 
-                        <p className="text-sm text-gray-500 transition-colors duration-200 hover:text-gray-700">
+                        <p className="text-sm text-muted-foreground transition-colors duration-200 hover:text-muted-foreground">
                             Никаких регистраций • Полностью бесплатно • Мгновенный результат
                         </p>
                     </div>

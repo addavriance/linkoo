@@ -90,7 +90,7 @@ export function CardSubdomainSection({cardId, subdomain, onUpdated}: CardSubdoma
                     <input
                         value={deleteInput}
                         onChange={e => setDeleteInput(e.target.value)}
-                        className="flex-1 text-xs font-mono border border-red-200 rounded px-2 py-1 outline-none bg-white min-w-0"
+                        className="flex-1 text-xs font-mono border border-red-200 rounded px-2 py-1 outline-none bg-background min-w-0"
                         placeholder={subdomain}
                         autoFocus
                     />

@@ -18,7 +18,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
         <div className="space-y-4">
             {/* Avatar */}
             <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Фото профиля
                 </label>
                 <ImageUpload
@@ -30,7 +30,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             {/* Name & Title */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
                         Имя *
                     </label>
                     <Input
@@ -41,7 +41,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                     />
                 </div>
                 <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
                         Должность
                     </label>
                     <Input
@@ -54,7 +54,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
 
             {/* Description */}
             <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Описание
                 </label>
                 <Textarea
@@ -68,7 +68,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             {/* Email & Phone */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
                         Email
                     </label>
                     <Input
@@ -79,7 +79,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                     />
                 </div>
                 <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
                         Телефон
                     </label>
                     <PhoneInput
@@ -93,7 +93,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             {/* Website & Company */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
                         Веб-сайт
                     </label>
                     <Input
@@ -104,7 +104,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                     />
                 </div>
                 <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
                         Компания
                     </label>
                     <Input
@@ -117,7 +117,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
 
             {/* Location */}
             <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Местоположение
                 </label>
                 <Input

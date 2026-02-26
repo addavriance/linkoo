@@ -75,7 +75,7 @@ export const ShortenDialog: React.FC<ShortenDialogProps> = ({
                     </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                    <p className="text-sm text-gray-600 text-center">
+                    <p className="text-sm text-muted-foreground text-center">
                         Автоматическое сокращение недоступно. Выберите один из способов:
                     </p>
                     <div className="space-y-3">

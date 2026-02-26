@@ -73,7 +73,7 @@ export function LinkCardDialog({open, onOpenChange}: LinkCardDialogProps) {
                     </Card>
 
                     {/* Security Notice */}
-                    <div className="flex gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200 text-xs text-gray-600">
+                    <div className="flex gap-2 p-3 bg-muted rounded-lg border border-border text-xs text-muted-foreground">
                         <CreditCard className="h-4 w-4 shrink-0 mt-0.5"/>
                         <p>
                             Данные вашей карты надежно защищены и обрабатываются через

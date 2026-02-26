@@ -86,7 +86,7 @@ export function CookieConsent() {
                         </div>
                         <div className="flex-1">
                             <h3 className="text-lg font-semibold mb-2">Мы используем файлы cookie</h3>
-                            <p className="text-sm text-gray-600 mb-4">
+                            <p className="text-sm text-muted-foreground mb-4">
                                 Мы используем файлы cookie и аналогичные технологии для улучшения работы сайта,
                                 анализа трафика и персонализации контента. Продолжая использовать наш сервис,
                                 вы соглашаетесь с использованием cookie в соответствии с нашей{' '}
@@ -142,9 +142,9 @@ export function CookieConsent() {
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Label className="text-base font-semibold">Необходимые cookie</Label>
-                                    <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">Всегда активны</span>
+                                    <span className="text-xs bg-muted px-2 py-0.5 rounded">Всегда активны</span>
                                 </div>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-muted-foreground">
                                     Эти файлы cookie необходимы для базовой работы сайта и не могут быть отключены.
                                     Они используются для аутентификации, безопасности и сохранения ваших настроек.
                                 </p>
@@ -156,7 +156,7 @@ export function CookieConsent() {
                         <div className="flex items-start justify-between space-x-4 pb-4 border-b">
                             <div className="flex-1">
                                 <Label className="text-base font-semibold mb-2 block">Функциональные cookie</Label>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-muted-foreground">
                                     Эти файлы cookie позволяют сайту запоминать ваши предпочтения (например, выбор темы,
                                     язык) и предоставлять расширенные функции и персонализацию.
                                 </p>
@@ -173,7 +173,7 @@ export function CookieConsent() {
                         <div className="flex items-start justify-between space-x-4 pb-4 border-b">
                             <div className="flex-1">
                                 <Label className="text-base font-semibold mb-2 block">Аналитические cookie</Label>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-muted-foreground">
                                     Эти файлы cookie помогают нам понять, как посетители взаимодействуют с сайтом,
                                     собирая и передавая информацию анонимно. Это помогает нам улучшать работу сайта.
                                 </p>
@@ -190,7 +190,7 @@ export function CookieConsent() {
                         <div className="flex items-start justify-between space-x-4">
                             <div className="flex-1">
                                 <Label className="text-base font-semibold mb-2 block">Маркетинговые cookie</Label>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-muted-foreground">
                                     Эти файлы cookie используются для отслеживания посетителей на веб-сайтах.
                                     Намерение состоит в том, чтобы показывать рекламу, которая актуальна и интересна
                                     для отдельного пользователя.
@@ -214,7 +214,7 @@ export function CookieConsent() {
                         </Button>
                     </div>
 
-                    <p className="text-xs text-gray-500 text-center mt-4">
+                    <p className="text-xs text-muted-foreground text-center mt-4">
                         Подробнее о том, как мы используем cookie, читайте в нашей{' '}
                         <Link to="/privacy" className="text-blue-600 hover:text-blue-800 underline">
                             Политике конфиденциальности

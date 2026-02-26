@@ -79,7 +79,7 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                         className={`p-4 cursor-pointer transition-all border-2 ${
                             selectedPlan === 'monthly'
                                 ? 'border-blue-500 bg-blue-50/50'
-                                : 'border-gray-200 hover:border-gray-300'
+                                : 'border-border hover:border-border'
                         }`}
                         onClick={() => setSelectedPlan('monthly')}
                     >
@@ -93,12 +93,12 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                                         </div>
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">
+                                <p className="text-sm text-muted-foreground mb-2">
                                     {plans.monthly.description}
                                 </p>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-2xl font-bold">{plans.monthly.price}₽</span>
-                                    <span className="text-gray-600">/{plans.monthly.period}</span>
+                                    <span className="text-muted-foreground">/{plans.monthly.period}</span>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +109,7 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                         className={`p-4 cursor-pointer transition-all border-2 relative ${
                             selectedPlan === 'yearly'
                                 ? 'border-blue-500 bg-blue-50/50'
-                                : 'border-gray-200 hover:border-gray-300'
+                                : 'border-border hover:border-border'
                         }`}
                         onClick={() => setSelectedPlan('yearly')}
                     >
@@ -126,13 +126,13 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                                         </div>
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">
+                                <p className="text-sm text-muted-foreground mb-2">
                                     {plans.yearly.description}
                                 </p>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-2xl font-bold">{plans.yearly.price}₽</span>
-                                    <span className="text-gray-600">/{plans.yearly.period}</span>
-                                    <span className="text-sm text-gray-500 line-through">3590₽</span>
+                                    <span className="text-muted-foreground">/{plans.yearly.period}</span>
+                                    <span className="text-sm text-muted-foreground line-through">3590₽</span>
                                 </div>
                             </div>
                         </div>
@@ -141,9 +141,9 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                     {/* Info Block */}
                     <div className="flex gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <Info className="h-5 w-5 text-blue-600 shrink-0 mt-0.5"/>
-                        <div className="text-sm text-gray-700">
+                        <div className="text-sm text-muted-foreground">
                             <p className="font-medium mb-1">Безопасная оплата через ЮKassa</p>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                                 После нажатия кнопки вы будете перенаправлены на защищенную страницу оплаты.
                                 Принимаются карты, SberPay, ЮMoney и другие способы.
                             </p>
@@ -152,8 +152,8 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
 
                     {/* Features */}
                     <div className="space-y-2 pt-2">
-                        <p className="text-sm font-medium text-gray-700">Что входит в Premium:</p>
-                        <ul className="text-sm text-gray-600 space-y-1.5">
+                        <p className="text-sm font-medium text-muted-foreground">Что входит в Premium:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1.5">
                             <li className="flex items-center gap-2">
                                 <Check className="h-4 w-4 text-green-600"/>
                                 <span>Неограниченные карточки</span>

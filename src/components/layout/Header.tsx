@@ -103,7 +103,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="sticky top-0 z-40 border-b border-gray-200/50 bg-white/80 backdrop-blur-xl transition-all duration-200">
+            <header className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-xl transition-all duration-200">
                 <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
                     {/* Logo */}
                     <div className="flex sm:flex-1">
@@ -111,7 +111,7 @@ const Header = () => {
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-lg">
                                 L
                             </div>
-                            <span className="text-xl font-bold text-gray-900 transition-all duration-200 group-hover:text-blue-600">
+                            <span className="text-xl font-bold text-foreground transition-all duration-200 group-hover:text-blue-600">
                                 Linkoo
                             </span>
                         </Link>
@@ -125,10 +125,11 @@ const Header = () => {
                                 <Link
                                     key={item.name}
                                     to={item.href}
-                                    className={`nav-item flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-gray-100 hover:scale-105 hover:shadow-sm ${
+                                    className={`nav-item flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 
+                                    hover:bg-muted hover:scale-105 hover:shadow-sm ${
                                         isActive(item.href)
-                                            ? 'bg-blue-50 text-blue-700 shadow-sm'
-                                            : 'text-gray-700 hover:text-gray-900'
+                                            ? 'bg-accent text-primary shadow-sm'
+                                            : 'text-muted-foreground hover:text-foreground'
                                     }`}
                                 >
                                     <Icon className="h-4 w-4 transition-transform duration-200 nav-icon" />
@@ -143,7 +144,7 @@ const Header = () => {
                         {/* Desktop Auth Section */}
                         <Link
                             to="/editor"
-                            className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-all duration-200 hover:bg-gray-100 hover:scale-105 hover:shadow-sm mr-2">
+                            className="flex items-center space-x-2 rounded-lg p-2 text-sm font-medium transition-all duration-200 hover:bg-muted hover:scale-105 hover:shadow-sm mr-2">
                             <Plus className="h-4 w-4 transition-transform duration-200 nav-icon"/>
                         </Link>
 
@@ -152,7 +153,7 @@ const Header = () => {
                                 <div className="relative">
                                     <button
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center space-x-2 rounded-lg p-2 hover:bg-gray-100 transition-all"
+                                        className="flex items-center space-x-2 rounded-lg p-2 hover:bg-muted transition-all"
                                     >
                                         {user.profile.avatar ? (
                                             <img
@@ -187,7 +188,7 @@ const Header = () => {
                             {/* Mobile Menu Button */}
                             <button
                                 type="button"
-                                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 hover:bg-gray-100 transition-all duration-200 hover:scale-105 active:scale-95"
+                                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-muted-foreground hover:bg-muted transition-all duration-200 hover:scale-105 active:scale-95"
                                 onClick={handleOpenMenu}
                                 disabled={isAnimating}
                                 aria-expanded={mobileMenuOpen}

@@ -41,11 +41,11 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
         <div className="space-y-4">
             {/* Current theme */}
             <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Текущая тема
                 </label>
                 <div
-                    className="relative h-24 rounded-lg overflow-hidden cursor-pointer border-2 border-gray-200 hover:border-blue-500 transition-colors"
+                    className="relative h-24 rounded-lg overflow-hidden cursor-pointer border-2 border-border hover:border-blue-500 transition-colors"
                     style={{
                         background: selectedTheme.background,
                         color: selectedTheme.textColor,
@@ -73,13 +73,13 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
 
             {/* Quick theme selector */}
             <div>
-                <label className="text-sm font-medium text-gray-700 mb-3 block">
+                <label className="text-sm font-medium text-muted-foreground mb-3 block">
                     Быстрый выбор
                 </label>
                 <div className="space-y-3">
                     {Object.entries(groupedThemes).map(([category, categoryThemes]) => (
                         <div key={category}>
-                            <p className="text-xs font-medium text-gray-600 mb-2">
+                            <p className="text-xs font-medium text-muted-foreground mb-2">
                                 {categoryNames[category] || category}
                             </p>
                             <div className="grid grid-cols-3 gap-2">
@@ -92,7 +92,7 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
                       ${
                                             cardData.theme === theme.id
                                                 ? 'border-blue-500 ring-2 ring-blue-200'
-                                                : 'border-gray-200 hover:border-gray-300'
+                                                : 'border-border hover:border-border'
                                         }
                     `}
                                         style={{

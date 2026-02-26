@@ -41,9 +41,9 @@
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 217.2 60.6% 7.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 217.2 58.6% 9.5%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -56,5 +56,16 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+
+  .oled {
+    --background: 0 0% 0%;
+    --accent: 0 0% 10%;
+    --card: 0 0% 2%;
+    --popover: 0 0% 2%;
+    --muted: 0 0% 5%;
+    --secondary: 0 0% 8%;
+    --border: 0 0% 10%;
+    --input: 0 0% 10%;
   }
 }
