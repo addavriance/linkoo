@@ -9,6 +9,7 @@ import {
     IdCard,
 } from "lucide-react";
 import {useAuth} from "@/contexts/AuthContext.tsx";
+import {Button} from "@/components/ui/button.tsx";
 
 interface UserMenuProps {
     setUserMenuOpen: (open: boolean) => void;
@@ -90,16 +91,16 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                     {user.accountType === 'free' && (
                         <>
                             <div className="my-2 border-t border-border"></div>
-                            <button
+                            <Button
                                 onClick={() => {
                                     setUserMenuOpen(false);
                                     navigate('/premium');
                                 }}
-                                className="w-full flex items-center space-x-3 px-3 py-2 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 rounded-md transition-all shadow-sm"
+                                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
                             >
                                 <Sparkles className="h-4 w-4" />
                                 <span>Перейти на Premium</span>
-                            </button>
+                            </Button>
                         </>
                     )}
 
@@ -109,7 +110,7 @@ export const UserMenu = ({setUserMenuOpen}: UserMenuProps) => {
                             setUserMenuOpen(false);
                             logout();
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-destructive hover:bg-destructive/15 rounded-md transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-red-600 hover:bg-destructive/20 rounded-md transition-colors"
                     >
                         <LogOut className="h-4 w-4" />
                         <span>Выйти</span>

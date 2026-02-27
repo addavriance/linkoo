@@ -81,7 +81,7 @@ export default function SubscriptionPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30">
+        <div className="min-h-screen bg-gradient-to-br wd:(from-blue-50 via-background to-purple-50)">
             <div className="container mx-auto px-4 py-16">
                 <div className="max-w-4xl mx-auto space-y-8">
                     {/* Header */}
@@ -91,7 +91,7 @@ export default function SubscriptionPage() {
                     </div>
 
                     {/* Current Subscription */}
-                    <Card className="p-6 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
+                    <Card className="p-6 bg-gradient-to-br wd:(from-gray-100 to-gray-200) relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-3xl"/>
 
                         <div className="relative">
@@ -104,7 +104,7 @@ export default function SubscriptionPage() {
                                         <h2 className="text-2xl font-bold">
                                             {isPremium ? 'Linkoo Premium' : 'Попробуйте Premium!'}
                                         </h2>
-                                        <p className="text-gray-300 text-sm">
+                                        <p className="text-muted-foreground text-sm">
                                             {isPremium
                                                 ? `Активна до ${formatExpiryDate()}`
                                                 : 'Получите доступ ко всем возможностям'}
@@ -114,7 +114,7 @@ export default function SubscriptionPage() {
                                 {!isPremium && (
                                     <div className="text-right">
                                         <p className="text-3xl font-bold">299₽</p>
-                                        <p className="text-sm text-gray-300">месяц</p>
+                                        <p className="text-sm text-muted-foreground">месяц</p>
                                         <p className="text-xs text-muted-foreground mt-1">
                                             Или 2870₽ / год (экономия 20%)
                                         </p>
@@ -123,14 +123,14 @@ export default function SubscriptionPage() {
                             </div>
 
                             <div className="mb-6">
-                                <p className="text-sm font-semibold mb-3 text-gray-300">Преимущества:</p>
+                                <p className="text-sm font-semibold mb-3 text-muted-foreground">Преимущества:</p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     {PREMIUM_FEATURES.map((feature, index) => (
                                         <div key={index} className="flex items-center gap-2">
-                                            <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                                                <Check className="h-3 w-3 text-green-400"/>
+                                            <div className="w-5 h-5 rounded-full wd:bg-green-200 flex items-center justify-center">
+                                                <Check className="h-3 w-3 wd:text-green-500"/>
                                             </div>
-                                            <span className="text-sm text-gray-200">{feature.title}</span>
+                                            <span className="text-sm text-muted-foreground">{feature.title}</span>
                                         </div>
                                     ))}
                                 </div>

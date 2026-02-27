@@ -261,17 +261,17 @@ export default function ProfilePage() {
 
                 {/* Premium Upsell for Free Users */}
                 {user.accountType === 'free' && (
-                    <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200 mb-6">
+                    <Card className="p-6 bg-gradient-to-r wd:(from-blue-50 to-purple-50 border-blue-100) mb-6">
                         <div className="flex items-start gap-4">
                             <div className="flex-1">
                                 <h3 className="font-semibold text-lg mb-2">Обновитесь до Premium</h3>
                                 <p className="text-sm text-muted-foreground mb-4">
-                                    Получите неограниченное количество карточек, custom домены, расширенную аналитику и
+                                    Получите неограниченное количество карточек, собственные поддомены, расширенную аналитику и
                                     приоритетную поддержку.
                                 </p>
                                 <Button
                                     onClick={() => navigate('/premium')}
-                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                                 >
                                     <ExternalLink className="h-4 w-4 mr-2"/>
                                     Узнать больше о Premium

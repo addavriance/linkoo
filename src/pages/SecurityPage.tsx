@@ -195,7 +195,7 @@ export default function SecurityPage() {
                                                 <span className="text-sm font-medium">{getDeviceInfo(session.deviceInfo)}</span>
                                                 {isCurrentSession(session.token) && (
                                                     <span
-                                                        className="text-xs bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 px-2 py-0.5 rounded-full font-medium">
+                                                        className="text-xs wd:(bg-green-100 text-green-800) px-2 py-0.5 rounded-full font-medium">
                                                         Текущая сессия
                                                     </span>
                                                 )}
@@ -210,7 +210,8 @@ export default function SecurityPage() {
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => handleRevokeSession(session._id)}
-                                            className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
+                                            className="text-red-500 hover:text-red-500 hover:bg-red-100
+                                            dark:text-red-700 dark:hover:text-red-50 dark:hover:bg-red-800"
                                         >
                                             Отозвать
                                         </Button>

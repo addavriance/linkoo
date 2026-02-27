@@ -130,14 +130,14 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
     if (!cardData) {
         return (
             <div
-                className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+                className="min-h-screen flex items-center justify-center bg-gradient-to-br wd:(from-blue-50 via-white to-purple-50) p-6">
                 <Card className="max-w-md w-full text-center">
                     <CardContent className="p-8">
-                        <HelpCircle className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                        <HelpCircle className="h-16 w-16 mx-auto mb-4 wd:text-gray-400" />
+                        <h1 className="text-2xl font-bold wd:text-gray-900 mb-2">
                             Визитка не найдена
                         </h1>
-                        <p className="text-gray-600 mb-6">
+                        <p className="wd:text-gray-600 mb-6">
                             {error || 'Ссылка повреждена или визитка не существует'}
                         </p>
                         <Button

@@ -10,8 +10,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {toast} from '@/lib/toast';
 import {api} from '@/lib/api';
-import {CreditCard, Loader2, Info} from 'lucide-react';
-import {Card} from '@/components/ui/card';
+import {CreditCard, Loader2} from 'lucide-react';
 
 interface LinkCardDialogProps {
     open: boolean;
@@ -55,14 +54,12 @@ export function LinkCardDialog({open, onOpenChange}: LinkCardDialogProps) {
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4 py-4">
+                <div className="space-y-4">
                     {/* Info Card */}
-                    <Card className="p-4 bg-blue-50 border-blue-200">
                         <div className="flex gap-3">
-                            <Info className="h-5 w-5 text-blue-600 shrink-0 mt-0.5"/>
                             <div className="text-sm">
-                                <p className="font-medium text-blue-900 mb-1">Как это работает?</p>
-                                <ul className="text-blue-800 space-y-1">
+                                <p className="font-medium wd:text-blue-900 mb-1">Как это работает?</p>
+                                <ul className="wd:text-blue-800 space-y-1 ml-3">
                                     <li>• Мы проверим вашу карту тестовым платежом на 1₽</li>
                                     <li>• Деньги будут <strong>автоматически возвращены</strong></li>
                                     <li>• Карта сохранится для будущих оплат</li>
@@ -70,7 +67,6 @@ export function LinkCardDialog({open, onOpenChange}: LinkCardDialogProps) {
                                 </ul>
                             </div>
                         </div>
-                    </Card>
 
                     {/* Security Notice */}
                     <div className="flex gap-2 p-3 bg-muted rounded-lg border border-border text-xs text-muted-foreground">

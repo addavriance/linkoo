@@ -11,9 +11,9 @@ const Footer = () => {
             {name: 'Примеры', href: '#examples'},
         ],
         resources: [
-            {name: 'Документация', href: '/api'},
-            {name: 'API', href: '/api'},
-            {name: 'Блог', href: 'https://t.me/linkoo_app'},
+            {name: 'Новости', href: '/news'}, // WIP
+            {name: 'API', href: '/api-docs'},
+            // {name: 'Блог', href: 'https://t.me/linkoo_app'},
         ],
         company: [
             {name: 'О проекте', href: '/about'},

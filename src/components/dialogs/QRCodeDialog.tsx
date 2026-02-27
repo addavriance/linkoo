@@ -34,14 +34,14 @@ function PremiumLock({children, onUpgrade}: { children: React.ReactNode; onUpgra
                 {children}
             </div>
             <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-lg bg-background/60 backdrop-blur-[1px] border border-amber-200"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 cursor-pointer rounded-lg bg-background/60 backdrop-blur-[1px] border wd:border-blue-200"
                 onClick={onUpgrade}
             >
-                <div className="flex items-center gap-1.5 text-amber-700">
+                <div className="flex items-center gap-1.5 wd:text-blue-700">
                     <Lock className="h-4 w-4"/>
                     <span className="text-sm font-medium">Premium</span>
                 </div>
-                <span className="text-xs text-amber-600">Нажмите, чтобы открыть</span>
+                <span className="text-xs wd:text-blue-600">Нажмите, чтобы открыть</span>
             </div>
         </div>
     );
@@ -436,7 +436,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                         <div className="space-y-2">
                             <Label className="flex items-center gap-2">
                                 Логотип в центре
-                                {!isPremium && <Lock className="h-3.5 w-3.5 text-amber-500"/>}
+                                {!isPremium && <Lock className="h-3.5 w-3.5 text-blue-500"/>}
                             </Label>
 
                             {isPremium ? (
@@ -500,7 +500,7 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                                         variant="outline"
                                         size="sm"
                                         onClick={goToPremium}
-                                        className="text-amber-600 border-amber-200 hover:bg-amber-50 shrink-0"
+                                        className="wd:(text-blue-600 border-blue-200 hover:bg-blue-50) shrink-0"
                                     >
                                         <Sparkles className="h-3.5 w-3.5 mr-1"/>
                                         Убрать
@@ -534,15 +534,15 @@ export function QRCodeDialog({open, onOpenChange, url, cardName, avatar}: QRCode
                         {/* Плашка о Premium для бесплатников */}
                         {!isPremium && (
                             <div
-                                className="flex items-center gap-3 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg cursor-pointer"
+                                className="flex items-center gap-3 p-3 bg-gradient-to-r wd:(from-blue-50 to-blue-50 border border-blue-200) rounded-lg cursor-pointer"
                                 onClick={goToPremium}
                             >
-                                <Sparkles className="h-5 w-5 text-amber-600 shrink-0"/>
+                                <Sparkles className="h-5 w-5 wd:text-blue-600 shrink-0"/>
                                 <div>
-                                    <p className="text-sm font-medium text-amber-800">
+                                    <p className="text-sm font-medium wd:text-blue-800">
                                         Полная кастомизация с Premium
                                     </p>
-                                    <p className="text-xs text-amber-600">
+                                    <p className="text-xs wd:text-blue-600">
                                         Форма, отступы, свой логотип или чистый QR — от 299 ₽/мес
                                     </p>
                                 </div>

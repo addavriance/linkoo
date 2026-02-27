@@ -51,7 +51,6 @@
 }
 
 .close-button:hover .close-icon {
-    color: #dc2626;
     transform: rotate(90deg) scale(1.1);
 }
 

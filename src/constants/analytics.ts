@@ -81,9 +81,9 @@ export const INTERACTION_STATS: Array<{
     icon: LucideIcon;
     color: string;
 }> = [
-    {label: 'Сохранений',  key: 'contactSaves',   icon: Download, color: 'text-green-600 bg-green-100'},
-    {label: 'Поделились',  key: 'shares',          icon: Share2,   color: 'text-blue-600 bg-blue-100'},
-    {label: 'Сайт',        key: 'websiteClicks',   icon: Globe,    color: 'text-purple-600 bg-purple-100'},
-    {label: 'Email',       key: 'emailClicks',     icon: Mail,     color: 'text-indigo-600 bg-indigo-100'},
-    {label: 'Телефон',     key: 'phoneClicks',     icon: Phone,    color: 'text-cyan-600 bg-cyan-100'},
+    {label: 'Сохранений',  key: 'contactSaves',   icon: Download, color: 'wd:(text-green-600 bg-green-100)'},
+    {label: 'Поделились',  key: 'shares',          icon: Share2,   color: 'wd:(text-blue-600 bg-blue-100)'},
+    {label: 'Сайт',        key: 'websiteClicks',   icon: Globe,    color: 'wd:(text-purple-600 bg-purple-100)'},
+    {label: 'Email',       key: 'emailClicks',     icon: Mail,     color: 'wd:(text-indigo-600 bg-indigo-100)'},
+    {label: 'Телефон',     key: 'phoneClicks',     icon: Phone,    color: 'wd:(text-cyan-600 bg-cyan-100)'},
 ];

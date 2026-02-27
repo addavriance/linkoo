@@ -26,7 +26,7 @@ export default function PremiumPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30">
+        <div className="min-h-screen bg-gradient-to-br wd:(from-blue-50 via-white to-purple-50) 0">
             <div className="absolute inset-0 z-1 h-[150vh]">
                 <div
                     className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 blur-3xl"/>
@@ -89,7 +89,7 @@ export default function PremiumPage() {
                         {/* Premium Plan */}
                         <Card className="p-8 relative border-2 border-blue-500 shadow-2xl">
                             <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                                <div className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                                     <Sparkles className="h-4 w-4"/>
                                     Популярный выбор
                                 </div>
@@ -114,7 +114,7 @@ export default function PremiumPage() {
                                 {PREMIUM_FEATURES.map((feature, index) => {
                                     return (
                                         <div key={index} className="flex items-start gap-3">
-                                            <div className="shrink-0 w-6 h-6 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center">
+                                            <div className="shrink-0 w-6 h-6 rounded-full bg-gradient-to-r wd:(from-blue-100 to-purple-100) flex items-center justify-center">
                                                 <Check className="h-4 w-4 text-blue-600"/>
                                             </div>
                                             <div className="flex-1">
@@ -127,7 +127,7 @@ export default function PremiumPage() {
                             </div>
 
                             {isPremium ? (
-                                <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg p-4 text-center">
+                                <div className="bg-gradient-to-r wd:(from-blue-50 to-purple-50) rounded-lg p-4 text-center">
                                     <div className="flex items-center justify-center gap-2 text-blue-700 font-semibold">
                                         <Crown className="h-5 w-5"/>
                                         <span>У вас уже Premium</span>

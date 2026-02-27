@@ -1,6 +1,7 @@
 import {ReactNode} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {User, CreditCard, Shield, Settings} from 'lucide-react';
+import {wd} from "@/lib/wd.ts";
 
 interface NavItem {
     label: string;
@@ -102,7 +103,7 @@ export function ProfileLayout({children, title, description}: ProfileLayoutProps
                                             className={`
                                                 flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors
                                                 ${isActive
-                                                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20'
+                                                    ? 'wd:bg-blue-50 text-blue-700'
                                                     : 'text-muted-foreground hover:bg-muted'
                                                 }
                                             `}

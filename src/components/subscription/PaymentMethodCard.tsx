@@ -30,7 +30,7 @@ export function PaymentMethodCard({method, onDelete, isDefault}: PaymentMethodCa
 
     const getCardIcon = (_cardType?: string) => {
         // Можно добавить разные иконки для Visa, MasterCard и т.д.
-        return <CreditCard className="h-6 w-6 text-blue-600 dark:text-blue-100" />;
+        return <CreditCard className="h-6 w-6 wd:text-blue-600" />;
     };
 
     const formatExpiryDate = () => {
@@ -51,7 +51,7 @@ export function PaymentMethodCard({method, onDelete, isDefault}: PaymentMethodCa
                                 {method.title || `${method.card?.card_type} •••• ${method.card?.last4}`}
                             </p>
                             {isDefault && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-700 dark:text-blue-100">
+                                <span className="text-xs px-2 py-0.5 rounded-full wd:(bg-blue-100 text-blue-700)">
                                     По умолчанию
                                 </span>
                             )}

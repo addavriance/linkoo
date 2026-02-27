@@ -59,7 +59,7 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                         </Link>
                         <button
                             type="button"
-                            className="close-button -m-2.5 rounded-md p-2.5 text-muted-foreground hover:bg-red-50 transition-all duration-200 hover:scale-105 active:scale-95"
+                            className="close-button -m-2.5 rounded-md p-2.5 text-muted-foreground wd:(hover:bg-red-100 hover:text-red-500) transition-all duration-200 hover:scale-105 active:scale-95"
                             onClick={handleCloseMenu}
                             disabled={isAnimating}
                         >
@@ -117,7 +117,7 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
 
                         {/* User info for mobile menu */}
                         {isAuthenticated && user && (
-                            <div className="footer-button footer-button-animated-1 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-xl p-4">
+                            <div className="footer-button footer-button-animated-1 bg-gradient-to-br wd:(from-blue-50 to-purple-50) rounded-xl p-4">
                                 <div className="flex items-center gap-3 mb-3">
                                     {user.profile.avatar ? (
                                         <img
@@ -151,7 +151,7 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="w-full text-red-600 hover:bg-red-50 hover:text-red-700"
+                                        className="w-full wd:(text-red-600 hover:bg-red-50 hover:text-red-700)"
                                         onClick={() => {
                                             handleCloseMenu();
                                             setTimeout(() => logout(), 300);

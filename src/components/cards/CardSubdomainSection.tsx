@@ -1,18 +1,21 @@
 import {useState} from 'react';
-import {Button} from '@/components/ui/button';
 import {Copy, Pencil, Check, Trash2, X} from 'lucide-react';
 import {api} from '@/lib/api';
 import {toast} from '@/lib/toast';
+import {cn} from '@/lib/utils';
+import {ActionButton, ActionButtons} from "@/components/cards/CardActionButtons.tsx";
+import {SubdomainInput} from "@/components/cards/CardSubdomainInput.tsx";
 
 interface CardSubdomainSectionProps {
     cardId: string;
     subdomain?: string;
+    className?: string;
     onUpdated: (newSubdomain?: string) => void;
 }
 
 type Mode = 'view' | 'edit' | 'confirm-delete';
 
-export function CardSubdomainSection({cardId, subdomain, onUpdated}: CardSubdomainSectionProps) {
+export function CardSubdomainSection({cardId, subdomain, className, onUpdated}: CardSubdomainSectionProps) {
     const [mode, setMode] = useState<Mode>('view');
     const [input, setInput] = useState('');
     const [deleteInput, setDeleteInput] = useState('');
@@ -62,93 +65,95 @@ export function CardSubdomainSection({cardId, subdomain, onUpdated}: CardSubdoma
             .catch(() => toast.error('Не удалось скопировать'));
     };
 
+    // Режим: нет поддомена
     if (!subdomain) {
         return (
-            <div className="mb-3 p-2 bg-purple-50 rounded-lg border border-purple-100 flex items-center gap-1.5">
-                <input
-                    value={input}
-                    onChange={e => setInput(sanitize(e.target.value))}
-                    className="flex-1 text-xs font-mono bg-transparent outline-none min-w-0 text-purple-900"
-                    placeholder="my-name"
-                />
-                <span className="text-xs text-purple-400 shrink-0 font-mono">.linkoo.dev</span>
-                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                        onClick={handleSave} disabled={loading || input.length < 3}>
-                    <Check className="h-3 w-3 text-purple-600"/>
-                </Button>
-            </div>
+            <SubdomainInput
+                value={input}
+                onChange={e => setInput(sanitize(e.target.value))}
+                placeholder="my-name"
+                variant="default"
+                className={className}
+            >
+                <ActionButtons>
+                    <ActionButton onClick={handleSave} disabled={loading || input.length < 3}>
+                        <Check className="h-3 w-3 text-purple-600"/>
+                    </ActionButton>
+                </ActionButtons>
+            </SubdomainInput>
         );
     }
 
     if (mode === 'confirm-delete') {
         return (
-            <div className="mb-3 p-2 bg-red-50 rounded-lg border border-red-100 space-y-1.5">
-                <p className="text-xs text-red-700">
+            <div className="mb-3 space-y-1.5">
+                <p className="text-xs text-red-700 px-2">
                     Введите <span className="font-mono font-medium">{subdomain}</span> для удаления
                 </p>
-                <div className="flex items-center gap-1.5">
-                    <input
-                        value={deleteInput}
-                        onChange={e => setDeleteInput(e.target.value)}
-                        className="flex-1 text-xs font-mono border border-red-200 rounded px-2 py-1 outline-none bg-background min-w-0"
-                        placeholder={subdomain}
-                        autoFocus
-                    />
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                            onClick={handleDelete} disabled={deleteInput !== subdomain || loading}>
-                        <Check className="h-3 w-3 text-red-600"/>
-                    </Button>
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                            onClick={() => { setMode('edit'); setDeleteInput(''); }}>
-                        <X className="h-3 w-3"/>
-                    </Button>
-                </div>
+                <SubdomainInput
+                    value={deleteInput}
+                    onChange={e => setDeleteInput(e.target.value)}
+                    placeholder={subdomain}
+                    variant="delete"
+                    suffix={null}
+                    autoFocus
+                    className={cn("flex-1", className)}
+                >
+                    <ActionButtons>
+                        <ActionButton onClick={handleDelete} disabled={deleteInput !== subdomain || loading}>
+                            <Check className="h-3 w-3 text-red-600"/>
+                        </ActionButton>
+                        <ActionButton onClick={() => { setMode('edit'); setDeleteInput(''); }}>
+                            <X className="h-3 w-3"/>
+                        </ActionButton>
+                    </ActionButtons>
+                </SubdomainInput>
+
             </div>
         );
     }
 
     if (mode === 'edit') {
         return (
-            <div className="mb-3 p-2 bg-purple-50 rounded-lg border border-purple-100 flex items-center gap-1.5">
-                <input
-                    value={input}
-                    onChange={e => setInput(sanitize(e.target.value))}
-                    className="flex-1 text-xs font-mono bg-transparent outline-none min-w-0 text-purple-900"
-                    autoFocus
-                    placeholder={subdomain}
-                />
-                <span className="text-xs text-purple-400 shrink-0 font-mono">.linkoo.dev</span>
-                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                        onClick={handleSave} disabled={loading || input.length < 3}>
-                    <Check className="h-3 w-3 text-purple-600"/>
-                </Button>
-                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                        onClick={() => { setMode('confirm-delete'); setDeleteInput(''); }}>
-                    <Trash2 className="h-3 w-3 text-red-500"/>
-                </Button>
-                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                        onClick={() => setMode('view')}>
-                    <X className="h-3 w-3"/>
-                </Button>
-            </div>
+            <SubdomainInput
+                value={input}
+                onChange={e => setInput(sanitize(e.target.value))}
+                placeholder={subdomain}
+                variant="default"
+                autoFocus
+                className={className}
+            >
+                <ActionButtons>
+                    <ActionButton onClick={handleSave} disabled={loading || input.length < 3}>
+                        <Check className="h-3 w-3 text-purple-600"/>
+                    </ActionButton>
+                    <ActionButton onClick={() => { setMode('confirm-delete'); setDeleteInput(''); }}>
+                        <Trash2 className="h-3 w-3 text-red-500"/>
+                    </ActionButton>
+                    <ActionButton onClick={() => setMode('view')}>
+                        <X className="h-3 w-3"/>
+                    </ActionButton>
+                </ActionButtons>
+            </SubdomainInput>
         );
     }
 
     return (
-        <div className="mb-3 p-2 bg-purple-50 rounded-lg border border-purple-100 flex items-center gap-1.5">
-            <input
-                value={`https://${subdomain}.linkoo.dev`}
-                readOnly
-                className="flex-1 text-xs font-mono bg-transparent outline-none truncate text-purple-700"
-            />
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                    onClick={handleCopy} title="Копировать">
-                <Copy className="h-3 w-3"/>
-            </Button>
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0"
-                    onClick={() => { setMode('edit'); setInput(subdomain); }} title="Редактировать поддомен">
-                <Pencil className="h-3 w-3"/>
-            </Button>
-        </div>
+        <SubdomainInput
+            value={`https://${subdomain}.linkoo.dev`}
+            variant="default"
+            readOnly
+            suffix={null}
+            className={className}
+        >
+            <ActionButtons>
+                <ActionButton onClick={handleCopy}>
+                    <Copy className="h-3 w-3"/>
+                </ActionButton>
+                <ActionButton onClick={() => { setMode('edit'); setInput(subdomain); }}>
+                    <Pencil className="h-3 w-3"/>
+                </ActionButton>
+            </ActionButtons>
+        </SubdomainInput>
     );
 }

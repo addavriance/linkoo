@@ -1,6 +1,21 @@
 /** @type {import('tailwindcss').Config} */
+
+// wd() safelist — ensures dark: variants of generated classes are included in the build
+const WD_PREFIXES = 'bg|text|border|from|to|via|ring|fill|stroke|decoration|accent|caret|divide|placeholder';
+const wdSafelist = [
+	// /20 и /30 указаны намеренно, поскольку (\\/\d+)? убивает ОЗУ, перебирая около 10млн вариаций во время билда
+	// TODO: текущий подход слегка замедляет время билда, желательно откуда то заранее подтягивать все цвета, инче их нужно выписать все вручную сюда
+	// TODO: автоген для префиксов
+    { pattern: new RegExp(`^(${WD_PREFIXES})-[a-z]+-\\d+$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
+    { pattern: new RegExp(`^(${WD_PREFIXES})-[a-z]+-950\\/20$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
+    { pattern: new RegExp(`^(${WD_PREFIXES})-[a-z]+-900\\/30$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
+    // bare-color: bg-white, bg-black
+    { pattern: new RegExp(`^(${WD_PREFIXES})-(white|black)$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
+];
+
 export default {
     darkMode: ["class"],
+    safelist: wdSafelist,
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}",], theme: {
     	extend: {
     		colors: {

@@ -14,6 +14,7 @@ import {toast} from '@/lib/toast';
 import {api} from '@/lib/api';
 import {Link, Trash2, AlertCircle, Globe, Crown} from 'lucide-react';
 
+// DEPRECATED
 interface ManageLinkDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -311,7 +312,7 @@ export function ManageLinkDialog({
                 </Tabs>
 
                 {!isPaid && (
-                    <div className="mt-2 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border border-blue-200 rounded-lg">
+                    <div className="mt-2 p-3 bg-gradient-to-r wd:(from-blue-50 to-purple-50) border border-blue-200 rounded-lg">
                         <div className="flex items-center gap-2">
                             <Crown className="h-4 w-4 text-purple-600 flex-shrink-0"/>
                             <p className="text-sm text-muted-foreground">

@@ -87,12 +87,12 @@ function groupEvents(events: RecentActivityItem[]): Array<{event: RecentActivity
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function StatCard({
-    icon: Icon,
-    label,
-    value,
-    sub,
-    color = 'indigo',
-}: {
+                      icon: Icon,
+                      label,
+                      value,
+                      sub,
+                      color = 'indigo',
+                  }: {
     icon: any;
     label: string;
     value: string | number;
@@ -175,6 +175,20 @@ function ChartTooltip({active, payload, label}: any) {
     );
 }
 
+// Кастомный тултип для вертикальных баров (браузеры, соцсети)
+function VerticalBarTooltip({active, payload}: any) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div className="bg-background border border-border rounded-lg shadow-lg p-3 text-sm">
+            {payload.map((p: any, i: number) => (
+                <p key={i} style={{color: p.color}} className="font-medium">
+                    {p.payload.name}: {p.value}
+                </p>
+            ))}
+        </div>
+    );
+}
+
 // ─── Premium analytics view ───────────────────────────────────────────────────
 
 function PremiumView({data}: {data: PremiumAnalytics}) {
@@ -250,23 +264,24 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                         <div className="flex items-center gap-4">
                             <ResponsiveContainer width={140} height={140}>
                                 <PieChart>
+                                    <Tooltip content={<VerticalBarTooltip/>}/>
                                     <Pie
                                         data={data.deviceBreakdown.filter((d) => d.value > 0)}
+                                        dataKey="value"
                                         cx="50%"
                                         cy="50%"
                                         innerRadius={40}
                                         outerRadius={65}
                                         paddingAngle={3}
-                                        dataKey="value"
                                     >
                                         {data.deviceBreakdown.map((entry) => (
                                             <Cell
+                                                name={DEVICE_LABELS[entry.name]}
                                                 key={entry.name}
                                                 fill={DEVICE_COLORS[entry.name] || '#94a3b8'}
                                             />
                                         ))}
                                     </Pie>
-                                    <Tooltip formatter={(v, n) => [v, DEVICE_LABELS[n as string] || n]}/>
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="flex-1 space-y-3">
@@ -306,7 +321,7 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false}/>
                                 <XAxis type="number" tick={{fontSize: 11}} tickLine={false} axisLine={false} allowDecimals={false}/>
                                 <YAxis dataKey="name" type="category" width={72} tick={{fontSize: 11}} tickLine={false} axisLine={false}/>
-                                <Tooltip/>
+                                <Tooltip content={<VerticalBarTooltip/>}/>
                                 <Bar dataKey="value" name="Просмотры" radius={[0, 4, 4, 0]}>
                                     {data.browserBreakdown.map((_, i) => (
                                         <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]}/>
@@ -331,7 +346,7 @@ function PremiumView({data}: {data: PremiumAnalytics}) {
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false}/>
                                 <XAxis type="number" tick={{fontSize: 11}} tickLine={false} axisLine={false} allowDecimals={false}/>
                                 <YAxis dataKey="platform" type="category" width={72} tick={{fontSize: 11}} tickLine={false} axisLine={false}/>
-                                <Tooltip/>
+                                <Tooltip content={<VerticalBarTooltip/>}/>
                                 <Bar dataKey="count" name="Клики" fill="#8b5cf6" radius={[0, 4, 4, 0]}/>
                             </BarChart>
                         </ResponsiveContainer>
@@ -443,14 +458,14 @@ export default function AnalyticsPage() {
             title={`Аналитика${cardName ? ` · ${cardName}` : ''}`}
             description="Подробная статистика просмотров и взаимодействий"
         >
-            <div className="flex gap-2 mb-6">
+            <div className="flex gap-2 mb-6 text-muted-foreground">
                 {PERIODS.map((p) => (
                     <Button
                         key={p.value}
                         size="sm"
                         variant={period === p.value ? 'default' : 'outline'}
                         onClick={() => setPeriod(p.value)}
-                        className="flex items-center gap-1"
+                        className={`flex items-center gap-1 ${period === p.value ? 'wd:(bg-blue-100 hover:bg-blue-100 text-blue-600)' : ''}`}
                     >
                         <Calendar className="h-3.5 w-3.5"/>
                         {p.label}

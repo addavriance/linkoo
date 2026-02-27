@@ -33,6 +33,7 @@ import {
 const FREE_THEME_IDS = Object.keys(cardThemes).slice(0, 5);
 // Только первая тема доступна гостям
 const GUEST_THEME_IDS = Object.keys(cardThemes).slice(0, 1);
+const GUEST_SHOWN_THEME_IDS = Object.keys(cardThemes).slice(0, 8);
 
 const ThemesPage = () => {
     const navigate = useNavigate();
@@ -50,6 +51,11 @@ const ThemesPage = () => {
         if (isAuthenticated) return FREE_THEME_IDS.includes(themeId);
         return GUEST_THEME_IDS.includes(themeId);
     };
+
+    const shouldShowTheme = (themeId: string) => {
+        if (isAuthenticated) return true;
+        return GUEST_SHOWN_THEME_IDS.includes(themeId);
+    }
 
     // Фильтрация тем
     const getFilteredThemes = () => {
@@ -95,8 +101,8 @@ const ThemesPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-muted">
-            <div className="container mx-auto px-6 py-8">
+        <div className="container min-h-screen">
+            <div className="mx-auto px-6 py-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="text-center space-y-4 mb-8">
@@ -161,6 +167,9 @@ const ThemesPage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {filteredThemes.map((theme) => {
                                 const available = isThemeAvailable(theme.id);
+                                const show = shouldShowTheme(theme.id);
+
+                                if (!show) return null;
 
                                 return (
                                     <div key={theme.id} className="relative">
@@ -173,14 +182,14 @@ const ThemesPage = () => {
                                                         style={applyThemeStyles(theme)}
                                                     >
                                                         {/* Мини-карточка */}
-                                                        <div className="bg-background/20 backdrop-blur rounded-lg p-3 w-full max-w-32">
-                                                            <div className="w-8 h-8 rounded-full bg-background/30 mx-auto mb-2"/>
-                                                            <div className="h-2 bg-background/40 rounded mb-1"/>
-                                                            <div className="h-1.5 bg-background/30 rounded w-3/4 mx-auto mb-2"/>
+                                                        <div className="bg-white/20 backdrop-blur rounded-lg p-3 w-full max-w-32">
+                                                            <div className="w-8 h-8 rounded-full bg-white/30 mx-auto mb-2"/>
+                                                            <div className="h-2 bg-white/40 rounded mb-1"/>
+                                                            <div className="h-1.5 bg-white/30 rounded w-3/4 mx-auto mb-2"/>
                                                             <div className="flex gap-1 justify-center">
-                                                                <div className="w-3 h-3 bg-background/30 rounded"/>
-                                                                <div className="w-3 h-3 bg-background/30 rounded"/>
-                                                                <div className="w-3 h-3 bg-background/30 rounded"/>
+                                                                <div className="w-3 h-3 bg-white/30 rounded"/>
+                                                                <div className="w-3 h-3 bg-white/30 rounded"/>
+                                                                <div className="w-3 h-3 bg-white/30 rounded"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -263,7 +272,7 @@ const ThemesPage = () => {
                                                                 variant="outline"
                                                                 size="sm"
                                                                 onClick={() => isAuthenticated ? navigate('/premium') : openLoginDialog()}
-                                                                className="text-amber-600 border-amber-200 hover:bg-amber-50"
+                                                                className="wd:(text-blue-600 border-blue-200 hover:bg-blue-100)"
                                                             >
                                                                 <Lock className="h-4 w-4"/>
                                                             </Button>
@@ -279,15 +288,19 @@ const ThemesPage = () => {
 
                         {/* Фейд-оверлей для гостей — показывает что больше тем заблокировано */}
                         {!isAuthenticated && filteredThemes.length > 1 && (
-                            <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none"/>
+                            <div className="absolute -bottom-1 left-0 right-0 h-[10rem] bg-background w-full pointer-events-none">
+                                <div className="absolute bg-gradient-to-t from-background via-background/80 to-transparent w-full top-[-8rem] h-[8rem]">
+
+                                </div>
+                            </div>
                         )}
                     </div>
 
                     {/* Призыв зарегистрироваться (для гостей) */}
                     {!isAuthenticated && (
-                        <div className="text-center py-10 mb-8 bg-background border border-border rounded-2xl shadow-sm">
+                        <div className="text-center py-10 mb-8 bg-background border border-border rounded-2xl shadow-sm -mt-28 z-20 relative">
                             <div className="flex items-center justify-center mb-4">
-                                <div className="bg-blue-100 p-3 rounded-full">
+                                <div className="wd:bg-blue-100 p-3 rounded-full">
                                     <Palette className="h-6 w-6 text-blue-600"/>
                                 </div>
                             </div>
@@ -299,7 +312,7 @@ const ThemesPage = () => {
                             </p>
                             <Button
                                 onClick={openLoginDialog}
-                                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                             >
                                 Войти / Зарегистрироваться
                             </Button>
@@ -351,21 +364,23 @@ const ThemesPage = () => {
                     )}
 
                     {/* CTA секция */}
-                    <div className="text-center py-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-2xl">
-                        <h2 className="text-2xl font-bold text-foreground mb-4">
-                            Не нашли подходящую тему?
-                        </h2>
-                        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                            Создайте свою уникальную визитку в редакторе и настройте её под свой стиль
-                        </p>
-                        <Button
-                            onClick={() => navigate('/editor')}
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-                        >
-                            <Plus className="h-4 w-4 mr-2"/>
-                            Создать визитку
-                        </Button>
-                    </div>
+                    {isAuthenticated && (
+                        <div className="text-center py-12 bg-gradient-to-r wd:(from-blue-50 to-purple-50) rounded-2xl">
+                            <h2 className="text-2xl font-bold text-foreground mb-4">
+                                Не нашли подходящую тему?
+                            </h2>
+                            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                                Создайте свою уникальную визитку в редакторе и настройте её под свой стиль
+                            </p>
+                            <Button
+                                onClick={() => navigate('/editor')}
+                                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                            >
+                                <Plus className="h-4 w-4 mr-2"/>
+                                Создать визитку
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
 

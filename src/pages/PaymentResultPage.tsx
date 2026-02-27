@@ -89,7 +89,7 @@ export default function PaymentResultPage() {
                         <p className="text-muted-foreground mb-6">
                             Поздравляем! Ваша подписка на Linkoo Premium активирована.
                         </p>
-                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg p-4 mb-6">
+                        <div className="bg-gradient-to-r wd:(from-blue-50 to-purple-50) rounded-lg p-4 mb-6">
                             <div className="flex items-center justify-center gap-2 text-blue-700 font-semibold mb-2">
                                 <Crown className="h-5 w-5"/>
                                 <span>Теперь у вас есть Premium</span>
@@ -242,7 +242,7 @@ export default function PaymentResultPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950/30 dark:via-background dark:to-purple-950/30 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br wd:(from-blue-50 via-white to-purple-50) flex items-center justify-center p-4">
             {renderContent()}
         </div>
     );

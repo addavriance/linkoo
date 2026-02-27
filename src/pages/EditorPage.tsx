@@ -117,18 +117,18 @@ const EditorPage: React.FC = () => {
                     </div>
 
                     {!isAuthenticated && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div className="wd:(bg-blue-50 border border-blue-200/20) rounded-lg p-4 mb-6">
                             <div className="flex items-start gap-3">
-                                <LogIn className="w-5 h-5 text-blue-600 mt-0.5"/>
+                                <LogIn className="w-5 h-5 wd:text-blue-600 mt-0.5"/>
                                 <div className="flex-1">
-                                    <h3 className="font-semibold text-blue-900 mb-1">
+                                    <h3 className="font-semibold wd:text-blue-900 mb-1">
                                         Гостевой режим
                                     </h3>
-                                    <p className="text-sm text-blue-800 mb-2">
+                                    <p className="text-sm wd:text-blue-800 mb-2">
                                         Ваша карточка будет сохранена в URL. Для сохранения карточек в облаке
                                         и получения коротких ссылок - войдите в аккаунт.
                                     </p>
-                                    <Button onClick={openLoginDialog} size="sm" variant="outline" className="border-blue-300">
+                                    <Button onClick={openLoginDialog} size="sm" variant="outline" className="wd:border-blue-300/20">
                                         Войти
                                     </Button>
                                 </div>

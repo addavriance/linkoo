@@ -78,8 +78,8 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                     <Card
                         className={`p-4 cursor-pointer transition-all border-2 ${
                             selectedPlan === 'monthly'
-                                ? 'border-blue-500 bg-blue-50/50'
-                                : 'border-border hover:border-border'
+                                ? 'wd:(border-blue-500 bg-blue-50)'
+                                : 'wd:(border-border hover:border-border)'
                         }`}
                         onClick={() => setSelectedPlan('monthly')}
                     >
@@ -108,7 +108,7 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                     <Card
                         className={`p-4 cursor-pointer transition-all border-2 relative ${
                             selectedPlan === 'yearly'
-                                ? 'border-blue-500 bg-blue-50/50'
+                                ? 'wd:(border-blue-500 bg-blue-50)'
                                 : 'border-border hover:border-border'
                         }`}
                         onClick={() => setSelectedPlan('yearly')}
@@ -139,7 +139,7 @@ export function PaymentDialog({open, onOpenChange}: PaymentDialogProps) {
                     </Card>
 
                     {/* Info Block */}
-                    <div className="flex gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex gap-3 p-4 wd:(bg-blue-50 rounded-lg border border-blue-200)">
                         <Info className="h-5 w-5 text-blue-600 shrink-0 mt-0.5"/>
                         <div className="text-sm text-muted-foreground">
                             <p className="font-medium mb-1">Безопасная оплата через ЮKassa</p>

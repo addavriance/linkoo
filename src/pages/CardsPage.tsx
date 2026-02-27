@@ -65,14 +65,15 @@ export default function CardsPage() {
     return (
         <ProfileLayout title="Мои карточки" description="Управляйте своими цифровыми визитками">
             {user?.accountType === 'free' && cards.length >= 1 && (
-                <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200">
+                <Card className="p-6 mb-6 bg-gradient-to-r wd:(from-blue-50 to-purple-50 border-blue-200)">
                     <h3 className="font-semibold text-lg mb-2">Лимит карточек достигнут</h3>
                     <p className="text-sm text-muted-foreground mb-3">
                         Обновитесь до Premium для создания неограниченного количества карточек и получения custom доменов.
                     </p>
                     <Button
                         onClick={() => navigate('/premium')}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                        className="bg-gradient-to-r from-blue-600 to-purple-600
+                         hover:from-blue-700 hover:to-purple-700 text-white"
                     >
                         Перейти на Premium
                     </Button>
@@ -146,6 +147,7 @@ export default function CardsPage() {
                                 slug={card.slug}
                                 onUpdated={(slug) => handleLinkUpdated(card._id!, slug)}
                                 onQRCode={() => setQrTarget({slug: card.slug!, name: card.name, avatar: card.avatar})}
+                                className="mb-2"
                             />
 
                             {isPaid && (
@@ -153,6 +155,7 @@ export default function CardsPage() {
                                     cardId={card._id!}
                                     subdomain={card.subdomain}
                                     onUpdated={(sub) => handleSubdomainUpdated(card._id!, sub)}
+                                    className="mb-5"
                                 />
                             )}
 
@@ -180,7 +183,7 @@ export default function CardsPage() {
                                     size="sm"
                                     variant="outline"
                                     onClick={() => setDeleteTarget({id: card._id!, name: card.name})}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    className="wd:(text-red-600 hover:text-red-700 hover:bg-red-100)"
                                 >
                                     <Trash2 className="h-4 w-4"/>
                                 </Button>

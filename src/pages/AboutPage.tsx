@@ -68,10 +68,10 @@ export default function AboutPage() {
                 </section>
 
                 {/* Mission */}
-                <Card className="p-8 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
+                <Card className="p-8 bg-gradient-to-r wd:(from-blue-50 to-purple-50)">
                     <div className="flex flex-col md:flex-row items-start gap-6">
                         <div className="flex-shrink-0">
-                            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-rose-50 dark:bg-rose-950">
+                            <div className="flex items-center justify-center w-14 h-14 rounded-full wd:bg-rose-100">
                                 <Heart className="h-8 w-8 text-rose-500" />
                             </div>
                         </div>
@@ -100,7 +100,7 @@ export default function AboutPage() {
                                     className="p-6 hover:shadow-md transition-shadow border border-accent"
                                 >
                                     <div className="flex items-start gap-4">
-                                        <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center">
+                                        <div className="flex-shrink-0 w-12 h-12 rounded-lg wd:bg-blue-50 flex items-center justify-center">
                                             <Icon className="h-6 w-6 text-blue-600" />
                                         </div>
                                         <div>
@@ -127,7 +127,7 @@ export default function AboutPage() {
                                     key={idx}
                                     className="p-6 text-center hover:shadow-md transition-shadow border border-accent"
                                 >
-                                    <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center mx-auto mb-4">
+                                    <div className="w-16 h-16 rounded-2xl wd:bg-blue-50 flex items-center justify-center mx-auto mb-4">
                                         <Icon className="h-8 w-8 text-blue-600" />
                                     </div>
                                     <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
@@ -166,7 +166,7 @@ export default function AboutPage() {
                 {/* Environmental Impact */}
                 <Card className="p-8">
                     <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-50 bg-green-950 mb-4">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full wd:bg-green-100 mb-4">
                             <Globe className="h-8 w-8 text-green-600" />
                         </div>
                         <h2 className="text-2xl font-bold mb-3">Вклад в экологию</h2>
