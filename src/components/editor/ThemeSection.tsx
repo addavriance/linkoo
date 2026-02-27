@@ -34,7 +34,7 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
         solid: 'Однотонные',
         light: 'Светлые',
         glass: 'Стекло',
-        custom: 'Кастомные',
+        // custom: 'Кастомные',
     };
 
     return (

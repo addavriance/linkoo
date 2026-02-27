@@ -192,15 +192,19 @@ export const cardThemes: Record<string, Theme> = {
 export const themeCategories = {
     gradient: {
         name: 'Градиенты', icon: 'Palette', description: 'Яркие градиентные переходы',
-    }, solid: {
-        name: 'Однотонные', icon: 'Paintbrush', description: 'Классические однотонные цвета',
-    }, light: {
-        name: 'Светлые', icon: 'Sun', description: 'Светлые и чистые тона',
-    }, glass: {
-        name: 'Стекло', icon: 'Eye', description: 'Прозрачные стеклянные эффекты',
-    }, custom: {
-        name: 'Кастомные', icon: 'Sparkles', description: 'Пользовательские темы',
     },
+    solid: {
+        name: 'Однотонные', icon: 'Paintbrush', description: 'Классические однотонные цвета',
+    },
+    light: {
+        name: 'Светлые', icon: 'Sun', description: 'Светлые и чистые тона',
+    },
+    glass: {
+        name: 'Стекло', icon: 'Eye', description: 'Прозрачные стеклянные эффекты',
+    },
+    // custom: {
+    //     name: 'Кастомные', icon: 'Sparkles', description: 'Пользовательские темы',
+    // },
 };
 
 export const popularThemes = Object.values(cardThemes).filter(theme => theme.popular);
