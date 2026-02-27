@@ -231,7 +231,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="min-h-screen bg-gradient-to-br wd:(from-blue-50 via-white to-purple-50)">
             <div className="container mx-auto px-6 py-8">
                 <div className="max-w-2xl mx-auto">
                     {/* Главная карточка */}
@@ -245,7 +245,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                 <img
                                     src={cardData.avatar}
                                     alt={cardData.name!}
-                                    className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-white/30 shadow-lg"
+                                    className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 wd:border-white/30 shadow-lg"
                                     onError={(e) => {
                                         (e.target as HTMLImageElement).style.display = 'none';
                                     }}
@@ -280,7 +280,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                             )}
 
                             {/* Действия */}
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center text-black">
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center wd:text-black">
                                 <Button
                                     onClick={saveContact}
                                     variant="outline"
@@ -317,16 +317,16 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                 <CardContent className="p-4">
                                     <button
                                         onClick={() => { track('email_click'); window.location.href = `mailto:${cardData?.email}`; }}
-                                        className="flex items-center space-x-3 w-full text-left hover:text-blue-600 transition-colors duration-200"
+                                        className="flex items-center space-x-3 w-full text-left wd:hover:text-blue-600 transition-colors duration-200"
                                     >
-                                        <div className="p-3 bg-blue-100 rounded-xl transition-colors duration-200 group-hover:bg-blue-200">
-                                            <Mail className="h-5 w-5 text-blue-600"/>
+                                        <div className="p-3 wd:bg-blue-100 rounded-xl transition-colors duration-200 wd:hover:bg-blue-200">
+                                            <Mail className="h-5 w-5 wd:text-blue-600"/>
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-semibold text-gray-900 mb-1">Email</p>
-                                            <p className="text-sm text-gray-600 break-all">{cardData.email}</p>
+                                            <p className="font-semibold wd:text-gray-900 mb-1">Email</p>
+                                            <p className="text-sm wd:text-gray-600 break-all">{cardData.email}</p>
                                         </div>
-                                        <ExternalLink className="h-4 w-4 text-gray-400 transition-colors duration-200"/>
+                                        <ExternalLink className="h-4 w-4 wd:text-gray-400 transition-colors duration-200"/>
                                     </button>
                                 </CardContent>
                             </Card>
@@ -337,16 +337,16 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                 <CardContent className="p-4">
                                     <button
                                         onClick={() => { track('phone_click'); window.location.href = `tel:${cardData?.phone}`; }}
-                                        className="flex items-center space-x-3 w-full text-left hover:text-green-600 transition-colors duration-200"
+                                        className="flex items-center space-x-3 w-full text-left wd:hover:text-green-600 transition-colors duration-200"
                                     >
-                                        <div className="p-3 bg-green-100 rounded-xl transition-colors duration-200 group-hover:bg-green-200">
-                                            <Phone className="h-5 w-5 text-green-600"/>
+                                        <div className="p-3 wd:bg-green-100 rounded-xl transition-colors duration-200 wd:hover:bg-green-200">
+                                            <Phone className="h-5 w-5 wd:text-green-600"/>
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-semibold text-gray-900 mb-1">Телефон</p>
-                                            <p className="text-sm text-gray-600">{cardData.phone}</p>
+                                            <p className="font-semibold wd:text-gray-900 mb-1">Телефон</p>
+                                            <p className="text-sm wd:text-gray-600">{cardData.phone}</p>
                                         </div>
-                                        <ExternalLink className="h-4 w-4 text-gray-400 transition-colors duration-200"/>
+                                        <ExternalLink className="h-4 w-4 wd:text-gray-400 transition-colors duration-200"/>
                                     </button>
                                 </CardContent>
                             </Card>
@@ -359,14 +359,14 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                         onClick={() => { track('website_click'); openLink(cardData?.website || ''); }}
                                         className="flex items-center space-x-3 w-full text-left hover:text-purple-600 transition-colors duration-200"
                                     >
-                                        <div className="p-3 bg-purple-100 rounded-xl transition-colors duration-200 group-hover:bg-purple-200">
-                                            <Globe className="h-5 w-5 text-purple-600"/>
+                                        <div className="p-3 wd:bg-purple-100 rounded-xl transition-colors duration-200 wd:group-hover:bg-purple-200">
+                                            <Globe className="h-5 w-5 wd:text-purple-600"/>
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-semibold text-gray-900 mb-1">Веб-сайт</p>
-                                            <p className="text-sm text-gray-600 break-all">{cardData.website}</p>
+                                            <p className="font-semibold wd:text-gray-900 mb-1">Веб-сайт</p>
+                                            <p className="text-sm wd:text-gray-600 break-all">{cardData.website}</p>
                                         </div>
-                                        <ExternalLink className="h-4 w-4 text-gray-400 transition-colors duration-200"/>
+                                        <ExternalLink className="h-4 w-4 wd:text-gray-400 transition-colors duration-200"/>
                                     </button>
                                 </CardContent>
                             </Card>
@@ -376,12 +376,12 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                             <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                                 <CardContent className="p-4">
                                     <div className="flex items-center space-x-3">
-                                        <div className="p-3 bg-orange-100 rounded-xl">
-                                            <MapPin className="h-5 w-5 text-orange-600"/>
+                                        <div className="p-3 wd:bg-orange-100 rounded-xl">
+                                            <MapPin className="h-5 w-5 wd:text-orange-600"/>
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-semibold text-gray-900 mb-1">Местоположение</p>
-                                            <p className="text-sm text-gray-600">{cardData.location}</p>
+                                            <p className="font-semibold wd:text-gray-900 mb-1">Местоположение</p>
+                                            <p className="text-sm wd:text-gray-600">{cardData.location}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -392,12 +392,12 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                             <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                                 <CardContent className="p-4">
                                     <div className="flex items-center space-x-3">
-                                        <div className="p-3 bg-indigo-100 rounded-xl">
-                                            <Building className="h-5 w-5 text-indigo-600"/>
+                                        <div className="p-3 wd:bg-indigo-100 rounded-xl">
+                                            <Building className="h-5 w-5 wd:text-indigo-600"/>
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-semibold text-gray-900 mb-1">Компания</p>
-                                            <p className="text-sm text-gray-600">{cardData.company}</p>
+                                            <p className="font-semibold wd:text-gray-900 mb-1">Компания</p>
+                                            <p className="text-sm wd:text-gray-600">{cardData.company}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -409,7 +409,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                     {cardData.socials && cardData.socials.length > 0 && (
                         <Card className="mb-6">
                             <CardContent className="p-6">
-                                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <h3 className="font-semibold wd:text-gray-900 mb-4 flex items-center gap-2">
                                     <Share2 className="h-5 w-5"/>
                                     Социальные сети
                                 </h3>
@@ -427,10 +427,10 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                             <button
                                                 key={index}
                                                 onClick={() => { track('social_click', social.platform); openSocialLink(social.platform, processedUrl); }}
-                                                className="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors text-left w-full group"
+                                                className="flex items-center space-x-3 p-3 wd:(bg-gray-50 hover:bg-gray-100) rounded-lg transition-colors text-left w-full group"
                                             >
-                                                <div className={`p-2 rounded-lg text-white transition-transform group-hover:scale-110`}>
-                                                    <Icon className="text-2xl text-gray-900"/>
+                                                <div className={`p-2 rounded-lg wd:text-white transition-transform group-hover:scale-110`}>
+                                                    <Icon className="text-2xl wd:text-gray-900"/>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <p className="font-medium text-gray-900">{platform.name}</p>
@@ -438,7 +438,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                                         {formatSocialLink(social)}
                                                     </p>
                                                 </div>
-                                                <ExternalLink className="h-4 w-4 text-gray-400 transition-colors group-hover:text-blue-600"/>
+                                                <ExternalLink className="h-4 w-4 wd:text-gray-400 transition-colors wd:group-hover:text-blue-600"/>
                                             </button>
                                         );
                                     })}
@@ -449,7 +449,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
 
                     {/* Футер */}
                     <div className="text-center">
-                        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-4">
+                        <div className="flex items-center justify-center gap-2 text-sm wd:text-gray-500 mb-4">
                             <span>Создано с помощью</span>
                             <Badge variant="secondary" className="font-medium">
                                 Linkoo
