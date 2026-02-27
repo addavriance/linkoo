@@ -33,7 +33,7 @@ import {
 const FREE_THEME_IDS = Object.keys(cardThemes).slice(0, 5);
 // Только первая тема доступна гостям
 const GUEST_THEME_IDS = Object.keys(cardThemes).slice(0, 1);
-const GUEST_SHOWN_THEME_IDS = Object.keys(cardThemes).slice(0, 8);
+// const GUEST_SHOWN_THEME_IDS = Object.keys(cardThemes).slice(0, 8);
 
 const ThemesPage = () => {
     const navigate = useNavigate();

@@ -1,7 +1,7 @@
 export interface Theme {
   id: string;
   name: string;
-  category: 'gradient' | 'solid' | 'light' | 'glass' | 'custom';
+  category: 'gradient' | 'solid' | 'light' | 'glass';
   background: string;
   textColor: string;
   accentColor: string;
