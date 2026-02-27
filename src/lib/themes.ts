@@ -236,30 +236,30 @@ export const applyThemeStyles = (theme: Theme): React.CSSProperties => {
 };
 
 // Сохранить кастомную тему в localStorage
-export const saveCustomTheme = (theme: Partial<Theme>): string | null => {
-    try {
-        const customThemes = getCustomThemes();
-        const themeId = `custom_${Date.now()}`;
-        const newTheme: Theme = {
-            name: theme.name || 'Custom Theme',
-            background: theme.background || '#ffffff',
-            textColor: theme.textColor || '#000000',
-            accentColor: theme.accentColor || '#3b82f6',
-            ...theme,
-            id: themeId,
-            category: 'custom',
-            isCustom: true,
-        };
-
-        customThemes[themeId] = newTheme;
-        localStorage.setItem('linkoo_custom_themes', JSON.stringify(customThemes));
-
-        return themeId;
-    } catch (error) {
-        console.error('Ошибка сохранения темы:', error);
-        return null;
-    }
-};
+// export const saveCustomTheme = (theme: Partial<Theme>): string | null => {
+//     try {
+//         const customThemes = getCustomThemes();
+//         const themeId = `custom_${Date.now()}`;
+//         const newTheme: Theme = {
+//             name: theme.name || 'Custom Theme',
+//             background: theme.background || '#ffffff',
+//             textColor: theme.textColor || '#000000',
+//             accentColor: theme.accentColor || '#3b82f6',
+//             ...theme,
+//             id: themeId,
+//             category: 'custom',
+//             isCustom: true,
+//         };
+//
+//         customThemes[themeId] = newTheme;
+//         localStorage.setItem('linkoo_custom_themes', JSON.stringify(customThemes));
+//
+//         return themeId;
+//     } catch (error) {
+//         console.error('Ошибка сохранения темы:', error);
+//         return null;
+//     }
+// };
 
 // Получить кастомные темы из localStorage
 export const getCustomThemes = (): Record<string, Theme> => {
@@ -312,20 +312,20 @@ export const exportTheme = (theme: Theme): void => {
 };
 
 // Импорт темы из JSON
-export const importTheme = async (file: File): Promise<string | null> => {
-    try {
-        const text = await file.text();
-        const themeData = JSON.parse(text);
-
-        // Валидация структуры темы
-        if (!themeData.name || !themeData.background) {
-            throw new Error('Неверный формат файла темы');
-        }
-
-        const themeId = saveCustomTheme(themeData);
-        return themeId;
-    } catch (error) {
-        console.error('Ошибка импорта темы:', error);
-        throw error;
-    }
-};
+// export const importTheme = async (file: File): Promise<string | null> => {
+//     try {
+//         const text = await file.text();
+//         const themeData = JSON.parse(text);
+//
+//         // Валидация структуры темы
+//         if (!themeData.name || !themeData.background) {
+//             throw new Error('Неверный формат файла темы');
+//         }
+//
+//         const themeId = saveCustomTheme(themeData);
+//         return themeId;
+//     } catch (error) {
+//         console.error('Ошибка импорта темы:', error);
+//         throw error;
+//     }
+// };
