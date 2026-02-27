@@ -52,9 +52,9 @@ const ThemesPage = () => {
         return GUEST_THEME_IDS.includes(themeId);
     };
 
-    const shouldShowTheme = (themeId: string) => {
+    const shouldShowTheme = (themeIdx: number) => {
         if (isAuthenticated) return true;
-        return GUEST_SHOWN_THEME_IDS.includes(themeId);
+        return themeIdx < 8;
     }
 
     // Фильтрация тем
@@ -165,9 +165,9 @@ const ThemesPage = () => {
                     {/* Сетка тем */}
                     <div className="relative mb-8">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {filteredThemes.map((theme) => {
+                            {filteredThemes.map((theme, idx) => {
                                 const available = isThemeAvailable(theme.id);
-                                const show = shouldShowTheme(theme.id);
+                                const show = shouldShowTheme(idx);
 
                                 if (!show) return null;
 
