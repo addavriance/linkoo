@@ -1,7 +1,6 @@
 import {ReactNode} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {User, CreditCard, Shield, Settings} from 'lucide-react';
-import {wd} from "@/lib/wd.ts";
 
 interface NavItem {
     label: string;
