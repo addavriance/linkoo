@@ -321,19 +321,19 @@ const ThemesPage = () => {
 
                     {/* Призыв к Premium (для зарегистрированных бесплатников) */}
                     {isAuthenticated && !isPremium && (
-                        <div className="text-center py-6 mb-8 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl">
+                        <div className="text-center py-6 mb-8 bg-gradient-to-r wd:(from-blue-100 to-purple-100 border border-blue-200) rounded-2xl">
                             <div className="flex items-center justify-center gap-2 mb-2">
-                                <Lock className="h-5 w-5 text-amber-600"/>
-                                <span className="font-semibold text-amber-800">
+                                <Lock className="h-5 w-5 wd:text-blue-600"/>
+                                <span className="font-semibold wd:text-blue-800">
                                     Доступно 5 из {Object.keys(cardThemes).length} тем
                                 </span>
                             </div>
-                            <p className="text-amber-700 text-sm mb-4 max-w-sm mx-auto">
+                            <p className="wd:text-blue-700 text-sm mb-4 max-w-sm mx-auto">
                                 Откройте все темы, конструктор с градиентами и узорами с Premium
                             </p>
                             <Button
                                 onClick={() => navigate('/premium')}
-                                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
                             >
                                 <Sparkles className="h-4 w-4 mr-2"/>
                                 Открыть Premium — 299 ₽/мес
@@ -364,7 +364,7 @@ const ThemesPage = () => {
                     )}
 
                     {/* CTA секция */}
-                    {isAuthenticated && (
+                    {isAuthenticated && isPremium && (
                         <div className="text-center py-12 bg-gradient-to-r wd:(from-blue-50 to-purple-50) rounded-2xl">
                             <h2 className="text-2xl font-bold text-foreground mb-4">
                                 Не нашли подходящую тему?
