@@ -20,6 +20,11 @@ import PrivacyPage from '@/pages/PrivacyPage';
 import TermsPage from '@/pages/TermsPage';
 import AboutPage from '@/pages/AboutPage';
 import ApiDocsPage from '@/pages/ApiDocsPage';
+import AdminLayout from '@/pages/admin/AdminLayout';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AdminUsersPage from '@/pages/admin/AdminUsersPage';
+import AdminCardsPage from '@/pages/admin/AdminCardsPage';
+import AdminLinksPage from '@/pages/admin/AdminLinksPage';
 
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -27,6 +32,39 @@ import { DialogContainer } from '@/components/dialogs/DialogContainer';
 import { Toaster } from 'sonner';
 import {ScrollToTop} from "@/components/common/ScrollToTop.tsx";
 import {CookieConsent} from "@/components/common/CookieConsent.tsx";
+
+function MainLayout() {
+    return (
+        <div className="min-h-screen bg-background">
+            <Header/>
+            <main className="flex-1">
+                <Routes>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/about" element={<AboutPage/>}/>
+                    <Route path="/editor" element={<EditorPage/>}/>
+                    <Route path="/themes" element={<ThemesPage/>}/>
+                    <Route path="/view" element={<ViewPage/>}/>
+                    <Route path="/profile" element={<ProfilePage/>}/>
+                    <Route path="/cards" element={<CardsPage/>}/>
+                    <Route path="/analytics/:cardId" element={<AnalyticsPage/>}/>
+                    <Route path="/security" element={<SecurityPage/>}/>
+                    <Route path="/settings" element={<SettingsPage/>}/>
+                    <Route path="/premium" element={<PremiumPage/>}/>
+                    <Route path="/subscription" element={<SubscriptionPage/>}/>
+                    <Route path="/premium/payment-result" element={<PaymentResultPage/>}/>
+                    <Route path="/auth/callback" element={<AuthCallbackPage/>}/>
+                    <Route path="/privacy" element={<PrivacyPage/>}/>
+                    <Route path="/terms" element={<TermsPage/>}/>
+                    <Route path="/api" element={<ApiDocsPage/>}/>
+                    {/* Catch-all route for short links - MUST be last */}
+                    <Route path="/:slug" element={<ViewPage/>}/>
+                </Routes>
+            </main>
+            <Footer/>
+            <DialogContainer/>
+        </div>
+    );
+}
 
 interface AppProps {
     subdomain?: string | null;
@@ -50,47 +88,21 @@ function App({subdomain}: AppProps = {}) {
             <DialogProvider>
                 <Router>
                     <ScrollToTop/>
-                    <div className="min-h-screen bg-background">
-                        {/* Header */}
-                        <Header/>
+                    <Routes>
+                        {/* Admin panel — no header/footer */}
+                        <Route path="/admin" element={<AdminLayout/>}>
+                            <Route index element={<AdminDashboard/>}/>
+                            <Route path="users" element={<AdminUsersPage/>}/>
+                            <Route path="cards" element={<AdminCardsPage/>}/>
+                            <Route path="links" element={<AdminLinksPage/>}/>
+                        </Route>
 
-                        {/* Main Content */}
-                        <main className="flex-1">
-                            <Routes>
-                                <Route path="/" element={<HomePage/>}/>
-                                <Route path="/about" element={<AboutPage/>}/>
-                                <Route path="/editor" element={<EditorPage/>}/>
-                                <Route path="/themes" element={<ThemesPage/>}/>
-                                <Route path="/view" element={<ViewPage/>}/>
-                                <Route path="/profile" element={<ProfilePage/>}/>
-                                <Route path="/cards" element={<CardsPage/>}/>
-                                <Route path="/analytics/:cardId" element={<AnalyticsPage/>}/>
-                                <Route path="/security" element={<SecurityPage/>}/>
-                                <Route path="/settings" element={<SettingsPage/>}/>
-                                <Route path="/premium" element={<PremiumPage/>}/>
-                                <Route path="/subscription" element={<SubscriptionPage/>}/>
-                                <Route path="/premium/payment-result" element={<PaymentResultPage/>}/>
-                                <Route path="/auth/callback" element={<AuthCallbackPage/>}/>
-                                <Route path="/privacy" element={<PrivacyPage/>}/>
-                                <Route path="/terms" element={<TermsPage/>}/>
-                                <Route path="/api" element={<ApiDocsPage/>}/>
-                                {/* Catch-all route for short links - MUST be last */}
-                                <Route path="/:slug" element={<ViewPage/>}/>
-                            </Routes>
-                        </main>
+                        {/* Main app layout */}
+                        <Route path="*" element={<MainLayout/>}/>
+                    </Routes>
 
-                        {/* Footer */}
-                        <Footer/>
-
-                        {/* Global Dialogs */}
-                        <DialogContainer/>
-
-                        {/* Toast notifications */}
-                        <Toaster position="top-right" richColors closeButton />
-
-                        {/* Cookie Consent */}
-                        <CookieConsent/>
-                    </div>
+                    <Toaster position="top-right" richColors closeButton />
+                    <CookieConsent/>
                 </Router>
             </DialogProvider>
             </AuthProvider>

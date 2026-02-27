@@ -8,7 +8,14 @@ import type {
     PaymentStatus,
     PaymentCreation,
     PaymentResponse,
-    PaymentMethod, SessionResponse,
+    PaymentMethod,
+    SessionResponse,
+    AdminStats,
+    AdminCard,
+    AdminLink,
+    PaginatedResponse,
+    AccountType,
+    UserRole,
 } from '@/types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -430,6 +437,52 @@ class ApiClient {
             throw new Error('Failed to revoke session');
         }
 
+        return response.data.data;
+    }
+
+    // ============= Admin API =============
+    async getAdminStats(): Promise<AdminStats> {
+        const response = await this.client.get<ApiResponse<AdminStats>>('/admin/stats');
+        if (!response.data.success || !response.data.data) throw new Error('Failed to get stats');
+        return response.data.data;
+    }
+
+    async getAdminUsers(params: {
+        page?: number; limit?: number; search?: string; role?: string; accountType?: string;
+    }): Promise<PaginatedResponse<User>> {
+        const response = await this.client.get<PaginatedResponse<User>>('/admin/users', {params});
+        return response.data;
+    }
+
+    async updateAdminUser(id: string, data: {role?: UserRole; accountType?: AccountType; isActive?: boolean}): Promise<User> {
+        const response = await this.client.patch<ApiResponse<User>>(`/admin/users/${id}`, data);
+        if (!response.data.success || !response.data.data) throw new Error('Failed to update user');
+        return response.data.data;
+    }
+
+    async getAdminCards(params: {
+        page?: number; limit?: number; search?: string; userId?: string;
+    }): Promise<PaginatedResponse<AdminCard>> {
+        const response = await this.client.get<PaginatedResponse<AdminCard>>('/admin/cards', {params});
+        return response.data;
+    }
+
+    async updateAdminCard(id: string, data: {isActive?: boolean}): Promise<AdminCard> {
+        const response = await this.client.patch<ApiResponse<AdminCard>>(`/admin/cards/${id}`, data);
+        if (!response.data.success || !response.data.data) throw new Error('Failed to update card');
+        return response.data.data;
+    }
+
+    async getAdminLinks(params: {
+        page?: number; limit?: number; search?: string; userId?: string;
+    }): Promise<PaginatedResponse<AdminLink>> {
+        const response = await this.client.get<PaginatedResponse<AdminLink>>('/admin/links', {params});
+        return response.data;
+    }
+
+    async updateAdminLink(id: string, data: {isActive?: boolean}): Promise<AdminLink> {
+        const response = await this.client.patch<ApiResponse<AdminLink>>(`/admin/links/${id}`, data);
+        if (!response.data.success || !response.data.data) throw new Error('Failed to update link');
         return response.data.data;
     }
 
