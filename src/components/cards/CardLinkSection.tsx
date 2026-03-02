@@ -140,7 +140,7 @@ export function CardLinkSection({cardId, slug, onUpdated, onQRCode, className}: 
                 className={className}
             >
                 <ActionButtons>
-                    <ActionButton onClick={handleSave} disabled={deleteInput !== slug || loading}>
+                    <ActionButton onClick={handleSave} disabled={input === slug || loading}>
                         <Check className="h-3 w-3 text-green-600"/>
                     </ActionButton>
                     <ActionButton onClick={() => { setMode('confirm-delete'); setDeleteInput(''); }}>

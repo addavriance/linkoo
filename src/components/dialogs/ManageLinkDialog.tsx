@@ -79,7 +79,7 @@ export function ManageLinkDialog({
         try {
             setIsSubdomainLoading(true);
             const card = await api.setCardSubdomain(cardId, subdomainInput.trim());
-            toast.success('Поддомен установлен', `${card.subdomain}.linkoo.dev`);
+            toast.success('Поддомен установлен', `${card.subdomain}.${hostname}}`);
             onSubdomainUpdated?.(card.subdomain);
             onOpenChange(false);
             setSubdomainInput('');

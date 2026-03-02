@@ -21,6 +21,8 @@ export function CardSubdomainSection({cardId, subdomain, className, onUpdated}: 
     const [deleteInput, setDeleteInput] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const hostname = window.location.hostname;
+
     const sanitize = (v: string) => {
         const lc = v.toLowerCase();
         return /^[a-z0-9-]*$/.test(lc) ? lc : input;
@@ -32,7 +34,7 @@ export function CardSubdomainSection({cardId, subdomain, className, onUpdated}: 
         setLoading(true);
         try {
             const card = await api.setCardSubdomain(cardId, input.trim());
-            toast.success('Поддомен установлен', `${card.subdomain}.linkoo.dev`);
+            toast.success('Поддомен установлен', `${card.subdomain}.${hostname}`);
             onUpdated(card.subdomain);
             setMode('view');
             setInput('');
@@ -60,7 +62,7 @@ export function CardSubdomainSection({cardId, subdomain, className, onUpdated}: 
     };
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(`https://${subdomain}.linkoo.dev`)
+        navigator.clipboard.writeText(`https://${subdomain}.${hostname}`)
             .then(() => toast.success('Скопировано'))
             .catch(() => toast.error('Не удалось скопировать'));
     };
@@ -74,6 +76,7 @@ export function CardSubdomainSection({cardId, subdomain, className, onUpdated}: 
                 placeholder="my-name"
                 variant="default"
                 className={className}
+                suffix={`.${hostname}`}
             >
                 <ActionButtons>
                     <ActionButton onClick={handleSave} disabled={loading || input.length < 3}>
@@ -122,6 +125,7 @@ export function CardSubdomainSection({cardId, subdomain, className, onUpdated}: 
                 variant="default"
                 autoFocus
                 className={className}
+                suffix={`.${hostname}`}
             >
                 <ActionButtons>
                     <ActionButton onClick={handleSave} disabled={loading || input.length < 3}>
@@ -140,7 +144,7 @@ export function CardSubdomainSection({cardId, subdomain, className, onUpdated}: 
 
     return (
         <SubdomainInput
-            value={`https://${subdomain}.linkoo.dev`}
+            value={`https://${subdomain}.${hostname}`}
             variant="default"
             readOnly
             suffix={null}
