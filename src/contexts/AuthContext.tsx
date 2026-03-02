@@ -3,6 +3,25 @@ import {api} from '@/lib/api';
 import type {User, OAuthProvider} from '@/types';
 import {toast} from '@/lib/toast';
 
+const USER_CACHE_KEY = 'linkoo-user-cache';
+
+const getCachedUser = (): User | null => {
+    try {
+        const cached = localStorage.getItem(USER_CACHE_KEY);
+        return cached ? (JSON.parse(cached) as User) : null;
+    } catch {
+        return null;
+    }
+};
+
+const setCachedUser = (user: User | null) => {
+    if (user) {
+        localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user));
+    } else {
+        localStorage.removeItem(USER_CACHE_KEY);
+    }
+};
+
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
@@ -28,8 +47,9 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const cachedUser = api.isAuthenticated() ? getCachedUser() : null;
+    const [user, setUser] = useState<User | null>(cachedUser);
+    const [isLoading, setIsLoading] = useState(!cachedUser);
 
     // Load user on mount
     useEffect(() => {
@@ -41,9 +61,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
             if (api.isAuthenticated()) {
                 const userData = await api.getCurrentUser();
                 setUser(userData);
+                setCachedUser(userData);
+            } else {
+                setCachedUser(null);
             }
         } catch (error) {
             console.error('Failed to load user:', error);
+            setUser(null);
+            setCachedUser(null);
             api.clearTokens();
         } finally {
             setIsLoading(false);
@@ -57,6 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     ) => {
         const userData = await api.handleOAuthCallback(accessToken, refreshToken, expiresIn);
         setUser(userData);
+        setCachedUser(userData);
     };
 
     const login = async (provider: OAuthProvider) => {
@@ -114,6 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
             console.error('Logout failed:', error);
         } finally {
             setUser(null);
+            setCachedUser(null);
             api.clearTokens();
         }
     };
@@ -122,6 +149,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         try {
             const userData = await api.getCurrentUser();
             setUser(userData);
+            setCachedUser(userData);
         } catch (error) {
             console.error('Failed to refresh user:', error);
             throw error;
