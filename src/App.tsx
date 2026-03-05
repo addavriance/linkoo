@@ -32,6 +32,7 @@ import { Toaster } from 'sonner';
 import {ScrollToTop} from "@/components/common/ScrollToTop.tsx";
 import {CookieConsent} from "@/components/common/CookieConsent.tsx";
 import {Redirect} from "@/components/Redirect.tsx";
+import {initUserIdentity} from "@/lib/userIdentity.ts";
 
 function MainLayout() {
     return (
@@ -72,6 +73,15 @@ interface AppProps {
 }
 
 function App({subdomain}: AppProps = {}) {
+
+    const userIdentity = initUserIdentity({
+        storageKey: 'luid',
+        cookieExpiryDays: 30,
+        enableLogging: true,
+    });
+
+    userIdentity.getUserId();
+
     if (subdomain) {
         return (
             <Router>

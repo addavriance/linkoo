@@ -17,16 +17,32 @@ import type {
     AccountType,
     UserRole,
 } from '@/types';
+import {ClientTOTP} from "@local/linkoo_shared";
+import {getUserId} from "@/lib/userIdentity.ts";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 class ApiClient {
+    private totp: ClientTOTP | null = null;
+    private totpInitPromise: Promise<ClientTOTP> | null = null;
+
     private client: AxiosInstance;
     private accessToken: string | null = null;
     private refreshToken: string | null = null;
     private refreshPromise: Promise<AuthTokens | null> | null = null;
     private paymentCheckPromise: Promise<PaymentStatus | null> | null = null;
     private paymentCreatePromise: Promise<PaymentResponse> | null = null;
+
+    private async getTotp(): Promise<ClientTOTP> {
+        if (this.totp) return this.totp;
+        if (!this.totpInitPromise) {
+            this.totpInitPromise = getUserId().then(uid => {
+                this.totp = new ClientTOTP(uid, { codeLength: 10 });
+                return this.totp;
+            });
+        }
+        return this.totpInitPromise;
+    }
 
     constructor() {
         this.client = axios.create({
@@ -36,7 +52,6 @@ class ApiClient {
             },
         });
 
-        // Load tokens from localStorage
         this.loadTokens();
 
         // Request interceptor to add auth token
@@ -278,11 +293,21 @@ class ApiClient {
         return response.data.data.link;
     }
 
-    async createGuestCardLink(rawData: string, customSlug?: string): Promise<ShortenedLink> {
+    async createGuestCardLink(rawData: string): Promise<ShortenedLink> {
+        const totp = await this.getTotp();
+        const code_result = totp.generateCurrentCode();
+        const userId = await getUserId();
+
         const response = await this.client.post<ApiResponse<ShortenedLink>>('/links', {
             targetType: 'url',
             rawData,
-            customSlug,
+        },
+        {
+            headers: {
+                'X-User-ID': userId,
+                'X-TOTP-Code': code_result.code,
+                'X-Timestamp': code_result.timestamp.toString(),
+            }
         });
         if (!response.data.success || !response.data.data) {
             throw new Error('Failed to create guest card link');
@@ -433,11 +458,9 @@ class ApiClient {
     async revokeSession(sessionId: string): Promise<void> {
         const response = await this.client.delete<ApiResponse>(`/auth/session/${sessionId}`);
 
-        if (!response.data.success || !response.data.data) {
+        if (!response.data.success) {
             throw new Error('Failed to revoke session');
         }
-
-        return response.data.data;
     }
 
     // ============= Admin API =============

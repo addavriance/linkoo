@@ -1,7 +1,7 @@
+import type { OAuthProvider, AccountType, UserRole, SocialPlatform, LinkTargetType, ApiResponse } from '@local/linkoo_shared';
+export type { OAuthProvider, AccountType, UserRole, SocialPlatform, LinkTargetType, ApiResponse };
+
 // ============= Auth Types =============
-export type OAuthProvider = 'google' | 'vk' | 'discord' | 'github' | 'max';
-export type AccountType = 'free' | 'paid';
-export type UserRole = 'user' | 'moderator' | 'admin';
 
 export interface UserProfile {
     name: string;
@@ -38,20 +38,6 @@ export interface User {
 }
 
 // ============= Card Types =============
-export type SocialPlatform =
-    | 'telegram'
-    | 'whatsapp'
-    | 'instagram'
-    | 'youtube'
-    | 'linkedin'
-    | 'twitter'
-    | 'facebook'
-    | 'github'
-    | 'tiktok'
-    | 'discord'
-    | 'vk'
-    | 'custom';
-
 export interface Social {
     platform: SocialPlatform;
     link: string;
@@ -98,8 +84,6 @@ export interface Card {
 }
 
 // ============= Link Types =============
-export type LinkTargetType = 'url' | 'card';
-
 export interface ShortenedLink {
     _id?: string;
     userId?: string;
@@ -112,14 +96,6 @@ export interface ShortenedLink {
     expiresAt?: string;
     createdAt?: string;
     updatedAt?: string;
-}
-
-// ============= API Response Types =============
-export interface ApiResponse<T = any> {
-    success: boolean;
-    data?: T;
-    error?: string;
-    message?: string;
 }
 
 export interface AuthTokens {
@@ -310,4 +286,25 @@ export interface AdminLink {
     targetType: LinkTargetType;
     isActive: boolean;
     createdAt: string;
+}
+
+// ======================
+
+export interface StorageProvider {
+    get(key: string): Promise<string | null>;
+    set(key: string, value: string): Promise<void>;
+    delete(key: string): Promise<void>;
+}
+
+export interface FingerprintResult {
+    visitorId: string;
+    confidence: number;
+    components: Record<string, any>;
+}
+
+export interface UserIdentityOptions {
+    storageKey?: string;
+    fingerprintJsKey?: string;
+    cookieExpiryDays?: number;
+    enableLogging?: boolean;
 }
