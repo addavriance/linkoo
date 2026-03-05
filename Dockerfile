@@ -3,8 +3,11 @@ WORKDIR /app
 COPY package*.json ./
 COPY linkoo_shared ./linkoo_shared
 
+RUN cd linkoo_shared && npm install && npm run build
+
 RUN npm pkg set dependencies."@local/linkoo_shared"="file:./linkoo_shared"
-RUN npm ci
+
+RUN npm install
 
 FROM node:20-alpine AS builder
 WORKDIR /app
