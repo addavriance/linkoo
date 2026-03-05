@@ -6,6 +6,8 @@ FROM base AS deps
 WORKDIR /app
 COPY linkoo_shared /linkoo_shared
 RUN cd /linkoo_shared && npm link
+RUN cd .
+RUN npm link @local/linkoo_shared
 COPY package*.json ./
 RUN ls -la package*.json
 RUN npm ci
