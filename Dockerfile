@@ -4,12 +4,13 @@ FROM node:20-alpine AS base
 # Установка зависимостей
 FROM base AS deps
 WORKDIR /app
-COPY linkoo_shared /linkoo_shared
-RUN cd /linkoo_shared && npm link
-RUN cd .
-RUN npm link @local/linkoo_shared
+
 COPY package*.json ./
-RUN ls -la package*.json
+
+COPY linkoo_shared /linkoo_shared
+
+RUN npm install /linkoo_shared
+
 RUN npm ci
 
 # Сборка приложения
