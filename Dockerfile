@@ -1,20 +1,12 @@
-FROM node:20-alpine AS base
-
-FROM base AS deps
-
-WORKDIR /linkoo_shared
-COPY linkoo_shared /linkoo_shared
-RUN npm install
-RUN npm run build
-
+FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
+COPY linkoo_shared ./linkoo_shared
 
-RUN npm install /linkoo_shared
-
+RUN npm pkg set dependencies."@local/linkoo_shared"="file:./linkoo_shared"
 RUN npm ci
 
-FROM base AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
