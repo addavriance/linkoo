@@ -77,7 +77,7 @@ function App({subdomain}: AppProps = {}) {
     const userIdentity = initUserIdentity({
         storageKey: 'luid',
         cookieExpiryDays: 30,
-        enableLogging: true,
+        enableLogging: false,
     });
 
     userIdentity.getUserId();
