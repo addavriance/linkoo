@@ -210,6 +210,23 @@ class ApiClient {
         return response.data.data.avatar;
     }
 
+    async uploadCardImage(file: File): Promise<string> {
+        if (!file || file.size === 0) {
+            throw new Error('Invalid file');
+        }
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await this.client.post<ApiResponse<{ url: string }>>(
+            '/cards/upload-image',
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        if (!response.data.success || !response.data.data) {
+            throw new Error('Failed to upload image');
+        }
+        return response.data.data.url;
+    }
+
     // ============= OAuth URLs =============
     getGoogleAuthUrl(): string {
         return `${API_URL}/auth/google`;

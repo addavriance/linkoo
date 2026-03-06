@@ -144,7 +144,7 @@ const ImageUpload = ({value, onChange, className = ''}: ImageUploadProps) => {
                                     }`}
                                     onLoad={() => setImageLoaded(true)}
                                     onError={(e) => {
-                                        (e.target as HTMLImageElement).src = '/placeholder-avatar.png';
+                                        (e.target as HTMLImageElement).style.display = 'none';
                                     }}
                                 />
                                 <button
