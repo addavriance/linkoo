@@ -433,8 +433,8 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                                     <Icon className="text-2xl wd:text-gray-900"/>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-medium text-gray-900">{platform.name}</p>
-                                                    <p className="text-sm text-gray-600 truncate">
+                                                    <p className="font-medium wd:text-gray-900">{platform.name}</p>
+                                                    <p className="text-sm wd:text-gray-600 truncate">
                                                         {formatSocialLink(social)}
                                                     </p>
                                                 </div>
