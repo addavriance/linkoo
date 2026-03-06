@@ -83,7 +83,7 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
         if (isGuestMode && (cardData.name || cardData.email || cardData.phone)) {
             const url = generateCardUrl(cardData);
             setExportUrl(url || '');
-            onChange();
+            onChange && onChange();
         }
     }, [cardData, isGuestMode]);
 
