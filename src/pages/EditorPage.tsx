@@ -27,6 +27,7 @@ import {useDialog} from "@/contexts/DialogContext.tsx";
 const EditorPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('basic');
     const [isShortening, setIsShortening] = useState(false);
+    const [isShorten, setIsShorten] = useState(false);
     const {isAuthenticated} = useAuth();
     const { openLoginDialog } = useDialog();
 
@@ -40,10 +41,11 @@ const EditorPage: React.FC = () => {
         isLoading,
         isSaving,
         exportUrl,
+        setExportUrl,
         isEditMode,
         isGuestMode,
         isAuthMode,
-    } = useCardEditor();
+    } = useCardEditor(undefined, () => setIsShorten(false));
 
     const currentTheme = getThemeById(cardData.theme || 'light_minimal');
 
@@ -69,6 +71,8 @@ const EditorPage: React.FC = () => {
             const result = await shortenGuestCardUrl(exportUrl);
             if (result.success && result.shortUrl) {
                 await navigator.clipboard.writeText(result.shortUrl);
+                setExportUrl(result.shortUrl);
+                setIsShorten(true);
                 toast.success('Короткая ссылка скопирована');
             } else {
                 toast.error(result.error || 'Не удалось создать короткую ссылку');
@@ -222,7 +226,7 @@ const EditorPage: React.FC = () => {
                                                     variant="outline"
                                                     className="flex-1"
                                                     onClick={handleShortenUrl}
-                                                    disabled={isShortening}
+                                                    disabled={isShortening || isShorten}
                                                 >
                                                     <LinkIcon className="h-4 w-4 mr-2"/>
                                                     {isShortening ? 'Сокращение...' : 'Сократить'}

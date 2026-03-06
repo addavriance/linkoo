@@ -10,7 +10,7 @@ interface UseCardEditorOptions {
     onSaveSuccess?: (card: Card) => void;
 }
 
-export const useCardEditor = (options: UseCardEditorOptions = {}) => {
+export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () => void) => {
     const {user, isAuthenticated} = useAuth();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -83,6 +83,7 @@ export const useCardEditor = (options: UseCardEditorOptions = {}) => {
         if (isGuestMode && (cardData.name || cardData.email || cardData.phone)) {
             const url = generateCardUrl(cardData);
             setExportUrl(url || '');
+            onChange();
         }
     }, [cardData, isGuestMode]);
 
@@ -221,6 +222,7 @@ export const useCardEditor = (options: UseCardEditorOptions = {}) => {
         isLoading,
         isSaving,
         exportUrl,
+        setExportUrl,
         isEditMode,
         isGuestMode,
         isAuthMode,
