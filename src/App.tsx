@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Routes, Route, } from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Navigate,} from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -33,6 +33,7 @@ import {ScrollToTop} from "@/components/common/ScrollToTop.tsx";
 import {CookieConsent} from "@/components/common/CookieConsent.tsx";
 import {Redirect} from "@/components/Redirect.tsx";
 import {initUserIdentity} from "@/lib/userIdentity.ts";
+import {LoadingPage} from "@/pages/LoadingPage.tsx";
 
 function MainLayout() {
     return (
@@ -56,8 +57,12 @@ function MainLayout() {
                     <Route path="/auth/callback" element={<AuthCallbackPage/>}/>
                     <Route path="/privacy" element={<PrivacyPage/>}/>
                     <Route path="/terms" element={<TermsPage/>}/>
-                    <Route path="/api-docs" element={<Redirect to="/api-docs/" replace />} />
-                    <Route path="/api" element={<Redirect to="/api-docs/" replace />} />
+                    <Route path="/api-docs" element={
+                        <LoadingPage target="документацию">
+                            <Redirect to="/api-docs/" replace />
+                        </LoadingPage>
+                    }/>
+                    <Route path="/api" element={<Navigate to="/api-docs/" replace />} />
                     {/* Catch-all route for short links - MUST be last */}
                     <Route path="/:slug" element={<ViewPage/>}/>
                 </Routes>
