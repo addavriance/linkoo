@@ -57,12 +57,11 @@ function MainLayout() {
                     <Route path="/auth/callback" element={<AuthCallbackPage/>}/>
                     <Route path="/privacy" element={<PrivacyPage/>}/>
                     <Route path="/terms" element={<TermsPage/>}/>
-                    <Route path="/api-docs" element={
+                    <Route path="/api" element={
                         <LoadingPage target="документацию">
                             <Redirect to="/api-docs/" replace />
                         </LoadingPage>
                     }/>
-                    <Route path="/api" element={<Navigate to="/api-docs/" replace />} />
                     {/* Catch-all route for short links - MUST be last */}
                     <Route path="/:slug" element={<ViewPage/>}/>
                 </Routes>

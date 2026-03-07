@@ -12,7 +12,7 @@ const Footer = () => {
         ],
         resources: [
             {name: 'Новости', href: '/news'}, // WIP
-            {name: 'API', href: '/api-docs/'},
+            {name: 'API', href: '/api/'},
             // {name: 'Блог', href: 'https://t.me/linkoo_app'},
         ],
         company: [
