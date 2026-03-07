@@ -23,6 +23,7 @@ import {toast} from '@/lib/toast';
 import {CardPreview} from '@/components/cards/CardPreview.tsx';
 import {useAuth} from "@/contexts/AuthContext.tsx";
 import {useDialog} from "@/contexts/DialogContext.tsx";
+import {LoadingPage} from "@/pages/LoadingPage.tsx";
 
 const EditorPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('basic');
@@ -97,12 +98,7 @@ const EditorPage: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-muted flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-muted-foreground">Загрузка...</p>
-                </div>
-            </div>
+            <LoadingPage target="редактор"></LoadingPage>
         );
     }
 
