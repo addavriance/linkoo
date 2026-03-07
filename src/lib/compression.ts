@@ -64,8 +64,8 @@ const sanitizeData = (data: Partial<Card>): Partial<Card> => {
 
         switch (key) {
             case 'phone':
-                const cleanPhone = String(value).replace(/[^\d+]/g, '');
-                if (cleanPhone.length >= 10 && cleanPhone.length <= 15) {
+                const cleanPhone = String(value).trim();
+                if (cleanPhone.length > 0) {
                     sanitized[key] = cleanPhone;
                 }
                 break;
@@ -233,7 +233,7 @@ const extractCardDataFromUrl = (url: string = window.location.href): Partial<Car
 const validatePhone = (phone: string): boolean => {
     if (!phone) return false;
     const cleaned = phone.replace(/[^\d+]/g, '');
-    return cleaned.length >= 10 && cleaned.length <= 15 && /^\+?[\d]+$/.test(cleaned);
+    return cleaned.length >= 7 && cleaned.length <= 16 && /^\+?\d+$/.test(cleaned);
 };
 
 const formatPhone = (phone: string): string => {

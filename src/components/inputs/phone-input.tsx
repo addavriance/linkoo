@@ -63,18 +63,16 @@ const PhoneInput = ({
         // Убираем все кроме цифр и +
         const cleaned = inputValue.replace(/[^\d+]/g, '');
 
-        // Ограничиваем длину
-        if (cleaned.length > 12) return;
+        if (cleaned.length > 16) return;
 
-        // Автоматически добавляем +7 если вводят без кода
         let processedValue = cleaned;
         if (cleaned.length > 0 && !cleaned.startsWith('+')) {
-            if (cleaned.startsWith('8')) {
+            if (cleaned.startsWith('8') && cleaned.length <= 11) {
                 processedValue = '+7' + cleaned.slice(1);
-            } else if (cleaned.startsWith('7')) {
+            } else if (cleaned.startsWith('7') && cleaned.length <= 11) {
                 processedValue = '+' + cleaned;
             } else {
-                processedValue = '+7' + cleaned;
+                processedValue = '+' + cleaned;
             }
         }
 
@@ -135,7 +133,7 @@ const PhoneInput = ({
                 onPaste={handlePaste}
                 placeholder={placeholder}
                 className={`${className} ${
-                    !isValid ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''
+                    !isValid ? 'border-amber-300 focus:border-amber-500 focus:ring-amber-500/20' : ''
                 }`}
                 {...props}
             />
@@ -146,20 +144,14 @@ const PhoneInput = ({
                     {isValid ? (
                         <span className="text-green-500 text-xs">✓</span>
                     ) : (
-                        <span className="text-red-500 text-xs">✗</span>
+                        <span className="text-amber-500 text-xs">!</span>
                     )}
                 </div>
             )}
 
-            {/* Подсказка об ошибке */}
-            {/*{displayValue && !isValid && (*/}
-            {/*    <div className="absolute -bottom-5 left-0 text-xs text-red-500">*/}
-            {/*        Неверный формат номера*/}
-            {/*    </div>*/}
-            {/*)}*/}
             {displayValue && !isValid && (
                 <p className="text-xs text-amber-600 mt-1">
-                    Некорректный номер не будет включен в визитку
+                    Вероятно, номер записан не в том формате
                 </p>
             )}
         </div>
