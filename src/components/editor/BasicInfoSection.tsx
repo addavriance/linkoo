@@ -3,6 +3,7 @@ import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import PhoneInput from '@/components/inputs/phone-input';
 import ImageUpload from '@/components/inputs/image-upload';
+import {LocationPickerPopover} from '@/components/editor/LocationPickerPopover';
 import type {Card} from '@/types';
 
 interface BasicInfoSectionProps {
@@ -120,11 +121,17 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                 <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Местоположение
                 </label>
-                <Input
-                    placeholder="Москва, Россия"
-                    value={cardData.location || ''}
-                    onChange={(e) => updateField('location', e.target.value)}
-                />
+                <div className="relative">
+                    <Input
+                        placeholder="Москва, Россия"
+                        value={cardData.location || ''}
+                        onChange={(e) => updateField('location', e.target.value)}
+                        className="pr-8"
+                    />
+                    <LocationPickerPopover
+                        onSelect={(address) => updateField('location', address)}
+                    />
+                </div>
             </div>
         </div>
     );
