@@ -50,12 +50,12 @@ export default function PrivacyPage() {
                         <strong>Дата последнего обновления:</strong> {formattedDate}
                     </div>
 
-                    <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-h1:text-3xl prose-h1:mb-6 prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-3 prose-p:text-muted-foreground prose-p:leading-relaxed prose-ul:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-table:border-collapse prose-th:border prose-th:border-border prose-th:bg-muted prose-th:px-4 prose-th:py-2 prose-th:text-left prose-td:border prose-td:border-border prose-td:px-4 prose-td:py-2">
+                    <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-3xl prose-h1:mb-6 prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-3 prose-p:text-muted-foreground prose-p:leading-relaxed prose-ul:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-table:border-collapse prose-th:border prose-th:border-border prose-th:bg-muted prose-th:px-4 prose-th:py-2 prose-th:text-left prose-td:border prose-td:border-border prose-td:px-4 prose-td:py-2">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
                     </div>
 
                     <div className="pt-6 border-t mt-8">
-                        <Link to="/" className="text-blue-600 hover:text-blue-800">
+                        <Link to="/" className="wd:(text-blue-600 hover:text-blue-800)">
                             ← Вернуться на главную
                         </Link>
                     </div>
