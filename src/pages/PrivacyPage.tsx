@@ -1,3 +1,4 @@
+import {Helmet} from 'react-helmet-async';
 import {Card} from '@/components/ui/card';
 import {Link} from 'react-router-dom';
 import {useMemo} from 'react';
@@ -43,24 +44,34 @@ export default function PrivacyPage() {
     }, [data.lastUpdated]);
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
-                <Card className="p-8">
-                    <div className="mb-4 text-sm text-muted-foreground">
-                        <strong>Дата последнего обновления:</strong> {formattedDate}
-                    </div>
+        <>
+            <Helmet>
+                <title>Политика конфиденциальности — Linkoo</title>
+                <meta name="description"
+                      content="Политика конфиденциальности сервиса Linkoo — как мы собираем, используем и защищаем ваши данные."/>
+                <link rel="canonical" href="https://linkoo.dev/privacy"/>
+                <meta name="robots" content="noindex"/>
+            </Helmet>
+            <div className="container mx-auto px-4 py-8">
+                <div className="max-w-4xl mx-auto">
+                    <Card className="p-8">
+                        <div className="mb-4 text-sm text-muted-foreground">
+                            <strong>Дата последнего обновления:</strong> {formattedDate}
+                        </div>
 
-                    <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-3xl prose-h1:mb-6 prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-3 prose-p:text-muted-foreground prose-p:leading-relaxed prose-ul:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-table:border-collapse prose-th:border prose-th:border-border prose-th:bg-muted prose-th:px-4 prose-th:py-2 prose-th:text-left prose-td:border prose-td:border-border prose-td:px-4 prose-td:py-2">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-                    </div>
+                        <div
+                            className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-3xl prose-h1:mb-6 prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-3 prose-p:text-muted-foreground prose-p:leading-relaxed prose-ul:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-table:border-collapse prose-th:border prose-th:border-border prose-th:bg-muted prose-th:px-4 prose-th:py-2 prose-th:text-left prose-td:border prose-td:border-border prose-td:px-4 prose-td:py-2">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                        </div>
 
-                    <div className="pt-6 border-t mt-8">
-                        <Link to="/" className="wd:(text-blue-600 hover:text-blue-800)">
-                            ← Вернуться на главную
-                        </Link>
-                    </div>
-                </Card>
+                        <div className="pt-6 border-t mt-8">
+                            <Link to="/" className="wd:(text-blue-600 hover:text-blue-800)">
+                                ← Вернуться на главную
+                            </Link>
+                        </div>
+                    </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

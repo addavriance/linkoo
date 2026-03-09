@@ -1,3 +1,4 @@
+import {Helmet} from 'react-helmet-async';
 import {Card} from '@/components/ui/card';
 import {
     Sparkles,
@@ -54,130 +55,142 @@ export default function AboutPage() {
     ];
 
     return (
-        <div className="container mx-auto px-4 py-10">
-            <div className="max-w-6xl mx-auto space-y-12">
-                {/* Hero Section */}
-                <section className="text-center space-y-4">
-                    <h1 className="text-3xl font-bold">
-                        О проекте Linkoo
-                    </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Современная платформа для создания интерактивных цифровых визиток.
-                        Мы делаем нетворкинг простым, быстрым и экологичным.
-                    </p>
-                </section>
+        <>
+            <Helmet>
+                <title>О нас — Linkoo</title>
+                <meta name="description"
+                      content="Linkoo — современная платформа для создания цифровых визиток. Узнайте больше о нашей миссии и команде."/>
+                <link rel="canonical" href="https://linkoo.dev/about"/>
+            </Helmet>
+            <div className="container mx-auto px-4 py-10">
+                <div className="max-w-6xl mx-auto space-y-12">
+                    {/* Hero Section */}
+                    <section className="text-center space-y-4">
+                        <h1 className="text-3xl font-bold">
+                            О проекте Linkoo
+                        </h1>
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                            Современная платформа для создания интерактивных цифровых визиток.
+                            Мы делаем нетворкинг простым, быстрым и экологичным.
+                        </p>
+                    </section>
 
-                {/* Mission */}
-                <Card className="p-8 bg-gradient-to-r wd:(from-blue-50 to-purple-50)">
-                    <div className="flex flex-col md:flex-row items-start gap-6">
-                        <div className="flex-shrink-0">
-                            <div className="flex items-center justify-center w-14 h-14 rounded-full wd:bg-rose-100">
-                                <Heart className="h-8 w-8 text-rose-500" />
+                    {/* Mission */}
+                    <Card className="p-8 bg-gradient-to-r wd:(from-blue-50 to-purple-50)">
+                        <div className="flex flex-col md:flex-row items-start gap-6">
+                            <div className="flex-shrink-0">
+                                <div className="flex items-center justify-center w-14 h-14 rounded-full wd:bg-rose-100">
+                                    <Heart className="h-8 w-8 text-rose-500"/>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold mb-3">Наша миссия</h2>
+                                <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                                    Мы верим, что обмен контактами должен быть простым и экологичным.
+                                    Linkoo создан для того, чтобы каждый мог легко создать профессиональную
+                                    цифровую визитку и делиться ею одним касанием. Мы стремимся сделать
+                                    нетворкинг доступным для всех, сохраняя при этом планету от миллионов
+                                    бумажных визиток.
+                                </p>
                             </div>
                         </div>
-                        <div>
-                            <h2 className="text-2xl font-bold mb-3">Наша миссия</h2>
-                            <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                                Мы верим, что обмен контактами должен быть простым и экологичным.
-                                Linkoo создан для того, чтобы каждый мог легко создать профессиональную
-                                цифровую визитку и делиться ею одним касанием. Мы стремимся сделать
-                                нетворкинг доступным для всех, сохраняя при этом планету от миллионов
-                                бумажных визиток.
-                            </p>
-                        </div>
-                    </div>
-                </Card>
+                    </Card>
 
-                {/* Features */}
-                <section className="space-y-8">
-                    <h2 className="text-3xl font-bold text-center">Почему Linkoo?</h2>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {features.map((feature, idx) => {
-                            const Icon = feature.icon;
-                            return (
-                                <Card
-                                    key={idx}
-                                    className="p-6 hover:shadow-md transition-shadow border border-accent"
-                                >
-                                    <div className="flex items-start gap-4">
-                                        <div className="flex-shrink-0 w-12 h-12 rounded-lg wd:bg-blue-50 flex items-center justify-center">
-                                            <Icon className="h-6 w-6 text-blue-600" />
+                    {/* Features */}
+                    <section className="space-y-8">
+                        <h2 className="text-3xl font-bold text-center">Почему Linkoo?</h2>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {features.map((feature, idx) => {
+                                const Icon = feature.icon;
+                                return (
+                                    <Card
+                                        key={idx}
+                                        className="p-6 hover:shadow-md transition-shadow border border-accent"
+                                    >
+                                        <div className="flex items-start gap-4">
+                                            <div
+                                                className="flex-shrink-0 w-12 h-12 rounded-lg wd:bg-blue-50 flex items-center justify-center">
+                                                <Icon className="h-6 w-6 text-blue-600"/>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-xl font-semibold mb-1">{feature.title}</h3>
+                                                <p className="text-muted-foreground text-sm md:text-base">
+                                                    {feature.description}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 className="text-xl font-semibold mb-1">{feature.title}</h3>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    </section>
+
+                    {/* Use Cases */}
+                    <section className="space-y-8">
+                        <h2 className="text-3xl font-bold text-center">Для кого Linkoo?</h2>
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {useCases.map((useCase, idx) => {
+                                const Icon = useCase.icon;
+                                return (
+                                    <Card
+                                        key={idx}
+                                        className="p-6 text-center hover:shadow-md transition-shadow border border-accent"
+                                    >
+                                        <div
+                                            className="w-16 h-16 rounded-2xl wd:bg-blue-50 flex items-center justify-center mx-auto mb-4">
+                                            <Icon className="h-8 w-8 text-blue-600"/>
+                                        </div>
+                                        <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
+                                        <p className="text-muted-foreground text-sm md:text-base">
+                                            {useCase.description}
+                                        </p>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    </section>
+
+                    {/* How it works */}
+                    <section>
+                        <h2 className="text-3xl font-bold text-center mb-8">Как это работает?</h2>
+                        <Card className="p-8">
+                            <div className="space-y-6">
+                                {HOW_IT_WORKS.map((item) => (
+                                    <div key={item.step} className="flex items-start gap-4">
+                                        <div
+                                            className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                                            {item.step}
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="text-lg md:text-xl font-semibold mb-1">{item.title}</h3>
                                             <p className="text-muted-foreground text-sm md:text-base">
-                                                {feature.description}
+                                                {item.text}
                                             </p>
                                         </div>
                                     </div>
-                                </Card>
-                            );
-                        })}
-                    </div>
-                </section>
+                                ))}
+                            </div>
+                        </Card>
+                    </section>
 
-                {/* Use Cases */}
-                <section className="space-y-8">
-                    <h2 className="text-3xl font-bold text-center">Для кого Linkoo?</h2>
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {useCases.map((useCase, idx) => {
-                            const Icon = useCase.icon;
-                            return (
-                                <Card
-                                    key={idx}
-                                    className="p-6 text-center hover:shadow-md transition-shadow border border-accent"
-                                >
-                                    <div className="w-16 h-16 rounded-2xl wd:bg-blue-50 flex items-center justify-center mx-auto mb-4">
-                                        <Icon className="h-8 w-8 text-blue-600" />
-                                    </div>
-                                    <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
-                                    <p className="text-muted-foreground text-sm md:text-base">
-                                        {useCase.description}
-                                    </p>
-                                </Card>
-                            );
-                        })}
-                    </div>
-                </section>
 
-                {/* How it works */}
-                <section>
-                    <h2 className="text-3xl font-bold text-center mb-8">Как это работает?</h2>
+                    {/* Environmental Impact */}
                     <Card className="p-8">
-                        <div className="space-y-6">
-                            {HOW_IT_WORKS.map((item) => (
-                                <div key={item.step} className="flex items-start gap-4">
-                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
-                                        {item.step}
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg md:text-xl font-semibold mb-1">{item.title}</h3>
-                                        <p className="text-muted-foreground text-sm md:text-base">
-                                            {item.text}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="text-center">
+                            <div
+                                className="inline-flex items-center justify-center w-16 h-16 rounded-full wd:bg-green-100 mb-4">
+                                <Globe className="h-8 w-8 text-green-600"/>
+                            </div>
+                            <h2 className="text-2xl font-bold mb-3">Вклад в экологию</h2>
+                            <p className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto mb-4 leading-relaxed">
+                                Цифровые визитки помогают сократить использование бумаги и защитить окружающую среду.
+                                Один раз создав цифровую визитку, вы можете делиться ею неограниченное количество раз
+                                без необходимости печати новых карточек.
+                            </p>
                         </div>
                     </Card>
-                </section>
-
-
-                {/* Environmental Impact */}
-                <Card className="p-8">
-                    <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full wd:bg-green-100 mb-4">
-                            <Globe className="h-8 w-8 text-green-600" />
-                        </div>
-                        <h2 className="text-2xl font-bold mb-3">Вклад в экологию</h2>
-                        <p className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto mb-4 leading-relaxed">
-                            Цифровые визитки помогают сократить использование бумаги и защитить окружающую среду.
-                            Один раз создав цифровую визитку, вы можете делиться ею неограниченное количество раз
-                            без необходимости печати новых карточек.
-                        </p>
-                    </div>
-                </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

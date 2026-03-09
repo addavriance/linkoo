@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /editor
+Disallow: /profile
+Disallow: /cards
+Disallow: /analytics/
+Disallow: /settings
+Disallow: /security
+Disallow: /subscription
+Disallow: /premium/payment-result
+Disallow: /auth/
+Disallow: /admin/
+Disallow: /view
+
+Sitemap: https://linkoo.dev/sitemap.xml
