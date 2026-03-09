@@ -2,15 +2,14 @@
 
 // wd() safelist — ensures dark: variants of generated classes are included in the build
 const WD_PREFIXES = 'bg|text|border|from|to|via|ring|fill|stroke|decoration|accent|caret|divide|placeholder';
+// Only colors actually used with wd: in the codebase
+const WD_COLORS = 'blue|cyan|emerald|gray|green|indigo|orange|purple|red|rose|slate|yellow|zinc';
 const wdSafelist = [
-	// /20 и /30 указаны намеренно, поскольку (\\/\d+)? убивает ОЗУ, перебирая около 10млн вариаций во время билда
-	// TODO: текущий подход слегка замедляет время билда, желательно откуда то заранее подтягивать все цвета, инче их нужно выписать все вручную сюда
-	// TODO: автоген для префиксов
-    { pattern: new RegExp(`^(${WD_PREFIXES})-[a-z]+-\\d+$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
-    { pattern: new RegExp(`^(${WD_PREFIXES})-[a-z]+-950\\/20$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
-    { pattern: new RegExp(`^(${WD_PREFIXES})-[a-z]+-900\\/30$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
+    { pattern: new RegExp(`^(${WD_PREFIXES})-(${WD_COLORS})-\\d+$`), variants: ['dark', 'dark:hover'] },
+    { pattern: new RegExp(`^(${WD_PREFIXES})-(${WD_COLORS})-950\\/20$`), variants: ['dark', 'dark:hover'] },
+    { pattern: new RegExp(`^(${WD_PREFIXES})-(${WD_COLORS})-900\\/30$`), variants: ['dark', 'dark:hover'] },
     // bare-color: bg-white, bg-black
-    { pattern: new RegExp(`^(${WD_PREFIXES})-(white|black)$`), variants: ['dark', 'dark:hover', 'dark:focus'] },
+    { pattern: new RegExp(`^(${WD_PREFIXES})-(white|black)$`), variants: ['dark', 'dark:hover'] },
 ];
 
 export default {

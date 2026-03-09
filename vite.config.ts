@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import compression from 'vite-plugin-compression'
 
 // ─── wd: variant transform ───────────────────────────────────────────────────
 //
@@ -85,7 +86,12 @@ function wdVariantPlugin(): Plugin {
 // ─── config ──────────────────────────────────────────────────────────────────
 
 export default defineConfig({
-    plugins: [wdVariantPlugin(), react()],
+    plugins: [
+        wdVariantPlugin(),
+        react(),
+        compression({ algorithm: 'brotliCompress', ext: '.br' }),
+        compression({ algorithm: 'gzip', ext: '.gz' }),
+    ],
     base: '/',
     resolve: {
         alias: {
