@@ -17,7 +17,7 @@ import type {
     AccountType,
     UserRole,
 } from '@/types';
-import {ClientTOTP} from "@local/linkoo_shared";
+import {ClientTOTP} from "@addavriance/linkoo_shared";
 import {getUserId} from "@/lib/userIdentity.ts";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';

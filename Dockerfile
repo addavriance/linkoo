@@ -1,13 +1,13 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
+
+ARG GITHUB_TOKEN
+
 COPY package*.json ./
-COPY linkoo_shared ./linkoo_shared
-
-RUN cd linkoo_shared && npm install && npm run build
-
-RUN npm pkg set dependencies."@local/linkoo_shared"="file:./linkoo_shared"
-
-RUN npm install
+RUN echo "@addavriance:registry=https://npm.pkg.github.com" > .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> .npmrc && \
+    npm install && \
+    rm -f .npmrc
 
 FROM node:20-alpine AS builder
 WORKDIR /app

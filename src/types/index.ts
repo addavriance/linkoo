@@ -1,4 +1,4 @@
-import type { OAuthProvider, AccountType, UserRole, SocialPlatform, LinkTargetType, ApiResponse } from '@local/linkoo_shared';
+import type { OAuthProvider, AccountType, UserRole, SocialPlatform, LinkTargetType, ApiResponse } from '@addavriance/linkoo_shared';
 export type { OAuthProvider, AccountType, UserRole, SocialPlatform, LinkTargetType, ApiResponse };
 
 // ============= Auth Types =============
