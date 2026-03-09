@@ -1,29 +1,32 @@
 import {BrowserRouter as Router, Routes, Route,} from 'react-router-dom';
+import {HelmetProvider} from 'react-helmet-async';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { lazy, Suspense } from 'react';
 
 import HomePage from '@/pages/HomePage';
-import EditorPage from '@/pages/EditorPage';
 import ViewPage from '@/pages/ViewPage.jsx';
-import ThemesPage from '@/pages/ThemesPage';
-import ProfilePage from '@/pages/ProfilePage';
-import CardsPage from '@/pages/CardsPage';
-import AnalyticsPage from '@/pages/AnalyticsPage';
-import SecurityPage from '@/pages/SecurityPage';
-import SettingsPage from '@/pages/SettingsPage';
-import PremiumPage from '@/pages/PremiumPage';
-import SubscriptionPage from '@/pages/SubscriptionPage';
-import PaymentResultPage from '@/pages/PaymentResultPage';
-import AuthCallbackPage from '@/pages/AuthCallbackPage';
-import PrivacyPage from '@/pages/PrivacyPage';
-import TermsPage from '@/pages/TermsPage';
-import AboutPage from '@/pages/AboutPage';
-import AdminLayout from '@/pages/admin/AdminLayout';
-import AdminDashboard from '@/pages/admin/AdminDashboard';
-import AdminUsersPage from '@/pages/admin/AdminUsersPage';
-import AdminCardsPage from '@/pages/admin/AdminCardsPage';
-import AdminLinksPage from '@/pages/admin/AdminLinksPage';
+
+const EditorPage = lazy(() => import('@/pages/EditorPage'));
+const ThemesPage = lazy(() => import('@/pages/ThemesPage'));
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
+const CardsPage = lazy(() => import('@/pages/CardsPage'));
+const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage'));
+const SecurityPage = lazy(() => import('@/pages/SecurityPage'));
+const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const PremiumPage = lazy(() => import('@/pages/PremiumPage'));
+const SubscriptionPage = lazy(() => import('@/pages/SubscriptionPage'));
+const PaymentResultPage = lazy(() => import('@/pages/PaymentResultPage'));
+const AuthCallbackPage = lazy(() => import('@/pages/AuthCallbackPage'));
+const PrivacyPage = lazy(() => import('@/pages/PrivacyPage'));
+const TermsPage = lazy(() => import('@/pages/TermsPage'));
+const AboutPage = lazy(() => import('@/pages/AboutPage'));
+const AdminLayout = lazy(() => import('@/pages/admin/AdminLayout'));
+const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'));
+const AdminUsersPage = lazy(() => import('@/pages/admin/AdminUsersPage'));
+const AdminCardsPage = lazy(() => import('@/pages/admin/AdminCardsPage'));
+const AdminLinksPage = lazy(() => import('@/pages/admin/AdminLinksPage'));
 
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -40,6 +43,7 @@ function MainLayout() {
         <div className="min-h-screen bg-background">
             <Header/>
             <main className="flex-1">
+                <Suspense fallback={null}>
                 <Routes>
                     <Route path="/" element={<HomePage/>}/>
                     <Route path="/about" element={<AboutPage/>}/>
@@ -65,6 +69,7 @@ function MainLayout() {
                     {/* Catch-all route for short links - MUST be last */}
                     <Route path="/:slug" element={<ViewPage/>}/>
                 </Routes>
+                </Suspense>
             </main>
             <Footer/>
             <DialogContainer/>
@@ -98,11 +103,13 @@ function App({subdomain}: AppProps = {}) {
     }
 
     return (
+        <HelmetProvider>
         <ThemeProvider>
             <AuthProvider>
             <DialogProvider>
                 <Router>
                     <ScrollToTop/>
+                    <Suspense fallback={null}>
                     <Routes>
                         {/* Admin panel — no header/footer */}
                         <Route path="/admin" element={<AdminLayout/>}>
@@ -115,6 +122,7 @@ function App({subdomain}: AppProps = {}) {
                         {/* Main app layout */}
                         <Route path="*" element={<MainLayout/>}/>
                     </Routes>
+                    </Suspense>
 
                     <Toaster position="top-right" richColors closeButton />
                     <CookieConsent/>
@@ -122,6 +130,7 @@ function App({subdomain}: AppProps = {}) {
             </DialogProvider>
             </AuthProvider>
         </ThemeProvider>
+        </HelmetProvider>
     );
 }
 
