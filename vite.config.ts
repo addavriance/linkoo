@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
@@ -97,6 +98,10 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, './src'),
         },
+    },
+    test: {
+        environment: 'node',
+        include: ['src/**/__tests__/**/*.test.ts'],
     },
     server: {
         port: 3000,
