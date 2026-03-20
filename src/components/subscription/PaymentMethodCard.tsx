@@ -29,8 +29,7 @@ export function PaymentMethodCard({method, onDelete, isDefault}: PaymentMethodCa
     };
 
     const getCardIcon = (_cardType?: string) => {
-        // Можно добавить разные иконки для Visa, MasterCard и т.д.
-        return <CreditCard className="h-6 w-6 wd:text-blue-600" />;
+        return <CreditCard className="h-6 w-6 text-blue-600 dark:text-white" />;
     };
 
     const formatExpiryDate = () => {
