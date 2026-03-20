@@ -19,7 +19,7 @@ export default function TermsPage() {
 
                         <div className="space-y-6 text-sm leading-relaxed">
                             <p className="text-muted-foreground">
-                                <strong>Дата последнего обновления:</strong> {new Date().toLocaleDateString('ru-RU')}
+                                <strong>Дата последнего обновления:</strong> 20 марта 2026 г.
                             </p>
 
                             <section>
@@ -114,7 +114,7 @@ export default function TermsPage() {
                             <section>
                                 <h2 className="text-xl font-semibold mb-3">5. Оплата и возврат средств</h2>
                                 <p className="text-muted-foreground mb-2">
-                                    5.1. Оплата Premium-подписки осуществляется через интегрированные платежные системы.
+                                    5.1. Оплата Premium-подписки осуществляется через платёжную систему ЮКасса (ООО «НКО ЮМани», лицензия ЦБ РФ № 3510-К).
                                 </p>
                                 <p className="text-muted-foreground mb-2">
                                     5.2. Подписка активируется автоматически после подтверждения оплаты.
@@ -229,8 +229,9 @@ export default function TermsPage() {
                                     11.1. Мы оставляем за собой право изменять настоящие Условия в любое время.
                                 </p>
                                 <p className="text-muted-foreground mb-2">
-                                    11.2. О существенных изменениях мы уведомим пользователей по электронной почте
-                                    или через уведомления в Сервисе за 30 дней до вступления изменений в силу.
+                                    11.2. О существенных изменениях мы уведомим пользователей через уведомления
+                                    в Сервисе или путём публикации новой редакции на сайте за 30 дней до вступления
+                                    изменений в силу.
                                 </p>
                                 <p className="text-muted-foreground">
                                     11.3. Продолжение использования Сервиса после вступления изменений в силу означает
@@ -254,11 +255,15 @@ export default function TermsPage() {
                             </section>
 
                             <section>
-                                <h2 className="text-xl font-semibold mb-3">13. Контактная информация</h2>
+                                <h2 className="text-xl font-semibold mb-3">13. Контактная информация и реквизиты</h2>
                                 <p className="text-muted-foreground mb-2">
-                                    По вопросам, связанным с использованием Сервиса, обращайтесь:
+                                    Сервис предоставляется физическим лицом, применяющим специальный налоговый режим
+                                    «Налог на профессиональный доход» (самозанятый):
                                 </p>
                                 <ul className="list-none space-y-1 text-muted-foreground ml-4">
+                                    <li><strong>ФИО:</strong> Нетяженко Иван Юрьевич</li>
+                                    <li><strong>Статус:</strong> Самозанятый</li>
+                                    <li><strong>ИНН:</strong> [ВАШ ИНН]</li>
                                     <li><strong>Email:</strong> support@linkoo.dev</li>
                                     <li><strong>Сайт:</strong> linkoo.dev</li>
                                 </ul>
