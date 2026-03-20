@@ -1,11 +1,16 @@
 import React from 'react';
 import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
-import {getAllThemes, type Theme} from '@/lib/themes';
-import {Palette} from 'lucide-react';
+import {getAllThemes, cardThemes, type Theme} from '@/lib/themes';
+import {Lock, Palette} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import type {Card} from '@/types';
 import {ThemeIcon} from '@/components/common/ThemeIcon.tsx';
+import {useAuth} from '@/contexts/AuthContext';
+import {useDialog} from '@/contexts/DialogContext';
+
+const FREE_THEME_IDS = Object.keys(cardThemes).slice(0, 5);
+const GUEST_THEME_IDS = Object.keys(cardThemes).slice(0, 1);
 
 interface ThemeSectionProps {
     cardData: Partial<Card>;
@@ -17,7 +22,25 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
                                                               updateField,
                                                           }) => {
     const navigate = useNavigate();
+    const {user, isAuthenticated} = useAuth();
+    const {openLoginDialog} = useDialog();
+    const isPremium = user?.accountType === 'paid';
     const themes = getAllThemes();
+
+    const isThemeAvailable = (themeId: string) => {
+        if (isPremium) return true;
+        if (isAuthenticated) return FREE_THEME_IDS.includes(themeId);
+        return GUEST_THEME_IDS.includes(themeId);
+    };
+
+    const handleThemeClick = (themeId: string) => {
+        if (!isThemeAvailable(themeId)) {
+            if (!isAuthenticated) openLoginDialog();
+            else navigate('/premium');
+            return;
+        }
+        updateField('theme', themeId);
+    };
     const selectedTheme = themes[cardData.theme || 'light_minimal'];
 
     // Group themes by category
@@ -83,10 +106,12 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
                                 {categoryNames[category] || category}
                             </p>
                             <div className="grid grid-cols-3 gap-2">
-                                {categoryThemes.slice(0, 6).map((theme) => (
+                                {categoryThemes.slice(0, 6).map((theme) => {
+                                    const available = isThemeAvailable(theme.id);
+                                    return (
                                     <button
                                         key={theme.id}
-                                        onClick={() => updateField('theme', theme.id)}
+                                        onClick={() => handleThemeClick(theme.id)}
                                         className={`
                       relative h-16 rounded-md overflow-hidden border-2 transition-all
                       ${
@@ -94,6 +119,7 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
                                                 ? 'border-blue-500 ring-2 ring-blue-200'
                                                 : 'border-border hover:border-border'
                                         }
+                                        ${!available ? 'opacity-60' : ''}
                     `}
                                         style={{
                                             background: theme.background,
@@ -104,13 +130,19 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <ThemeIcon name={theme.icon} className="h-6 w-6"/>
                                         </div>
-                                        {theme.popular && (
+                                        {theme.popular && available && (
                                             <Badge className="absolute top-1 right-1 text-xs bg-yellow-500">
                                                 ★
                                             </Badge>
                                         )}
+                                        {!available && (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                                                <Lock className="h-4 w-4 text-white"/>
+                                            </div>
+                                        )}
                                     </button>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     ))}

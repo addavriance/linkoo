@@ -5,6 +5,7 @@ import PhoneInput from '@/components/inputs/phone-input';
 import ImageUpload from '@/components/inputs/image-upload';
 import {LocationPickerPopover} from '@/components/editor/LocationPickerPopover';
 import type {Card} from '@/types';
+import {useAuth} from '@/contexts/AuthContext';
 
 interface BasicInfoSectionProps {
     cardData: Partial<Card>;
@@ -15,6 +16,8 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                                                                       cardData,
                                                                       updateField,
                                                                   }) => {
+    const {isAuthenticated} = useAuth();
+
     return (
         <div className="space-y-4">
             {/* Avatar */}
@@ -25,6 +28,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                 <ImageUpload
                     value={cardData.avatar || ''}
                     onChange={(url: string) => updateField('avatar', url)}
+                    disableFileUpload={!isAuthenticated}
                 />
             </div>
 

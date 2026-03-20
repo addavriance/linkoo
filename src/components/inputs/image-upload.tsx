@@ -10,9 +10,10 @@ interface ImageUploadProps {
     value: string;
     onChange: (value: string) => void;
     className?: string;
+    disableFileUpload?: boolean;
 }
 
-const ImageUpload = ({value, onChange, className = ''}: ImageUploadProps) => {
+const ImageUpload = ({value, onChange, className = '', disableFileUpload = false}: ImageUploadProps) => {
     const [isUploading, setIsUploading] = useState(false);
     const [showUrlInput, setShowUrlInput] = useState(false);
     const [urlValue, setUrlValue] = useState('');
@@ -163,11 +164,11 @@ const ImageUpload = ({value, onChange, className = ''}: ImageUploadProps) => {
             {/* Зона перетаскивания */}
             {!value && (
                 <div
-                    className={`drop-zone ${isDragOver ? 'drag-over' : ''} ${isUploading ? 'uploading' : ''}`}
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onClick={handleInputClick}
+                    className={`drop-zone ${isDragOver ? 'drag-over' : ''} ${isUploading ? 'uploading' : ''} ${disableFileUpload ? 'opacity-50 !cursor-not-allowed' : ''}`}
+                    onDrop={disableFileUpload ? undefined : handleDrop}
+                    onDragOver={disableFileUpload ? undefined : handleDragOver}
+                    onDragLeave={disableFileUpload ? undefined : handleDragLeave}
+                    onClick={disableFileUpload ? undefined : handleInputClick}
                 >
                     {isUploading ? (
                         <>
@@ -196,7 +197,8 @@ const ImageUpload = ({value, onChange, className = ''}: ImageUploadProps) => {
                     variant="outline"
                     size="sm"
                     onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploading}
+                    disabled={isUploading || disableFileUpload}
+                    title={disableFileUpload ? 'Войдите, чтобы загружать изображения' : undefined}
                     className="flex-1 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                 >
                     {isUploading ? (
