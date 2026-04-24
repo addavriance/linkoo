@@ -6,8 +6,7 @@ import {Switch} from '@/components/ui/switch';
 import {Label} from '@/components/ui/label';
 import {Cookie, Settings, X} from 'lucide-react';
 import {Link} from 'react-router-dom';
-
-const COOKIE_CONSENT_KEY = 'linkoo_cookie_consent';
+import {STORAGE_KEYS} from '@/lib/constants';
 
 interface CookiePreferences {
     necessary: boolean;
@@ -27,14 +26,14 @@ export function CookieConsent() {
     });
 
     useEffect(() => {
-        const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+        const consent = localStorage.getItem(STORAGE_KEYS.COOKIE_CONSENT);
         if (!consent) {
             setTimeout(() => setShowBanner(true), 1000);
         }
     }, []);
 
     const savePreferences = (prefs: CookiePreferences) => {
-        localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(prefs));
+        localStorage.setItem(STORAGE_KEYS.COOKIE_CONSENT, JSON.stringify(prefs));
         setShowBanner(false);
         setShowSettings(false);
 

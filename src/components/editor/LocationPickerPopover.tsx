@@ -13,6 +13,7 @@ import {Button} from '@/components/ui/button';
 import 'leaflet/dist/leaflet.css';
 
 import type {Map as LeafletMap, Marker as LeafletMarker} from 'leaflet';
+import {DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM} from '@/lib/constants';
 
 interface LocationPickerPopoverProps {
     onSelect: (address: string) => void;
@@ -22,9 +23,6 @@ interface LatLng {
     lat: number;
     lng: number;
 }
-
-const DEFAULT_CENTER: LatLng = {lat: 55.7558, lng: 37.6176};
-const DEFAULT_ZOOM = 10;
 
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
     const res = await fetch(
@@ -75,8 +73,8 @@ export const LocationPickerPopover: React.FC<LocationPickerPopoverProps> = ({onS
             document.head.appendChild(style);
 
             const map = L.map(containerRef.current, {
-                center: [DEFAULT_CENTER.lat, DEFAULT_CENTER.lng],
-                zoom: DEFAULT_ZOOM,
+                center: [DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng],
+                zoom: DEFAULT_MAP_ZOOM,
                 zoomControl: false,
                 attributionControl: false,
             });

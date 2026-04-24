@@ -28,12 +28,7 @@ import {
     getThemesByCategory,
     applyThemeStyles, Theme
 } from '@/lib/themes';
-
-// Первые 5 тем доступны бесплатным зарегистрированным пользователям
-const FREE_THEME_IDS = Object.keys(cardThemes).slice(0, 5);
-// Только первая тема доступна гостям
-const GUEST_THEME_IDS = Object.keys(cardThemes).slice(0, 1);
-// const GUEST_SHOWN_THEME_IDS = Object.keys(cardThemes).slice(0, 8);
+import {FREE_THEME_IDS, GUEST_THEME_IDS, STORAGE_KEYS} from '@/lib/constants';
 
 const ThemesPage = () => {
     const navigate = useNavigate();
@@ -81,10 +76,10 @@ const ThemesPage = () => {
     const useTheme = (themeId: string) => {
         if (!isThemeAvailable(themeId)) return;
 
-        localStorage.setItem('linkoo_selected_theme', themeId);
+        localStorage.setItem(STORAGE_KEYS.SELECTED_THEME, themeId);
 
-        const draftData = localStorage.getItem('linkoo_draft');
-        localStorage.setItem('linkoo_draft',
+        const draftData = localStorage.getItem(STORAGE_KEYS.DRAFT);
+        localStorage.setItem(STORAGE_KEYS.DRAFT,
             JSON.stringify({
                 ...(draftData ? JSON.parse(draftData) : {}),
                 theme: themeId

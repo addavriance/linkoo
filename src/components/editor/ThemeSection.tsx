@@ -1,16 +1,14 @@
 import React from 'react';
 import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
-import {getAllThemes, cardThemes, type Theme} from '@/lib/themes';
+import {getAllThemes, type Theme} from '@/lib/themes';
 import {Lock, Palette} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import type {Card} from '@/types';
 import {ThemeIcon} from '@/components/common/ThemeIcon.tsx';
 import {useAuth} from '@/contexts/AuthContext';
 import {useDialog} from '@/contexts/DialogContext';
-
-const FREE_THEME_IDS = Object.keys(cardThemes).slice(0, 5);
-const GUEST_THEME_IDS = Object.keys(cardThemes).slice(0, 1);
+import {FREE_THEME_IDS, GUEST_THEME_IDS} from '@/lib/constants';
 
 interface ThemeSectionProps {
     cardData: Partial<Card>;

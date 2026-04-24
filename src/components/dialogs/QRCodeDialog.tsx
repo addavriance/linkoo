@@ -16,8 +16,7 @@ import {Download, QrCode as QrCodeIcon, Palette, Lock, Sparkles} from 'lucide-re
 import {CORNER_DOT_TYPES, CORNER_SQUARE_TYPES, DOT_TYPES, QR_SIZES} from "@/constants";
 import {useAuth} from '@/contexts/AuthContext';
 import {useNavigate} from 'react-router-dom';
-
-const LINKOO_LOGO_URL = '/icon.png';
+import {LINKOO_LOGO_URL} from '@/lib/constants';
 
 interface QRCodeDialogProps {
     open: boolean;

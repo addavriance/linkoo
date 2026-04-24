@@ -5,8 +5,7 @@ import type {AdminLink, PaginatedResponse} from '@/types';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Search, ChevronLeft, ChevronRight} from 'lucide-react';
-
-const LIMIT = 20;
+import {ADMIN_PAGE_SIZE, SEARCH_DEBOUNCE_MS} from '@/lib/constants';
 
 function ownerName(link: AdminLink): string {
     if (typeof link.userId === 'object') {
@@ -24,7 +23,7 @@ export default function AdminLinksPage() {
 
     const load = useCallback(() => {
         setLoading(true);
-        api.getAdminLinks({page, limit: LIMIT, search: search || undefined})
+        api.getAdminLinks({page, limit: ADMIN_PAGE_SIZE, search: search || undefined})
             .then(setData)
             .catch(() => toast.error('Не удалось загрузить ссылки'))
             .finally(() => setLoading(false));
@@ -38,7 +37,7 @@ export default function AdminLinksPage() {
         const t = setTimeout(() => {
             setSearch(searchInput);
             setPage(1);
-        }, 300);
+        }, SEARCH_DEBOUNCE_MS);
         return () => clearTimeout(t);
     }, [searchInput]);
 
@@ -133,7 +132,7 @@ export default function AdminLinksPage() {
             </div>
 
             <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <span>{total > 0 ? `${(page - 1) * LIMIT + 1}–${Math.min(page * LIMIT, total)} из ${total}` : '0'}</span>
+                <span>{total > 0 ? `${(page - 1) * ADMIN_PAGE_SIZE + 1}–${Math.min(page * ADMIN_PAGE_SIZE, total)} из ${total}` : '0'}</span>
                 <div className="flex gap-2">
                     <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
                         <ChevronLeft className="h-4 w-4"/>

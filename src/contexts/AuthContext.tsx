@@ -2,12 +2,11 @@ import React, {createContext, useContext, useState, useEffect, ReactNode} from '
 import {api} from '@/lib/api';
 import type {User, OAuthProvider} from '@/types';
 import {toast} from '@/lib/toast';
-
-const USER_CACHE_KEY = 'linkoo-user-cache';
+import {STORAGE_KEYS} from '@/lib/constants';
 
 const getCachedUser = (): User | null => {
     try {
-        const cached = localStorage.getItem(USER_CACHE_KEY);
+        const cached = localStorage.getItem(STORAGE_KEYS.USER_CACHE);
         return cached ? (JSON.parse(cached) as User) : null;
     } catch {
         return null;
@@ -16,9 +15,9 @@ const getCachedUser = (): User | null => {
 
 const setCachedUser = (user: User | null) => {
     if (user) {
-        localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user));
+        localStorage.setItem(STORAGE_KEYS.USER_CACHE, JSON.stringify(user));
     } else {
-        localStorage.removeItem(USER_CACHE_KEY);
+        localStorage.removeItem(STORAGE_KEYS.USER_CACHE);
     }
 };
 

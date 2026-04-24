@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 type Theme = 'light' | 'dark' | 'system' | 'oled';
 type ResolvedTheme = 'light' | 'dark' | 'oled';
@@ -32,7 +33,7 @@ function applyTheme(theme: Theme, systemPreference: 'light' | 'dark') {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
     const [theme, setThemeState] = useState<Theme>(() => {
-        const stored = localStorage.getItem('linkoo-theme');
+        const stored = localStorage.getItem(STORAGE_KEYS.THEME);
         if (stored && ['light', 'dark', 'system', 'oled'].includes(stored)) {
             return stored as Theme;
         }
@@ -43,7 +44,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     const setTheme = (t: Theme) => {
         setThemeState(t);
-        localStorage.setItem('linkoo-theme', t);
+        localStorage.setItem(STORAGE_KEYS.THEME, t);
     };
 
     useEffect(() => {

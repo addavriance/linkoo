@@ -9,6 +9,7 @@ import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink, Phone} 
 import {AccountBadge} from '@/components/common/AccountBadge';
 import {ProfileLayout} from '@/components/layout/ProfileLayout';
 import {formatPhoneDisplay} from '@/lib/compression';
+import {AVATAR_MAX_MB} from '@/lib/constants';
 import ImageCropModal from '@/components/common/ImageCropModal';
 import {fileToDataUrl} from '@/lib/cropImage';
 
@@ -39,6 +40,11 @@ export default function ProfilePage() {
         const file = event.target.files?.[0];
         if (!file) return;
         if (avatarInputRef.current) avatarInputRef.current.value = '';
+
+        if (file.size > AVATAR_MAX_MB * 1024 * 1024) {
+            toast.error(`Файл слишком большой. Максимум ${AVATAR_MAX_MB} МБ`);
+            return;
+        }
 
         const dataUrl = await fileToDataUrl(file);
         setCropSrc(dataUrl);
@@ -158,6 +164,9 @@ export default function ProfilePage() {
                             </div>
                             <p className="text-xs text-muted-foreground mt-3 text-center">
                                 Нажмите на фото<br/>чтобы изменить
+                            </p>
+                            <p className="text-xs text-muted-foreground/60 mt-1">
+                                До {AVATAR_MAX_MB} МБ · JPG, PNG
                             </p>
                         </div>
 

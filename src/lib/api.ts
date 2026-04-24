@@ -19,6 +19,7 @@ import type {
 } from '@/types';
 import {ClientTOTP} from "@addavriance/linkoo_shared";
 import {getUserId} from "@/lib/userIdentity.ts";
+import {STORAGE_KEYS} from '@/lib/constants';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -91,24 +92,24 @@ class ApiClient {
     }
 
     private loadTokens() {
-        this.accessToken = localStorage.getItem('accessToken');
-        this.refreshToken = localStorage.getItem('refreshToken');
+        this.accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+        this.refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
     }
 
     private saveTokens(tokens: AuthTokens) {
         this.accessToken = tokens.accessToken;
         this.refreshToken = tokens.refreshToken;
-        localStorage.setItem('accessToken', tokens.accessToken);
-        localStorage.setItem('refreshToken', tokens.refreshToken);
-        localStorage.setItem('tokenExpiresAt', String(Date.now() + tokens.expiresIn * 1000));
+        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+        localStorage.setItem(STORAGE_KEYS.TOKEN_EXPIRES_AT, String(Date.now() + tokens.expiresIn * 1000));
     }
 
     clearTokens() {
         this.accessToken = null;
         this.refreshToken = null;
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('tokenExpiresAt');
+        localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.TOKEN_EXPIRES_AT);
     }
 
     isAuthenticated(): boolean {

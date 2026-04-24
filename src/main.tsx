@@ -3,16 +3,16 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './animations.css'
 import App from './App'
+import { BASE_DOMAIN } from '@/lib/constants';
 
 const hostname = window.location.hostname;
-const baseDomain = import.meta.env.VITE_BASE_DOMAIN || 'linkoo.dev';
 const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
 const isSubdomain =
     !isLocalhost &&
-    hostname !== baseDomain &&
-    hostname !== `www.${baseDomain}` &&
-    hostname.endsWith(`.${baseDomain}`);
-const subdomain = isSubdomain ? hostname.replace(`.${baseDomain}`, '') : null;
+    hostname !== BASE_DOMAIN &&
+    hostname !== `www.${BASE_DOMAIN}` &&
+    hostname.endsWith(`.${BASE_DOMAIN}`);
+const subdomain = isSubdomain ? hostname.replace(`.${BASE_DOMAIN}`, '') : null;
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
