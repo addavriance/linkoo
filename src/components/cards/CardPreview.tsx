@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { formatPhoneDisplay } from '@/lib/compression';
 import {
     Mail,
     Phone,
@@ -83,7 +84,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
                 {cardData.phone && (
                     <div className="flex items-center justify-center gap-2 text-sm">
                         <Phone className="h-4 w-4 opacity-75" />
-                        <span>{cardData.phone}</span>
+                        <span>{formatPhoneDisplay(cardData.phone)}</span>
                     </div>
                 )}
                 {cardData.website && (

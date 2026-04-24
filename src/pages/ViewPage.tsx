@@ -18,7 +18,7 @@ import {
     User as UserIcon
 } from 'lucide-react';
 import {getThemeById, applyThemeStyles} from '@/lib/themes';
-import {extractCardDataFromUrl} from '@/lib/compression';
+import {extractCardDataFromUrl, formatPhoneDisplay} from '@/lib/compression';
 import {useToast} from '@/components/ui/use-toast';
 import {socialPlatforms, openSocialLink, processSocialLink, formatSocialLink} from "@/lib/socialLinks.js";
 import {api} from '@/lib/api';
@@ -340,7 +340,7 @@ const ViewPage = ({subdomain}: ViewPageProps = {}) => {
                                         </div>
                                         <div className="flex-1">
                                             <p className="font-semibold wd:text-gray-900 mb-1">Телефон</p>
-                                            <p className="text-sm wd:text-gray-600">{cardData.phone}</p>
+                                            <p className="text-sm wd:text-gray-600">{formatPhoneDisplay(cardData.phone)}</p>
                                         </div>
                                         <ExternalLink className="h-4 w-4 wd:text-gray-400 transition-colors duration-200"/>
                                     </button>

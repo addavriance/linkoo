@@ -67,6 +67,8 @@ const PhoneInput = ({
             }
         }
 
+        if (processedValue.startsWith('+7') && processedValue.length > 12) return;
+
         const formatted = formatDisplayPhone(processedValue);
         setDisplayValue(formatted);
 

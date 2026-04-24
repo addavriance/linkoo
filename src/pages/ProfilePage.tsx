@@ -8,6 +8,7 @@ import {useNavigate} from 'react-router-dom';
 import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink, Phone} from 'lucide-react';
 import {AccountBadge} from '@/components/common/AccountBadge';
 import {ProfileLayout} from '@/components/layout/ProfileLayout';
+import {formatPhoneDisplay} from '@/lib/compression';
 import ImageCropModal from '@/components/common/ImageCropModal';
 import {fileToDataUrl} from '@/lib/cropImage';
 
@@ -212,7 +213,7 @@ export default function ProfilePage() {
                                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10"/>
                                         <input
                                             type="phone"
-                                            value={user.phone}
+                                            value={formatPhoneDisplay(user.phone)}
                                             readOnly
                                             className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-muted text-muted-foreground cursor-not-allowed"
                                         />
