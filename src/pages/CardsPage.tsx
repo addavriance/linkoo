@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useEffect, useRef, useState} from 'react';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import {useAuth} from '@/contexts/AuthContext';
 import {api} from '@/lib/api';
 import {toast} from '@/lib/toast';
@@ -24,7 +24,10 @@ export default function CardsPage() {
     const [deleteTarget, setDeleteTarget] = useState<{id: string; name: string} | null>(null);
 
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const isPaid = user?.accountType === 'paid';
+    const [highlightedId, setHighlightedId] = useState<string | null>(null);
+    const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
     useEffect(() => {
         if (!authLoading && !user) navigate('/');
@@ -57,6 +60,21 @@ export default function CardsPage() {
 
     const handleSubdomainUpdated = (cardId: string, newSubdomain?: string) =>
         setCards(prev => prev.map(c => c._id === cardId ? {...c, subdomain: newSubdomain} : c));
+
+    useEffect(() => {
+        if (isLoading || cards.length === 0) return;
+        const id = searchParams.get('highlight');
+        if (!id) return;
+
+        setHighlightedId(id);
+        navigate('/cards', { replace: true });
+
+        const el = cardRefs.current.get(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        const timer = setTimeout(() => setHighlightedId(null), 600);
+        return () => clearTimeout(timer);
+    }, [isLoading, cards.length]);
 
     const canCreateMore = isPaid || (cards.length === 0 && user?.accountType === 'free');
 
@@ -110,7 +128,15 @@ export default function CardsPage() {
             ) : (
                 <div className={`grid gap-4 md:grid-cols-2 transition-opacity duration-300 ${isLoading ? 'opacity-60' : ''}`}>
                     {cards.map((card) => (
-                        <Card key={card._id} className="p-4 hover:shadow-lg transition-shadow">
+                        <div
+                            key={card._id}
+                            ref={(el) => { if (el) cardRefs.current.set(card._id!, el); else cardRefs.current.delete(card._id!); }}
+                        >
+                        <Card className={`p-4 hover:shadow-lg transition-all duration-700 ${
+                            highlightedId === card._id
+                                ? 'ring-2 ring-blue-400 ring-offset-2 shadow-lg shadow-blue-200/50'
+                                : 'ring-0 ring-transparent'
+                        }`}>
                             <div className="flex items-start gap-3 mb-3">
                                 {card.avatar && (
                                     <img
@@ -189,6 +215,7 @@ export default function CardsPage() {
                                 </Button>
                             </div>
                         </Card>
+                        </div>
                     ))}
                 </div>
             )}

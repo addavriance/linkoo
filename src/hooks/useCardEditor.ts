@@ -107,7 +107,6 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
         } catch (error) {
             console.error('Failed to load card:', error);
             toast.error('Не удалось загрузить карточку');
-            navigate('/profile');
         } finally {
             setIsLoading(false);
         }
@@ -159,7 +158,7 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
             }
 
             setTimeout(() => {
-                navigate('/profile');
+                navigate(`/cards?highlight=${savedCard._id}`);
             }, 1000);
 
             return true;
