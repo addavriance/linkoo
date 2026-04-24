@@ -5,6 +5,8 @@ import {Upload, X, Link2, Loader2} from 'lucide-react';
 import {uploadImage, validateImageUrl} from '@/lib/imageUpload';
 import {useToast} from '@/components/ui/use-toast';
 import './image-upload.css';
+import ImageCropModal from '@/components/common/ImageCropModal';
+import {fileToDataUrl} from '@/lib/cropImage';
 
 interface ImageUploadProps {
     value: string;
@@ -20,6 +22,7 @@ const ImageUpload = ({value, onChange, className = '', disableFileUpload = false
     const [isValidatingUrl, setIsValidatingUrl] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
+    const [cropSrc, setCropSrc] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const {toast} = useToast();
 
@@ -37,13 +40,19 @@ const ImageUpload = ({value, onChange, className = '', disableFileUpload = false
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
+        if (fileInputRef.current) fileInputRef.current.value = '';
 
+        const dataUrl = await fileToDataUrl(file);
+        setCropSrc(dataUrl);
+    };
+
+    const handleCropped = async (blob: Blob) => {
+        setCropSrc(null);
         setIsUploading(true);
-
         try {
+            const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
             const result = await uploadImage(file);
             onChange(result.displayUrl);
-
             toast({
                 title: "✅ Изображение загружено!",
                 description: `${result.filename} (${result.size}) через ${result.service}`,
@@ -56,9 +65,6 @@ const ImageUpload = ({value, onChange, className = '', disableFileUpload = false
             });
         } finally {
             setIsUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
         }
     };
 
@@ -109,14 +115,13 @@ const ImageUpload = ({value, onChange, className = '', disableFileUpload = false
         }, 200);
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         setIsDragOver(false);
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            const event = {target: {files}} as React.ChangeEvent<HTMLInputElement>;
-            handleFileSelect(event);
-        }
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        const dataUrl = await fileToDataUrl(file);
+        setCropSrc(dataUrl);
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -259,6 +264,16 @@ const ImageUpload = ({value, onChange, className = '', disableFileUpload = false
                 onChange={handleFileSelect}
                 className="hidden"
             />
+
+            {cropSrc && (
+                <ImageCropModal
+                    imageSrc={cropSrc}
+                    open={!!cropSrc}
+                    onClose={() => setCropSrc(null)}
+                    onCropped={handleCropped}
+                    aspect={1}
+                />
+            )}
         </div>
     );
 };

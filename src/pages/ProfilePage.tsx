@@ -8,6 +8,8 @@ import {useNavigate} from 'react-router-dom';
 import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink, Phone} from 'lucide-react';
 import {AccountBadge} from '@/components/common/AccountBadge';
 import {ProfileLayout} from '@/components/layout/ProfileLayout';
+import ImageCropModal from '@/components/common/ImageCropModal';
+import {fileToDataUrl} from '@/lib/cropImage';
 
 export default function ProfilePage() {
     const {user, isLoading: authLoading, refreshUser} = useAuth();
@@ -16,7 +18,9 @@ export default function ProfilePage() {
     const [profileDirty, setProfileDirty] = useState(false);
     const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
     const [isSavingProfile, setIsSavingProfile] = useState(false);
+    const [cropSrc, setCropSrc] = useState<string | null>(null);
     const avatarInputRef = useRef<HTMLInputElement>(null);
+
     const profileInitialized = useRef(false);
     const navigate = useNavigate();
 
@@ -33,9 +37,17 @@ export default function ProfilePage() {
     const handleAvatarSelect = async (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
+        if (avatarInputRef.current) avatarInputRef.current.value = '';
 
+        const dataUrl = await fileToDataUrl(file);
+        setCropSrc(dataUrl);
+    };
+
+    const handleAvatarCropped = async (blob: Blob) => {
+        setCropSrc(null);
         setIsUploadingAvatar(true);
         try {
+            const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
             const avatarUrl = await api.uploadAvatar(file);
             setProfileAvatar(avatarUrl);
             await refreshUser();
@@ -44,7 +56,6 @@ export default function ProfilePage() {
             toast.error(error.message || 'Не удалось загрузить фото');
         } finally {
             setIsUploadingAvatar(false);
-            if (avatarInputRef.current) avatarInputRef.current.value = '';
         }
     };
 
@@ -97,6 +108,7 @@ export default function ProfilePage() {
     }
 
     return (
+        <>
         <ProfileLayout
             title="Профиль"
             description="Управляйте настройками своего аккаунта"
@@ -281,5 +293,15 @@ export default function ProfilePage() {
                     </Card>
                 )}
         </ProfileLayout>
+
+        <ImageCropModal
+            imageSrc={cropSrc ?? ''}
+            open={!!cropSrc}
+            onClose={() => setCropSrc(null)}
+            onCropped={handleAvatarCropped}
+            aspect={1}
+            circular
+        />
+        </>
     );
 }
