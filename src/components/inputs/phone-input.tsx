@@ -20,14 +20,11 @@ const PhoneInput = ({
     const [displayValue, setDisplayValue] = useState('');
     const [isValid, setIsValid] = useState(true);
 
-    // Форматирование номера для отображения
     const formatDisplayPhone = (phone: string) => {
         const cleaned = phone.replace(/[^\d+]/g, '');
 
-        // Если пустой номер
         if (!cleaned) return '';
 
-        // Российский номер
         if (cleaned.startsWith('+7') || cleaned.startsWith('7')) {
             const digits = cleaned.replace(/^\+?7/, '');
             if (digits.length === 0) return '+7';
@@ -37,12 +34,10 @@ const PhoneInput = ({
             return `+7 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 8)}-${digits.slice(8, 10)}`;
         }
 
-        // Номер с другим кодом страны
         if (cleaned.startsWith('+')) {
             return cleaned;
         }
 
-        // Номер без кода страны - добавляем +7
         if (cleaned.length > 0) {
             return formatDisplayPhone('+7' + cleaned);
         }
@@ -50,17 +45,13 @@ const PhoneInput = ({
         return cleaned;
     };
 
-    // Обновление отображаемого значения при изменении value
     useEffect(() => {
         setDisplayValue(formatDisplayPhone(value));
         setIsValid(validatePhone(value) || !value);
     }, [value]);
 
-    // Обработка ввода
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
-
-        // Убираем все кроме цифр и +
         const cleaned = inputValue.replace(/[^\d+]/g, '');
 
         if (cleaned.length > 16) return;
@@ -76,23 +67,18 @@ const PhoneInput = ({
             }
         }
 
-        // Форматируем для отображения
         const formatted = formatDisplayPhone(processedValue);
         setDisplayValue(formatted);
 
-        // Валидация
         const isValidPhone = validatePhone(processedValue) || !processedValue;
         setIsValid(isValidPhone);
 
-        // Отправляем очищенное значение в родительский компонент
         if (onChange) {
             onChange(processedValue);
         }
     };
 
-    // Обработка специальных клавиш
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        // Разрешаем навигационные клавиши
         const allowedKeys = [
             'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
             'ArrowUp', 'ArrowDown', 'Home', 'End', 'Tab'
@@ -100,13 +86,11 @@ const PhoneInput = ({
 
         if (allowedKeys.includes(e.key)) return;
 
-        // Разрешаем цифры и +
         if (!/[\d+]/.test(e.key)) {
             e.preventDefault();
         }
     };
 
-    // Обработка вставки
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
         const pastedText = e.clipboardData.getData('text');
@@ -138,7 +122,6 @@ const PhoneInput = ({
                 {...props}
             />
 
-            {/* Индикатор валидности */}
             {displayValue && (
                 <div className="absolute right-3 top-[17px] -translate-y-1/2">
                     {isValid ? (

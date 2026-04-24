@@ -28,7 +28,6 @@ function applyTheme(theme: Theme, systemPreference: 'light' | 'dark') {
     } else if (theme === 'oled') {
         root.classList.add('dark', 'oled');
     }
-    // 'light' — remove only (already done above)
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -47,12 +46,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('linkoo-theme', t);
     };
 
-    // Apply theme on mount and whenever theme/system preference changes
     useEffect(() => {
         applyTheme(theme, systemPreference);
     }, [theme, systemPreference]);
 
-    // Listen for system preference changes (only relevant when theme === 'system')
     useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const handleChange = (e: MediaQueryListEvent) => {

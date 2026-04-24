@@ -20,7 +20,7 @@ export function CookieConsent() {
     const [showBanner, setShowBanner] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [preferences, setPreferences] = useState<CookiePreferences>({
-        necessary: true, // Всегда включены
+        necessary: true,
         functional: false,
         analytics: false,
         marketing: false,
@@ -39,12 +39,8 @@ export function CookieConsent() {
         setShowSettings(false);
 
         if (prefs.analytics) {
-            /* логика для аналитики */
-            // console.log('Analytics enabled');
         }
         if (prefs.marketing) {
-            /* логика для маркетинга */
-            // console.log('Marketing cookies enabled');
         }
     };
 

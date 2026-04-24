@@ -1,6 +1,5 @@
 import {toast as sonnerToast} from 'sonner';
 
-// Обертка над sonner для удобного использования
 export const toast = {
     success: (message: string, description?: string) => {
         sonnerToast.success(message, {

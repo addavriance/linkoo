@@ -13,7 +13,6 @@ import {
 export class UserIdentityManager {
     private providers: StorageProvider[] = [];
     private storageKey: string;
-    // private fingerprintJsKey: string;
     private enableLogging: boolean;
     private fingerprintCache: Map<string, string> = new Map();
 

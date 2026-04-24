@@ -61,14 +61,14 @@ const BLACK_RE = /^(.+?)-black(\/\d+)?$/;
 
 
 function toDark(cls: string): string | null {
-    // Уже тёмный вариант или спец-значение — пропускаем
+    // тёмный вариант или спец-значение пропускаем
     if (cls.includes('dark:')) return null;
     if (cls.startsWith('[') || cls.startsWith('!')) return null;
 
     // Разбиваем hover:focus:bg-blue-50 на ['hover', 'focus', 'bg-blue-50']
     const segments = cls.split(':');
     const base = segments[segments.length - 1];
-    const variants = segments.slice(0, -1); // ['hover', 'focus']
+    const variants = segments.slice(0, -1); // ['hover', 'focus'] и тд...
     const varStr = variants.length ? variants.join(':') + ':' : '';
 
     const sm = base.match(SHADE_RE);

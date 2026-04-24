@@ -54,7 +54,6 @@ class ApiClient {
 
         this.loadTokens();
 
-        // Request interceptor to add auth token
         this.client.interceptors.request.use(
             (config: InternalAxiosRequestConfig) => {
                 if (this.accessToken && config.headers) {
@@ -65,7 +64,6 @@ class ApiClient {
             (error) => Promise.reject(error)
         );
 
-        // Response interceptor to handle token refresh
         this.client.interceptors.response.use(
             (response) => response,
             async (error) => {
@@ -92,7 +90,6 @@ class ApiClient {
         );
     }
 
-    // ============= Token Management =============
     private loadTokens() {
         this.accessToken = localStorage.getItem('accessToken');
         this.refreshToken = localStorage.getItem('refreshToken');
@@ -118,7 +115,6 @@ class ApiClient {
         return !!this.accessToken;
     }
 
-    // ============= Auth API =============
     async handleOAuthCallback(accessToken: string, refreshToken: string, expiresIn: string): Promise<User> {
         this.saveTokens({
             accessToken,
@@ -129,14 +125,12 @@ class ApiClient {
     }
 
     async refreshAccessToken(): Promise<AuthTokens | null> {
-        // Если уже идет процесс обновления, возвращаем существующий promise
         if (this.refreshPromise) {
             return this.refreshPromise;
         }
 
         if (!this.refreshToken) return null;
 
-        // Создаем promise для обновления токена
         this.refreshPromise = (async () => {
             try {
                 const response = await axios.post<ApiResponse<AuthTokens>>(
@@ -184,7 +178,6 @@ class ApiClient {
         }
     }
 
-    // ============= User API =============
     async updateProfile(data: { profile?: { name?: string } }): Promise<User> {
         const response = await this.client.patch<ApiResponse<User>>('/users/me', data);
         if (!response.data.success || !response.data.data) {
@@ -227,7 +220,6 @@ class ApiClient {
         return response.data.data.url;
     }
 
-    // ============= OAuth URLs =============
     getGoogleAuthUrl(): string {
         return `${API_URL}/auth/google`;
     }
@@ -248,7 +240,6 @@ class ApiClient {
         return `${API_URL}/auth/max/callback?sessionId=${sessionId}`;
     }
 
-    // ============= Cards API =============
     async getMyCards(): Promise<Card[]> {
         const response = await this.client.get<ApiResponse<Card[]>>('/cards');
         if (!response.data.success || !response.data.data) {
@@ -285,7 +276,6 @@ class ApiClient {
         await this.client.delete(`/cards/${cardId}`);
     }
 
-    // ============= Links API =============
     async getMyLinks(): Promise<ShortenedLink[]> {
         const response = await this.client.get<ApiResponse<ShortenedLink[]>>('/links');
         if (!response.data.success || !response.data.data) {
@@ -352,7 +342,6 @@ class ApiClient {
         this.client.post(`/cards/${cardId}/view`).catch(() => {});
     }
 
-    // ============= Analytics API =============
     async getCardAnalytics(cardId: string, period: '7d' | '30d' = '30d'): Promise<any> {
         const response = await this.client.get<ApiResponse<any>>(`/analytics/${cardId}`, {params: {period}});
         if (!response.data.success || !response.data.data) {
@@ -385,9 +374,7 @@ class ApiClient {
         return response.data.data;
     }
 
-    // ============= Payment API =============
     async createPayment(data: PaymentCreation): Promise<PaymentResponse> {
-        // Защита от дубликатов запросов
         if (this.paymentCreatePromise) {
             return this.paymentCreatePromise;
         }
@@ -462,7 +449,6 @@ class ApiClient {
         return response.data.data;
     }
 
-    // ============= Sessions API =============
     async getSessions(): Promise<SessionResponse[]> {
         const response = await this.client.get<ApiResponse<SessionResponse[]>>('/auth/sessions');
         if (!response.data.success || !response.data.data) {
@@ -480,7 +466,6 @@ class ApiClient {
         }
     }
 
-    // ============= Admin API =============
     async getAdminStats(): Promise<AdminStats> {
         const response = await this.client.get<ApiResponse<AdminStats>>('/admin/stats');
         if (!response.data.success || !response.data.data) throw new Error('Failed to get stats');

@@ -51,7 +51,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const [user, setUser] = useState<User | null>(cachedUser);
     const [isLoading, setIsLoading] = useState(!cachedUser);
 
-    // Load user on mount
     useEffect(() => {
         loadUser();
     }, []);

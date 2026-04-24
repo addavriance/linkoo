@@ -10,7 +10,9 @@ import {
 import './Header.css';
 import {MobileMenu} from "@/components/common/MobileMenu.tsx";
 import { NAVIGATION } from "@/constants";
+import LinkooIcon from "@/components/common/LinkooIcon.tsx";
 import {UserMenu} from "@/components/common/UserMenu.tsx";
+import UserAvatar from "@/components/common/UserAvatar.tsx";
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,14 +24,12 @@ const Header = () => {
 
     const isActive = (path: string) => location.pathname === path;
 
-    // Закрываем меню при изменении маршрута
     useEffect(() => {
         if (mobileMenuOpen) {
             handleCloseMenu();
         }
     }, [location.pathname]);
 
-    // Блокируем прокрутку когда меню открыто
     useEffect(() => {
         if (mobileMenuOpen) {
             const scrollY = window.scrollY;
@@ -76,7 +76,6 @@ const Header = () => {
 
         setIsAnimating(true);
 
-        // Запускаем анимацию закрытия
         const backdrop: HTMLElement | null = document.querySelector('.mobile-backdrop');
         const panel: HTMLElement | null = document.querySelector('.mobile-menu-panel');
 
@@ -88,7 +87,6 @@ const Header = () => {
             panel.style.animation = 'slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards';
         }
 
-        // Убираем элементы после анимации
         setTimeout(() => {
             setMobileMenuOpen(false);
             setIsAnimating(false);
@@ -108,10 +106,8 @@ const Header = () => {
                     {/* Logo */}
                     <div className="flex sm:flex-1">
                         <Link to="/" className="-m-1.5 p-1.5 flex items-center space-x-2 group">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-lg">
-                                L
-                            </div>
-                            <span className="text-xl font-bold text-foreground transition-all duration-200 group-hover:text-blue-600">
+                            <LinkooIcon className="h-9 w-auto text-foreground transition-transform duration-300 group-hover:scale-110"/>
+                            <span className="text-xl font-bold text-foreground transition-colors duration-200 group-hover:text-blue-600">
                                 Linkoo
                             </span>
                         </Link>
@@ -155,17 +151,7 @@ const Header = () => {
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
                                         className="flex items-center space-x-2 rounded-lg p-2 hover:bg-muted transition-all"
                                     >
-                                        {user.profile.avatar ? (
-                                            <img
-                                                src={user.profile.avatar}
-                                                alt={user.profile.name}
-                                                className="h-8 w-8 rounded-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium text-sm">
-                                                {user.profile.name[0]}
-                                            </div>
-                                        )}
+                                        <UserAvatar name={user.profile.name} avatar={user.profile.avatar} className="h-8 w-8" />
                                     </button>
 
                                     {userMenuOpen && <UserMenu setUserMenuOpen={setUserMenuOpen}/>}

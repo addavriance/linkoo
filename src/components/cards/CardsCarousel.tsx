@@ -54,8 +54,6 @@ export const CardsCarousel: React.FC = () => {
 
                 const loopWidth = el.scrollWidth / 4;
 
-                // console.log(positions.current[i], loopWidth);
-
                 if (positions.current[i] <= -loopWidth) {
                     positions.current[i] += loopWidth;
                 } else if (positions.current[i] >= 0) {

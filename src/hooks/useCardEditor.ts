@@ -40,18 +40,15 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
     const [exportUrl, setExportUrl] = useState('');
     const [isEditMode, setIsEditMode] = useState(false);
 
-    // Определяем режим работы
     const isGuestMode = !isAuthenticated;
     const isAuthMode = isAuthenticated;
 
-    // Загрузка карточки для редактирования (только для авторизованных)
     useEffect(() => {
         if (cardId && isAuthMode) {
             loadCard(cardId);
         }
     }, [cardId, isAuthMode]);
 
-    // Загрузка черновика
     useEffect(() => {
         if (!cardId) {
             const draft = localStorage.getItem('linkoo_draft');
@@ -78,7 +75,6 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
         }
     }, [cardData, isGuestMode, isEditMode]);
 
-    // Генерация URL для гостей
     useEffect(() => {
         if (isGuestMode && (cardData.name || cardData.email || cardData.phone)) {
             const url = generateCardUrl(cardData);
@@ -87,7 +83,6 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
         }
     }, [cardData, isGuestMode]);
 
-    // Генерация URL для авторизованных пользователей с сохраненной карточкой
     useEffect(() => {
         if (isAuthMode && cardData._id && cardData.slug) {
             const baseUrl = window.location.origin;
@@ -102,7 +97,12 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
         try {
             setIsLoading(true);
             const card = await api.getCard(id);
-            setCardData(card);
+            const { name, title, description, email, phone, website, company,
+                location, avatar, socials, theme, customTheme, visibility, isPublic,
+                _id, slug } = card;
+            setCardData({ name, title, description, email, phone, website, company,
+                location, avatar, socials, theme, customTheme, visibility, isPublic,
+                _id, slug });
             setIsEditMode(true);
         } catch (error) {
             console.error('Failed to load card:', error);
@@ -119,7 +119,6 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
             return false;
         }
 
-        // Режим гостя - генерируем URL
         if (isGuestMode) {
             const url = generateCardUrl(cardData);
             if (url) {
@@ -132,18 +131,14 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
             }
         }
 
-        // Режим авторизованного пользователя - сохраняем через API
         try {
             setIsSaving(true);
 
             let savedCard: Card;
             if (isEditMode && cardId) {
-                // Обновление существующей карточки
                 savedCard = await api.updateCard(cardId, cardData);
                 toast.success('Карточка обновлена');
             } else {
-                // Создание новой карточки
-                // Проверка лимитов для Free аккаунта
                 if (user?.accountType === 'free') {
                     const cards = await api.getMyCards();
                     if (cards.length >= 1) {
@@ -163,7 +158,6 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
                 options.onSaveSuccess(savedCard);
             }
 
-            // Переход в профиль
             setTimeout(() => {
                 navigate('/profile');
             }, 1000);
