@@ -5,7 +5,7 @@ import type {AdminCard, PaginatedResponse} from '@/types';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Search, ChevronLeft, ChevronRight, ExternalLink} from 'lucide-react';
-import {ADMIN_PAGE_SIZE, SEARCH_DEBOUNCE_MS} from '@/lib/constants';
+import {ADMIN_PAGE_SIZE, SEARCH_DEBOUNCE_MS} from '@/constants';
 
 function ownerName(card: AdminCard): string {
     if (typeof card.userId === 'object') {

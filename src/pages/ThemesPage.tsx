@@ -28,7 +28,7 @@ import {
     getThemesByCategory,
     applyThemeStyles, Theme
 } from '@/lib/themes';
-import {FREE_THEME_IDS, GUEST_THEME_IDS, STORAGE_KEYS} from '@/lib/constants';
+import {FREE_THEME_IDS, GUEST_THEME_IDS, STORAGE_KEYS} from '@/constants';
 
 const ThemesPage = () => {
     const navigate = useNavigate();

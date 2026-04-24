@@ -9,7 +9,7 @@ import {Camera, Loader2, User as UserIcon, Mail, Calendar, ExternalLink, Phone} 
 import {AccountBadge} from '@/components/common/AccountBadge';
 import {ProfileLayout} from '@/components/layout/ProfileLayout';
 import {formatPhoneDisplay} from '@/lib/compression';
-import {AVATAR_MAX_MB} from '@/lib/constants';
+import {AVATAR_MAX_MB} from '@/constants';
 import ImageCropModal from '@/components/common/ImageCropModal';
 import {fileToDataUrl} from '@/lib/cropImage';
 

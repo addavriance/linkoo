@@ -5,7 +5,7 @@ import type {User, AccountType, UserRole, PaginatedResponse} from '@/types';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Search, ChevronLeft, ChevronRight} from 'lucide-react';
-import {ADMIN_PAGE_SIZE, SEARCH_DEBOUNCE_MS} from '@/lib/constants';
+import {ADMIN_PAGE_SIZE, SEARCH_DEBOUNCE_MS} from '@/constants';
 
 const ROLE_LABELS: Record<string, string> = {
     user: 'user',

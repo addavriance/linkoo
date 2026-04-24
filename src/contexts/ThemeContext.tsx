@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { STORAGE_KEYS } from '@/lib/constants';
+import { STORAGE_KEYS } from '@/constants';
 
 type Theme = 'light' | 'dark' | 'system' | 'oled';
 type ResolvedTheme = 'light' | 'dark' | 'oled';

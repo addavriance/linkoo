@@ -8,7 +8,7 @@ import type {Card} from '@/types';
 import {ThemeIcon} from '@/components/common/ThemeIcon.tsx';
 import {useAuth} from '@/contexts/AuthContext';
 import {useDialog} from '@/contexts/DialogContext';
-import {FREE_THEME_IDS, GUEST_THEME_IDS} from '@/lib/constants';
+import {FREE_THEME_IDS, GUEST_THEME_IDS} from '@/constants';
 
 interface ThemeSectionProps {
     cardData: Partial<Card>;

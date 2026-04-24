@@ -13,7 +13,7 @@ import {Button} from '@/components/ui/button';
 import 'leaflet/dist/leaflet.css';
 
 import type {Map as LeafletMap, Marker as LeafletMarker} from 'leaflet';
-import {DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM} from '@/lib/constants';
+import {DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM} from '@/constants';
 
 interface LocationPickerPopoverProps {
     onSelect: (address: string) => void;

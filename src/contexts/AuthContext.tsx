@@ -2,7 +2,7 @@ import React, {createContext, useContext, useState, useEffect, ReactNode} from '
 import {api} from '@/lib/api';
 import type {User, OAuthProvider} from '@/types';
 import {toast} from '@/lib/toast';
-import {STORAGE_KEYS} from '@/lib/constants';
+import {STORAGE_KEYS} from '@/constants';
 
 const getCachedUser = (): User | null => {
     try {

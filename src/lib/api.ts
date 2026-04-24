@@ -19,7 +19,7 @@ import type {
 } from '@/types';
 import {ClientTOTP} from "@addavriance/linkoo_shared";
 import {getUserId} from "@/lib/userIdentity.ts";
-import {STORAGE_KEYS} from '@/lib/constants';
+import {STORAGE_KEYS} from '@/constants';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 

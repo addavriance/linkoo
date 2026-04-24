@@ -6,7 +6,7 @@ import {Switch} from '@/components/ui/switch';
 import {Label} from '@/components/ui/label';
 import {Cookie, Settings, X} from 'lucide-react';
 import {Link} from 'react-router-dom';
-import {STORAGE_KEYS} from '@/lib/constants';
+import {STORAGE_KEYS} from '@/constants';
 
 interface CookiePreferences {
     necessary: boolean;

@@ -1,5 +1,5 @@
 import { api } from '@/lib/api';
-import { IMAGE_MAX_BYTES, IMAGE_MAX_MB } from '@/lib/constants';
+import { IMAGE_MAX_BYTES, IMAGE_MAX_MB } from '@/constants';
 
 export const uploadImage = async (file: File): Promise<{ displayUrl: string; filename: string; size: string; service: string }> => {
     if (file.size > IMAGE_MAX_BYTES) {

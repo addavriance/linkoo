@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './animations.css'
 import App from './App'
-import { BASE_DOMAIN } from '@/lib/constants';
+import { BASE_DOMAIN } from '@/constants';
 
 const hostname = window.location.hostname;
 const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
