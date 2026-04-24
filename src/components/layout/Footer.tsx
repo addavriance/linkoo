@@ -1,5 +1,6 @@
 import {Link} from 'react-router-dom';
 import {Github} from 'lucide-react';
+import LinkooIcon from "@/components/common/LinkooIcon.tsx";
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -38,9 +39,8 @@ const Footer = () => {
                     {/* Brand section */}
                     <div className="xl:col-span-1">
                         <Link to="/" className="flex items-center space-x-2 mb-4">
-                            <div
-                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg">
-                                L
+                            <div className="flex items-center justify-center rounded-[10px] bg-gradient-to-br from-blue-600 to-purple-600 p-[7px]">
+                                <LinkooIcon className="h-5 w-5 text-white"/>
                             </div>
                             <span className="text-xl font-bold text-foreground">Linkoo</span>
                         </Link>

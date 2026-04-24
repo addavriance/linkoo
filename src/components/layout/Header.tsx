@@ -106,8 +106,10 @@ const Header = () => {
                     {/* Logo */}
                     <div className="flex sm:flex-1">
                         <Link to="/" className="-m-1.5 p-1.5 flex items-center space-x-2 group">
-                            <LinkooIcon className="h-9 w-auto text-foreground transition-transform duration-300 group-hover:scale-110"/>
-                            <span className="text-xl font-bold text-foreground transition-colors duration-200 group-hover:text-blue-600">
+                            <div className="flex items-center justify-center rounded-[10px] bg-gradient-to-br from-blue-600 to-purple-600 p-[7px] transition-transform duration-300 group-hover:scale-110">
+                                <LinkooIcon className="h-5 w-5 text-white"/>
+                            </div>
+                            <span className="text-xl font-bold text-foreground">
                                 Linkoo
                             </span>
                         </Link>

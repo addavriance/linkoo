@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LinkooIcon from "@/components/common/LinkooIcon.tsx";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { OAuthButtons } from '@/components/auth/OAuthButtons';
 
@@ -15,8 +16,8 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onOpenChange, open
             <DialogContent className="max-w-[480px] rounded-lg">
                 <DialogHeader>
                     <div className="flex justify-center mb-4">
-                        <div className="select-none flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-2xl shadow-lg">
-                            L
+                        <div className="flex items-center justify-center rounded-[15px] bg-gradient-to-br from-blue-600 to-purple-600 p-4 shadow-lg">
+                            <LinkooIcon className="h-8 w-8 text-white"/>
                         </div>
                     </div>
                     <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">

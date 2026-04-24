@@ -83,7 +83,7 @@ const PhoneFrame = ({idx = 1}) => (
             <img
                 src={`/preview-mobile-${idx++}.png`}
                 alt="Визитка на телефоне"
-                className="h-full w-full object-cover object-top"
+                className="h-full w-full object-fill object-top"
                 draggable={false}
             />
         </div>

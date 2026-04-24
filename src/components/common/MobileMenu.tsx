@@ -1,4 +1,6 @@
 import {LogOut, User, X} from "lucide-react";
+import UserAvatar from "@/components/common/UserAvatar.tsx";
+import LinkooIcon from "@/components/common/LinkooIcon.tsx";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {NAVIGATION} from "@/constants";
 import {useAuth} from "@/contexts/AuthContext.tsx";
@@ -52,8 +54,8 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                             onClick={handleCloseMenu}
                             id="mobile-menu-title"
                         >
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold transition-all duration-200 group-hover:scale-110">
-                                L
+                            <div className="flex items-center justify-center rounded-[10px] bg-gradient-to-br from-blue-600 to-purple-600 p-[7px] transition-transform duration-200 group-hover:scale-110">
+                                <LinkooIcon className="h-4 w-4 text-white"/>
                             </div>
                             <span className="text-lg font-bold text-foreground">Linkoo</span>
                         </Link>
@@ -119,17 +121,7 @@ export const MobileMenu = ({handleCloseMenu, isAnimating}: MobileMenuProps) => {
                         {isAuthenticated && user && (
                             <div className="footer-button footer-button-animated-1 bg-gradient-to-br wd:(from-blue-50 to-purple-50) rounded-xl p-4">
                                 <div className="flex items-center gap-3 mb-3">
-                                    {user.profile.avatar ? (
-                                        <img
-                                            src={user.profile.avatar}
-                                            alt={user.profile.name}
-                                            className="h-10 w-10 rounded-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium text-sm">
-                                            {user.profile.name[0]}
-                                        </div>
-                                    )}
+                                    <UserAvatar name={user.profile.name} avatar={user.profile.avatar} className="h-10 w-10" />
                                     <div className="flex-1 min-w-0">
                                         <p className="font-medium text-foreground text-sm truncate">{user.profile.name}</p>
                                         <p className="text-xs text-muted-foreground truncate">{user.email}</p>
