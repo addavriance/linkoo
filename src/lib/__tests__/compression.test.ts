@@ -67,9 +67,9 @@ describe('formatPhone', () => {
     });
 });
 
-// decompressCardData
+// decompressCardData — legacy LZString format
 
-describe('decompressCardData', () => {
+describe('decompressCardData (legacy LZString)', () => {
     it('returns empty object for empty string', () => {
         expect(decompressCardData('')).toEqual({});
     });
@@ -79,7 +79,6 @@ describe('decompressCardData', () => {
     });
 
     it('decompresses short keys back to full field names', () => {
-        // Simulate what compressCardData produces: short keys { n, t, e }
         const payload = { n: 'John Doe', t: 'Developer', e: 'john@example.com' };
         const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
 
@@ -91,7 +90,6 @@ describe('decompressCardData', () => {
     });
 
     it('decompresses socials array with platform short keys', () => {
-        // { s: [{ gh: 'https://github.com/test' }] }
         const payload = { s: [{ gh: 'https://github.com/test' }, { tg: 'https://t.me/test' }] };
         const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
 
@@ -113,16 +111,9 @@ describe('decompressCardData', () => {
     });
 
     it('full roundtrip: all common fields survive compress → decompress', () => {
-        // Manually build the compressed payload with all short keys from COMPRESSION_MAP
         const payload = {
-            n: 'Alice',
-            t: 'CTO',
-            d: 'Building things',
-            e: 'alice@example.com',
-            p: '+79001234567',
-            w: 'https://alice.dev',
-            co: 'Acme Inc',
-            lo: 'Moscow',
+            n: 'Alice', t: 'CTO', d: 'Building things', e: 'alice@example.com',
+            p: '+79001234567', w: 'https://alice.dev', co: 'Acme Inc', lo: 'Moscow',
         };
         const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
         const result = decompressCardData(compressed);
@@ -135,5 +126,84 @@ describe('decompressCardData', () => {
         expect(result.website).toBe('https://alice.dev');
         expect(result.company).toBe('Acme Inc');
         expect(result.location).toBe('Moscow');
+    });
+});
+
+// decompressCardData — new binary format (v2)
+
+import { compressCardData } from '../compression';
+
+describe('decompressCardData (binary v2)', () => {
+    function roundtrip(data: Parameters<typeof compressCardData>[0]) {
+        const encoded = compressCardData(data)!;
+        expect(encoded).not.toBeNull();
+        expect(encoded.startsWith('_')).toBe(true);
+        return decompressCardData(encoded);
+    }
+
+    it('encodes and decodes string fields', () => {
+        const result = roundtrip({
+            name: 'Bob', title: 'Engineer', email: 'bob@test.com',
+            phone: '+79001234567', website: 'https://bob.io',
+            company: 'ACME', location: 'SPb',
+        });
+
+        expect(result.name).toBe('Bob');
+        expect(result.title).toBe('Engineer');
+        expect(result.email).toBe('bob@test.com');
+        expect(result.phone).toBe('+79001234567');
+        expect(result.website).toBe('https://bob.io');
+        expect(result.company).toBe('ACME');
+        expect(result.location).toBe('SPb');
+    });
+
+    it('encodes and decodes socials by position', () => {
+        const result = roundtrip({
+            name: 'T',
+            socials: [
+                { platform: 'github', link: 'https://github.com/user' },
+                { platform: 'telegram', link: 'https://t.me/user' },
+            ],
+        });
+
+        expect(result.socials).toEqual([
+            { platform: 'github', link: 'https://github.com/user' },
+            { platform: 'telegram', link: 'https://t.me/user' },
+        ]);
+    });
+
+    it('encodes and decodes theme', () => {
+        const result = roundtrip({ name: 'T', theme: 'dark' });
+        expect(result.theme).toBe('dark');
+    });
+
+    it('encodes and decodes customTheme', () => {
+        const ct = { background: '#111', textColor: '#fff', accentColor: '#0af' };
+        const result = roundtrip({ name: 'T', customTheme: ct });
+        expect(result.customTheme?.background).toBe('#111');
+        expect(result.customTheme?.textColor).toBe('#fff');
+        expect(result.customTheme?.accentColor).toBe('#0af');
+    });
+
+    it('encodes and decodes visibility flags', () => {
+        const result = roundtrip({
+            name: 'T',
+            visibility: { showEmail: true, showPhone: false, showLocation: true },
+        });
+        expect(result.visibility?.showEmail).toBe(true);
+        expect(result.visibility?.showPhone).toBe(false);
+        expect(result.visibility?.showLocation).toBe(true);
+    });
+
+    it('handles unicode in strings', () => {
+        const result = roundtrip({ name: 'Привет мир 🌍', description: 'こんにちは' });
+        expect(result.name).toBe('Привет мир 🌍');
+        expect(result.description).toBe('こんにちは');
+    });
+
+    it('empty data produces minimal output', () => {
+        const result = roundtrip({ name: 'X' });
+        expect(result.name).toBe('X');
+        expect(result.socials).toEqual([]);
     });
 });
