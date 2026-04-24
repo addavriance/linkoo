@@ -6,6 +6,7 @@ import {
     Sparkles, Share2, Palette, Zap, ArrowRight, Smartphone
 } from 'lucide-react';
 import {CardsCarousel} from '@/components/cards/CardsCarousel.tsx';
+import DeviceMockups from '@/components/home/DeviceMockups.tsx';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -50,8 +51,8 @@ const HomePage = () => {
             </Helmet>
             <div className="relative overflow-hidden">
                 {/* Hero Section */}
-                <section className="relative px-6 pt-20 pb-16 text-center lg:px-8 lg:pt-32 lg:pb-24">
-                    <div className="mx-auto max-w-4xl">
+                <section className="relative min-h-[640px] px-6 pt-20 pb-16 text-center lg:min-h-[820px] lg:px-8 lg:pt-32 lg:pb-24">
+                    <div className="relative z-10 mx-auto max-w-4xl pb-[20rem]">
                         {/* Заголовок */}
                         <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
                             Создавай{" "}
@@ -107,15 +108,7 @@ const HomePage = () => {
                         </div>
                     </div>
 
-                    {/* Animated Background Elements */}
-                    {/*<div className="absolute inset-0 -z-10 overflow-hidden">*/}
-                    {/*    <div*/}
-                    {/*        className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 blur-3xl"/>*/}
-                    {/*    <div*/}
-                    {/*        className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-pink-400/20 to-orange-400/20 blur-3xl"/>*/}
-                    {/*    <div*/}
-                    {/*        className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-green-400/20 to-blue-400/20 blur-3xl"/>*/}
-                    {/*</div>*/}
+                    <DeviceMockups/>
                 </section>
 
                 {/* Features Section */}
