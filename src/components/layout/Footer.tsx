@@ -1,5 +1,5 @@
 import {Link} from 'react-router-dom';
-import {Github} from 'lucide-react';
+import { FaTelegramPlane, FaGithub } from 'react-icons/fa';
 import LinkooIcon from "@/components/common/LinkooIcon.tsx";
 
 const Footer = () => {
@@ -27,8 +27,13 @@ const Footer = () => {
         {
             name: 'GitHub',
             href: 'https://github.com/addavriance/linkoo',
-            icon: Github,
+            icon: FaGithub,
         },
+        {
+            name: 'Telegram',
+            href: 'https://t.me/+R6DLSDnpW4BlOThi',
+            icon: FaTelegramPlane,
+        }
     ];
 
     return (
@@ -57,7 +62,7 @@ const Footer = () => {
                                         href={item.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-muted-foreground hover:text-muted-foreground transition-colors"
+                                        className="text-muted-foreground hover:text-muted-foreground transition-colors hover:opacity-80"
                                     >
                                         <span className="sr-only">{item.name}</span>
                                         <Icon className="h-6 w-6"/>

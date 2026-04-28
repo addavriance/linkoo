@@ -66,6 +66,11 @@ function MainLayout() {
                             <Redirect to="/api-docs/" replace />
                         </LoadingPage>
                     }/>
+                    <Route path="/news" element={
+                        <LoadingPage target="новости">
+                            <Redirect to="https://t.me/+R6DLSDnpW4BlOThi"/>
+                        </LoadingPage>
+                    }/>
                     {/* Catch-all route for short links - MUST be last */}
                     <Route path="/:slug" element={<ViewPage/>}/>
                 </Routes>

@@ -3,6 +3,10 @@ interface LoadingPageProps {
     children?: React.ReactNode;
 }
 
+/*
+ * Переходная страница
+ * @target - то что загружаем...
+ */
 export const LoadingPage = ({target, children}: LoadingPageProps) => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br wd:(from-blue-50 via-white to-purple-50)">
