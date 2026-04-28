@@ -1,6 +1,4 @@
-import {useEffect, useState} from 'react';
-
-const PHONE_T = 'perspective(1400px) rotateY(-5deg) rotateX(10deg) rotate(4deg)';
+import {useEffect, useRef, useState} from 'react';
 
 const DeviceMockups = () => {
     const [width, setWidth] = useState(() => window.innerWidth);
@@ -25,80 +23,128 @@ const DeviceMockups = () => {
             <div className="absolute bottom-0 left-1/4 h-80 w-96 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"/>
             <div className="absolute bottom-0 right-1/4 h-80 w-96 translate-x-1/2 rounded-full bg-purple-500/10 blur-3xl"/>
 
-            {/* Laptop — scales from left-bottom, stays anchored to the left */}
             <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: '50px',
-                transformOrigin: 'left bottom',
+                position: 'absolute', bottom: 0, left: '50px',
+                // transformOrigin: 'left bottom',
                 transform: `scale(${scale})`,
             }}>
-                <div style={{
-                    width: '680px',
-                    transform: 'perspective(1400px) rotateY(18deg) rotateX(16deg) rotate(-4deg)',
-                    transformOrigin: 'left bottom',
-                }}>
-                    <div className="relative rounded-t-xl border border-gray-700/80 bg-gray-800 shadow-2xl dark:border-gray-600/60 dark:bg-gray-900">
-                        <div className="flex justify-center pt-2 pb-1">
-                            <div className="h-1.5 w-1.5 rounded-full bg-gray-600 dark:bg-gray-500"/>
-                        </div>
-                        <div className="overflow-hidden rounded-sm" style={{aspectRatio: '16/10'}}>
-                            <img
-                                src="/preview-desktop.png"
-                                alt="Аналитика визитки"
-                                className="h-full w-full object-cover object-top"
-                                draggable={false}
-                            />
-                        </div>
-                    </div>
-                    <div className="h-1 w-full bg-gray-600 dark:bg-gray-700"/>
-                    <div className="rounded-b-lg border border-t-0 border-gray-700/80 bg-gray-700 py-3 dark:border-gray-600/60 dark:bg-gray-800"/>
-                </div>
+                <InteractiveLaptop/>
             </div>
 
-            {/* Phones — scale from right-bottom, stay anchored to the right */}
             <div className="absolute inset-0" style={{
-                transformOrigin: 'right bottom',
-                transform: `scale(${scale})`,
+                // transformOrigin: 'right bottom',
+                transform: `scale(${scale})`
             }}>
-                {/* Phone 3 — back */}
-                {!isSmall && <div className="absolute z-[1]" style={{
-                    bottom: '-70px', right: '330px', width: '240px',
-                    transform: PHONE_T, transformOrigin: 'right bottom',
-                }}>
-                    <PhoneFrame idx={3}/>
-                </div>}
-
-                {/* Phone 2 — middle */}
-                {!isSmall && <div className="absolute z-[2]" style={{
-                    bottom: '-20px', right: '201px', width: '240px',
-                    transform: PHONE_T, transformOrigin: 'right bottom',
-                }}>
-                    <PhoneFrame idx={2}/>
-                </div>}
-
-                {/* Phone 1 — front */}
-                <div className="absolute z-[3]" style={{
-                    bottom: '30px', right: '75px', width: '240px',
-                    transform: PHONE_T, transformOrigin: 'right bottom',
-                }}>
-                    <PhoneFrame/>
-                </div>
+                {!isSmall && <InteractivePhone idx={3} bottom="-70px" right="330px" z={1}/>}
+                {!isSmall && <InteractivePhone idx={2} bottom="-20px" right="201px" z={2}/>}
+                <InteractivePhone idx={1} bottom="30px" right="75px" z={3}/>
             </div>
         </div>
     );
 };
 
-const PhoneFrame = ({idx = 1}: {idx?: number}) => (
-    <div className="relative rounded-[2.6rem] border-2 border-gray-700/90 bg-gray-800 p-[6px] shadow-2xl dark:border-gray-600/70 dark:bg-gray-900">
+const InteractiveLaptop = () => {
+    const [tilt, setTilt] = useState({x: 0, y: 0});
+    const [hovered, setHovered] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    const onMouseMove = (e: React.MouseEvent) => {
+        const rect = ref.current?.getBoundingClientRect();
+        if (!rect) return;
+        const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        setTilt({x: -x * 6, y: -y * 4});
+    };
+
+    const onMouseLeave = () => {
+        setTilt({x: 0, y: 0});
+        setHovered(false);
+    };
+
+    return (
+        <div
+            ref={ref}
+            className="pointer-events-auto"
+            style={{
+                width: '680px',
+                transformOrigin: '50% 50%',
+                transform: `perspective(1400px) rotateY(${18 + tilt.x}deg) rotateX(${16 + tilt.y}deg) rotate(-4deg) translateY(${hovered ? -8 : 0}px)`,
+                transition: 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), filter 0.3s ease',
+                filter: hovered
+                    ? 'drop-shadow(0 24px 40px rgba(0,0,0,0.55))'
+                    : 'drop-shadow(0 8px 16px rgba(0,0,0,0.3))',
+            }}
+            onMouseMove={onMouseMove}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={onMouseLeave}
+        >
+            <div className={`relative rounded-t-xl border shadow-2xl transition-colors duration-300 bg-gray-800 dark:bg-gray-900 ${
+                hovered ? 'border-white/20 dark:border-white/15' : 'border-gray-700/80 dark:border-gray-600/60'
+            }`}>
+                <div className="flex justify-center pt-2 pb-1">
+                    <div className="h-1.5 w-1.5 rounded-full bg-gray-600 dark:bg-gray-500"/>
+                </div>
+                <div className="overflow-hidden rounded-sm" style={{aspectRatio: '16/10'}}>
+                    <img src="/preview-desktop.png" alt="Аналитика визитки"
+                         className="h-full w-full object-cover object-top" draggable={false}/>
+                </div>
+            </div>
+            <div className="h-1 w-full bg-gray-600 dark:bg-gray-700"/>
+            <div className="rounded-b-lg border border-t-0 border-gray-700/80 bg-gray-700 py-3 dark:border-gray-600/60 dark:bg-gray-800"/>
+        </div>
+    );
+};
+
+type InteractivePhoneProps = {idx: number; bottom: string; right: string; z: number};
+
+const InteractivePhone = ({idx, bottom, right, z}: InteractivePhoneProps) => {
+    const [tilt, setTilt] = useState({x: 0, y: 0});
+    const [hovered, setHovered] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    const onMouseMove = (e: React.MouseEvent) => {
+        const rect = ref.current?.getBoundingClientRect();
+        if (!rect) return;
+        const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        setTilt({x: -x * 8, y: -y * 5});
+    };
+
+    const onMouseLeave = () => {
+        setTilt({x: 0, y: 0});
+        setHovered(false);
+    };
+
+    return (
+        <div
+            ref={ref}
+            className="pointer-events-auto absolute"
+            style={{
+                bottom, right, width: '240px', zIndex: z,
+                transformOrigin: '50% 50%',
+                transform: `perspective(1400px) rotateY(${-5 + tilt.x}deg) rotateX(${10 + tilt.y}deg) rotate(4deg) translateY(${hovered ? -12 : 0}px)`,
+                transition: 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), filter 0.3s ease',
+                filter: hovered
+                    ? 'drop-shadow(0 24px 40px rgba(0,0,0,0.55)) drop-shadow(0 0 0 1px rgba(255,255,255,0.08))'
+                    : 'drop-shadow(0 8px 16px rgba(0,0,0,0.3))',
+            }}
+            onMouseMove={onMouseMove}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={onMouseLeave}
+        >
+            <PhoneFrame idx={idx} hovered={hovered}/>
+        </div>
+    );
+};
+
+const PhoneFrame = ({idx = 1, hovered = false}: {idx?: number; hovered?: boolean}) => (
+    <div className={`relative rounded-[2.6rem] border-2 p-[6px] shadow-2xl transition-colors duration-300 bg-gray-800 dark:bg-gray-900 ${
+        hovered ? 'border-white/20 dark:border-white/15' : 'border-gray-700/90 dark:border-gray-600/70'
+    }`}>
         <div className="absolute left-1/2 top-3 z-10 h-5 w-[68px] -translate-x-1/2 rounded-full bg-gray-900"/>
         <div className="overflow-hidden rounded-[2.2rem] bg-gray-900" style={{aspectRatio: '9/19.5'}}>
-            <img
-                src={`/preview-mobile-${idx}.png`}
-                alt="Визитка на телефоне"
-                className="h-full w-full object-fill object-top"
-                draggable={false}
-            />
+            <img src={`/preview-mobile-${idx}.png`} alt="Визитка на телефоне"
+                 className="h-full w-full object-fill object-top" draggable={false}/>
         </div>
         <div className="mx-auto mt-1.5 h-1 w-16 rounded-full bg-gray-600 dark:bg-gray-500"/>
     </div>
