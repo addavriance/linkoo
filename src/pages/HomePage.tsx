@@ -3,7 +3,7 @@ import {Helmet} from 'react-helmet-async';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent} from '@/components/ui/card';
 import {
-    Sparkles, Share2, Palette, Zap, ArrowRight, Smartphone
+    Sparkles, Share2, Palette, Zap, ArrowRight, Smartphone, ChevronDown
 } from 'lucide-react';
 import {CardsCarousel} from '@/components/cards/CardsCarousel.tsx';
 import DeviceMockups from '@/components/home/DeviceMockups.tsx';
@@ -52,7 +52,7 @@ const HomePage = () => {
             <div className="relative overflow-hidden">
                 {/* Hero Section */}
                 <section className="relative min-h-[640px] px-6 pt-20 pb-16 text-center lg:min-h-[820px] lg:px-8 lg:pt-32 lg:pb-24">
-                    <div className="relative z-10 mx-auto max-w-4xl pb-[20rem]">
+                    <div className="relative z-10 mx-auto max-w-4xl pb-0 min-[500px]:pb-[20rem]">
                         {/* Заголовок */}
                         <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
                             Создавай{" "}
@@ -109,6 +109,10 @@ const HomePage = () => {
                     </div>
 
                     <DeviceMockups/>
+
+                    <div className="absolute bottom-8 inset-x-0 flex flex-col items-center gap-1 min-[500px]:hidden text-muted-foreground/50">
+                        <ChevronDown className="w-10 h-10 animate-pulse-subtle"/>
+                    </div>
                 </section>
 
                 {/* Features Section */}
