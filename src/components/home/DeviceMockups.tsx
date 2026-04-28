@@ -13,6 +13,10 @@ const DeviceMockups = () => {
     if (width < 500) return null;
 
     const isSmall = width <= 700;
+    const removeFirstPhone = width <= 1250;
+    const removeSecondPhone = width <= 1080;
+    const removeThirdPhone = width <= 950;
+    const thirdPhoneBottom = removeSecondPhone ? -30 : 30;
     const scale = isSmall ? Math.min(1, width / 800) : Math.min(1, width / 1200);
 
     return (
@@ -24,9 +28,9 @@ const DeviceMockups = () => {
             <div className="absolute bottom-0 right-1/4 h-80 w-96 translate-x-1/2 rounded-full bg-purple-500/10 blur-3xl"/>
 
             <div style={{
-                position: 'absolute', bottom: 0, left: '50px',
-                // transformOrigin: 'left bottom',
-                transform: `scale(${scale})`,
+                position: 'absolute', bottom: removeThirdPhone ? '-50px' : 0, left: removeThirdPhone ? '50%' : 0,
+                transformOrigin: 'left center',
+                transform: `scale(${scale})` + (removeThirdPhone ? 'translateX(-50%)' : ''),
             }}>
                 <InteractiveLaptop/>
             </div>
@@ -35,9 +39,9 @@ const DeviceMockups = () => {
                 // transformOrigin: 'right bottom',
                 transform: `scale(${scale})`
             }}>
-                {!isSmall && <InteractivePhone idx={3} bottom="-70px" right="330px" z={1}/>}
-                {!isSmall && <InteractivePhone idx={2} bottom="-20px" right="201px" z={2}/>}
-                <InteractivePhone idx={1} bottom="30px" right="75px" z={3}/>
+                {!removeFirstPhone && <InteractivePhone idx={3} bottom="-70px" right="330px" z={1}/>}
+                {!removeSecondPhone && <InteractivePhone idx={2} bottom="-20px" right="201px" z={2}/>}
+                {!removeThirdPhone && <InteractivePhone idx={1} bottom={thirdPhoneBottom + 'px'} right="75px" z={3}/>}
             </div>
         </div>
     );

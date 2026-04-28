@@ -52,7 +52,7 @@ const HomePage = () => {
             <div className="relative overflow-hidden">
                 {/* Hero Section */}
                 <section className="relative min-h-[640px] px-6 pt-20 pb-16 text-center lg:min-h-[820px] lg:px-8 lg:pt-32 lg:pb-24">
-                    <div className="relative z-10 mx-auto max-w-4xl pb-0 min-[500px]:pb-[20rem]">
+                    <div className="relative z-10 mx-auto max-w-4xl pb-0 min-[500px]:pb-[20rem] pointer-events-none">
                         {/* Заголовок */}
                         <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
                             Создавай{" "}
@@ -84,7 +84,7 @@ const HomePage = () => {
                         </p>
 
                         {/* CTA Buttons */}
-                        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row pointer-events-auto">
                             <Button
                                 size="lg"
                                 className="hero-button btn-gradient w-full px-8 py-4 text-lg sm:w-auto click-feedback group"
