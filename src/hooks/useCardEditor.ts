@@ -5,6 +5,7 @@ import {api} from '@/lib/api';
 import {toast} from '@/lib/toast';
 import {generateCardUrl} from '@/lib/compression';
 import type {Card} from '@/types';
+import {STORAGE_KEYS, MIN_EDITS_TIME} from "@/constants";
 
 interface UseCardEditorOptions {
     onSaveSuccess?: (card: Card) => void;
@@ -40,6 +41,8 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
     const [exportUrl, setExportUrl] = useState('');
     const [isEditMode, setIsEditMode] = useState(false);
 
+    const [lastEditsTime, setLastEditsTime] = useState(Date.now());
+
     const isGuestMode = !isAuthenticated;
     const isAuthMode = isAuthenticated;
 
@@ -51,11 +54,12 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
 
     useEffect(() => {
         if (!cardId) {
-            const draft = localStorage.getItem('linkoo_draft');
+            const draft = localStorage.getItem(STORAGE_KEYS.DRAFT);
             if (draft) {
                 try {
                     const draftData = JSON.parse(draft);
                     setCardData(prev => ({...prev, ...draftData}));
+                    toast.info('Карточка загружена из черновика');
                 } catch (error) {
                     console.error('Failed to load draft:', error);
                 }
@@ -67,7 +71,12 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
         if (!isEditMode) {
             const timeoutId = setTimeout(() => {
                 if (cardData.name || cardData.email) {
-                    localStorage.setItem('linkoo_draft', JSON.stringify(cardData));
+                    localStorage.setItem(STORAGE_KEYS.DRAFT, JSON.stringify(cardData));
+
+                    if (Date.now() - lastEditsTime > MIN_EDITS_TIME) {
+                        toast.info('Карточка сохранена в черновик');
+                        setLastEditsTime(Date.now())
+                    }
                 }
             }, 1000);
 
@@ -159,6 +168,7 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
 
             setTimeout(() => {
                 navigate(`/cards?highlight=${savedCard._id}`);
+                clearForm();
             }, 1000);
 
             return true;
@@ -200,10 +210,9 @@ export const useCardEditor = (options: UseCardEditorOptions = {}, onChange?: () 
             },
         });
 
-        localStorage.removeItem('linkoo_draft');
+        localStorage.removeItem(STORAGE_KEYS.DRAFT);
 
         setExportUrl('');
-        toast.success('Форма очищена');
     };
 
     return {

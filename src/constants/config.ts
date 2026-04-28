@@ -41,3 +41,11 @@ export const LINKOO_LOGO_URL = '/icon.png';
 
 export const DEFAULT_MAP_CENTER = { lat: 55.7558, lng: 37.6176 };
 export const DEFAULT_MAP_ZOOM   = 10;
+
+// Other
+
+export const SECOND = 1000; // ms
+export const MINUTE = 60 * SECOND;
+export const HOUR = 60 * MINUTE;
+
+export const MIN_EDITS_TIME = 8 * SECOND;
