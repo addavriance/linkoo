@@ -81,7 +81,11 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                         placeholder="ivan@example.com"
                         value={cardData.email || ''}
                         onChange={(e) => updateField('email', e.target.value)}
+                        className={cardData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email) ? 'border-red-500 focus-visible:ring-red-500' : ''}
                     />
+                    {cardData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email) && (
+                        <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                    )}
                 </div>
                 <div>
                     <label className="text-sm font-medium text-muted-foreground mb-2 block">
